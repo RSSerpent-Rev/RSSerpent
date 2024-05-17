@@ -40,6 +40,8 @@ def startup() -> None:
     """Install Chromium on start-up."""
     if sys.platform == "linux" and "PLAYWRIGHT_BROWSERS_PATH" not in os.environ:
         os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp"  # pragma: is_not_linux
+    print("Running on", sys.platform)
+    print(f"Installing Chromium at {os.environ.get('PLAYWRIGHT_BROWSERS_PATH')}")
     subprocess.run("playwright install chromium".split())
 
 
