@@ -38,7 +38,7 @@ async def exception_handler(request: Request, exception: Exception) -> TemplateR
 
 def startup() -> None:
     """Install Chromium on start-up."""
-    if sys.platform == "linux":
+    if sys.platform == "linux" and "PLAYWRIGHT_BROWSERS_PATH" not in os.environ:
         os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp"  # pragma: is_not_linux
     subprocess.run("playwright install chromium".split())
 

@@ -1,8 +1,11 @@
 services:
   web:
     container_name: rsserpent
-    image: ghcr.io/ekkog/rsserpent:master
+    build: .
     ports:
       - "8000:8000"
+    environment:
+      - PLAYWRIGHT_BROWSERS_PATH=/app/cache
     volumes:
+      - ./.cache:/app/cache
       - ./test-rsserpent.txt:/app/rsserpent.txt
