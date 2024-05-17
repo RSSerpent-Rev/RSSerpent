@@ -1,0 +1,8 @@
+services:
+  web:
+    container_name: rsserpent
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./test-rsserpent.txt:/app/rsserpent.txt

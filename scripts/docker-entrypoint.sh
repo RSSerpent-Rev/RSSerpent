@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-if [ -f /app/runtime/requirements.txt ]; then
-    pip install -r /app/runtime/requirements.txt
+if [ -f /app/rsserpent.txt ]; then
+    poetry run pip install -r /app/rsserpent.txt
 fi
 
 exec "$@"
