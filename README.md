@@ -32,6 +32,8 @@ RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org
 # Thanks
 The RSSerpent Project is heavily inspired by [RSSHub](https://github.com/DIYgod/RSSHub) 🎉 We pay the highest possible tribute to RSSHub & its maintainers.
 
+Thanks to [RSSerpent](https://github.com/RSSerpent/RSSerpent) and [queensferryme](https://github.com/queensferryme), the original authors of the project.
+
 ## Sponsors
 
 <a href="https://linktr.ee/rss3" target="_blank"><img alt="rss3" src="https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" width="200" /></a>
