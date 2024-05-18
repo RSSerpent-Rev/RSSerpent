@@ -7,8 +7,6 @@ RUN pip install poetry
 
 COPY README.md LICENSE pyproject.toml poetry.lock ./
 
-# RUN poetry config virtualenvs.create false
-
 # Dependencies
 RUN poetry install
 
@@ -16,6 +14,10 @@ RUN poetry install
 RUN apt-get update && apt-get install -y git
 
 COPY scripts/docker-entrypoint.sh /
+
+RUN poetry config virtualenvs.create false
+
+ENV PYTHONUNBUFFERED=1
 
 # Run
 EXPOSE 8000
