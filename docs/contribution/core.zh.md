@@ -7,7 +7,7 @@
 
 ## 复刻代码
 
-以 RSSerpent [核心](https://github.com/RSSerpent/RSSerpent)为例：
+以 RSSerpent [核心](https://github.com/RSSerpent-Rev/RSSerpent)为例：
 
 在 GitHub 网站上，找到你想要共享的项目代码仓库。点击页面右上角的 *Fork* 按钮复刻，这样你就能获得一份属于你自己的原代码仓库的复制。
 
@@ -53,5 +53,5 @@ poetry run pre-commit install -t pre-commit -t commit-msg
 到目前为止，我们都在讨论向 RSSerpent 核心做贡献的整体流程。如果你想要找一些具体的问题来解决，你可以：
 
 - 浏览 issue/discussion 列表，找到你感兴趣的内容，在该 issue/discussion 下回复声明你正在解决这个问题，然后尝试提交一个拉取请求。
-- 找到一个 bug，创建一个 [issue](https://github.com/RSSerpent/RSSerpent/issues) 说明这个 bug，并尝试提交一个拉取请求解决这个 issue。
-- 想出一个新功能，创建一个 [discussion](https://github.com/RSSerpent/RSSerpent/discussions) 说明这个新功能，如果项目维护者愿意接受，你可以尝试提交一个拉取请求来实现这个功能。
+- 找到一个 bug，创建一个 [issue](https://github.com/RSSerpent-Rev/RSSerpent/issues) 说明这个 bug，并尝试提交一个拉取请求解决这个 issue。
+- 想出一个新功能，创建一个 [discussion](https://github.com/RSSerpent-Rev/RSSerpent/discussions) 说明这个新功能，如果项目维护者愿意接受，你可以尝试提交一个拉取请求来实现这个功能。

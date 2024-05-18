@@ -7,7 +7,7 @@ If you are contributing to the RSSerpent core (or any existing RSerpent plugin p
 
 ## Fork
 
-Take the RSSerpent [core](https://github.com/RSSerpent/RSSerpent) for example:
+Take the RSSerpent [core](https://github.com/RSSerpent-Rev/RSSerpent) for example:
 
 On GitHub, navigate to the repository of the project you want to contribute. Click the *Fork* button on the top-right corner to create a replicate of the original repository owned by yourself.
 
@@ -53,5 +53,5 @@ After pushing, open the browser, navigate to your forked repository. You will se
 So far this tutorial is focused on discussing the general workflow of contributing to the RSSerpent core. If you are looking for some specific problem to work on, you may:
 
 - Skim through the list of issues/discussions, find something you are interested in, claim the issue/discussion, and then submit a pull request.
-- Find a bug, create an [issue](https://github.com/RSSerpent/RSSerpent/issues) to report the bug, and then if you can, submit a pull request that will resolve this issue.
-- Come up with an idea of some new feature, create a [discussion](https://github.com/RSSerpent/RSSerpent/discussions) thread to see if the maintainer will accept this feature, and then if you can and the maintainer will, submit a pull request implementing this new feature.
+- Find a bug, create an [issue](https://github.com/RSSerpent-Rev/RSSerpent/issues) to report the bug, and then if you can, submit a pull request that will resolve this issue.
+- Come up with an idea of some new feature, create a [discussion](https://github.com/RSSerpent-Rev/RSSerpent/discussions) thread to see if the maintainer will accept this feature, and then if you can and the maintainer will, submit a pull request implementing this new feature.

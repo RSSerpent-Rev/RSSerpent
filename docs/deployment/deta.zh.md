@@ -22,8 +22,8 @@
 
 RSSerpent 为用户提供了 Deta 部署模板，你可以用模板快速完成部署。假设你已经开通 [GitHub](https://github.com/) 账户：
 
-1. 在 GitHub 上打开[模板](https://github.com/RSSerpent/rsserpent-deploy-deta)；
-2. 点击 [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent/rsserpent-deploy-deta/generate) 按钮使用模板。
+1. 在 GitHub 上打开[模板](https://github.com/RSSerpent-Rev/RSSerpent-deploy-deta)；
+2. 点击 [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent-Rev/RSSerpent-deploy-deta/generate) 按钮使用模板。
 
 GitHub 会提示你填写一些信息，然后就会基于模板为你创建一个代码仓库。
 

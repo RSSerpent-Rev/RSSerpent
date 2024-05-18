@@ -4,7 +4,7 @@ Deploying an RSSerpent instance on [Heroku](https://www.heroku.com/) is easy & f
 
 ## Use the Template
 
-Go to the RSSerpent Heroku deployment [template](https://github.com/RSSerpent/rsserpent-deploy-heroku), then click the [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent/rsserpent-deploy-heroku/generate) button. You will be prompted to create a repository based on the template.
+Go to the RSSerpent Heroku deployment [template](https://github.com/RSSerpent-Rev/RSSerpent-deploy-heroku), then click the [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent-Rev/RSSerpent-deploy-heroku/generate) button. You will be prompted to create a repository based on the template.
 
 ## Running 🎉
 

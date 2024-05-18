@@ -18,7 +18,7 @@
 !!!note
     每个 RSSerpent 插件都包含一个或多个路由。
 
-RSSerpent 的[官方实例](https://www.rsserpent.com)上装载了哔哩哔哩[插件](https://github.com/RSSerpent/rsserpent-plugin-bilibili)。因此，你可以在官方实例上使用路由 `/bilibili/user/{id}/video` 来订阅某个用户发布的视频。例如，如果你希望订阅 [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg) 在哔哩哔哩的官方[中文翻译频道](https://space.bilibili.com/297786973)，那么通过拼接官方实例的域名 `www.rsserpent.com` 与路由 `/bilibili/user/297786973/video` 你可以得到如下订阅链接：
+RSSerpent 的[官方实例](https://www.rsserpent.com)上装载了哔哩哔哩[插件](https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili)。因此，你可以在官方实例上使用路由 `/bilibili/user/{id}/video` 来订阅某个用户发布的视频。例如，如果你希望订阅 [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg) 在哔哩哔哩的官方[中文翻译频道](https://space.bilibili.com/297786973)，那么通过拼接官方实例的域名 `www.rsserpent.com` 与路由 `/bilibili/user/297786973/video` 你可以得到如下订阅链接：
 
 ![RSSerpent Bilibili Chubbyemu](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/rsserpent-bilibili-chubbyemu.png)
 

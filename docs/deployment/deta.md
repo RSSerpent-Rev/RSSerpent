@@ -22,8 +22,8 @@ Read Deta's [document](https://docs.deta.sh/docs/cli/auth) if you have any quest
 
 RSSerpent provides a Deta deployment template. You will need an [GitHub](https://github.com/) account before continuing.
 
-1. Go to the [template](https://github.com/RSSerpent/rsserpent-deploy-deta) on GitHub;
-2. Click the [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent/rsserpent-deploy-deta/generate) button.
+1. Go to the [template](https://github.com/RSSerpent-Rev/RSSerpent-deploy-deta) on GitHub;
+2. Click the [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent-Rev/RSSerpent-deploy-deta/generate) button.
 
 You will be prompted to create a repository based on the template. After successful creation:
 

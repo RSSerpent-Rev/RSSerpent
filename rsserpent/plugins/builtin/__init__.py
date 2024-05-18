@@ -17,7 +17,7 @@ plugin = Plugin(
         link="https://github.com/queensferryme",
         email="queensferry.me@gmail.com",
     ),
-    repository="https://github.com/RSSerpent/RSSerpent",
+    repository="https://github.com/RSSerpent-Rev/RSSerpent",
     prefix="/_",
     routers={
         example.path: example.provider,

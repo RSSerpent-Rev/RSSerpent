@@ -4,7 +4,7 @@
 
 ## 使用模板
 
-在 GitHub 上打开 RSSerpent Vercel 部署[模板](https://github.com/RSSerpent/rsserpent-deploy-vercel)，然后点击 [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent/rsserpent-deploy-vercel/generate) 按钮使用模板。GitHub 会提示你填写一些信息，然后就会基于模板为你创建一个代码仓库。
+在 GitHub 上打开 RSSerpent Vercel 部署[模板](https://github.com/RSSerpent-Rev/RSSerpent-deploy-vercel)，然后点击 [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent-Rev/RSSerpent-deploy-vercel/generate) 按钮使用模板。GitHub 会提示你填写一些信息，然后就会基于模板为你创建一个代码仓库。
 
 ## 部署项目
 

@@ -7,8 +7,8 @@ description = "🐍 This snake helps you reconnect the Web, with RSS feeds!"
 license = "MIT"
 readme = "README.md"
 
-homepage = "https://github.com/RSSerpent/RSSerpent"
-repository = "https://github.com/RSSerpent/RSSerpent"
+homepage = "https://github.com/RSSerpent-Rev/RSSerpent"
+repository = "https://github.com/RSSerpent-Rev/RSSerpent"
 
 classifiers = [
     "Development Status :: 4 - Beta",

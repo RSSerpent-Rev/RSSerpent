@@ -4,7 +4,7 @@ Learn to self-host an RSSerpent instance on [Vercel](https://vercel.com) (for *f
 
 ## Use the Template
 
-Go to the RSSerpent Vercel deployment [template](https://github.com/RSSerpent/rsserpent-deploy-vercel), then click the [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent/rsserpent-deploy-vercel/generate) button. You will be prompted to create a repository based on the template.
+Go to the RSSerpent Vercel deployment [template](https://github.com/RSSerpent-Rev/RSSerpent-deploy-vercel), then click the [![Template Button](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/template-button.png)](https://github.com/RSSerpent-Rev/RSSerpent-deploy-vercel/generate) button. You will be prompted to create a repository based on the template.
 
 ## Deploy the Project
 

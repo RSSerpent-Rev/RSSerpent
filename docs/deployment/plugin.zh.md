@@ -16,7 +16,7 @@
     # PyPI
     rsserpent
     # Git
-    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent/rsserpent-plugin-bilibili.git
+    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git
     ```
 
 - 如果你确认你需要使用某个特定版本（而非最新）的依赖，你可以：
@@ -25,5 +25,5 @@
     # PyPI
     rsserpent==0.1.4
     # Git
-    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent/rsserpent-plugin-bilibili.git@0609c0bd466e5d19fbb13078d9b93e0134b8c5bd
+    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git@0609c0bd466e5d19fbb13078d9b93e0134b8c5bd
     ```

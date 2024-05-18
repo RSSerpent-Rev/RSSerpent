@@ -18,7 +18,7 @@ Several things to note when writing `rsserpent.txt`:
     # PyPI
     rsserpent
     # Git
-    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent/rsserpent-plugin-bilibili.git
+    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git
     ```
 
 - If you do need a specific version of some dependency, you could always pin its version with:
@@ -27,5 +27,5 @@ Several things to note when writing `rsserpent.txt`:
     # PyPI
     rsserpent==0.1.4
     # Git
-    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent/rsserpent-plugin-bilibili.git@0609c0bd466e5d19fbb13078d9b93e0134b8c5bd
+    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git@0609c0bd466e5d19fbb13078d9b93e0134b8c5bd
     ```

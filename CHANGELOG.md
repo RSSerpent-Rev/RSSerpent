@@ -24,7 +24,7 @@
 
 ### Features 🎉
 
-- RSSerpent now builds docker images! Check out [Docker Hub](https://hub.docker.com/r/queensferry/rsserpent/) & [GitHub Container Registry](https://github.com/RSSerpent/RSSerpent/pkgs/container/rsserpent)
+- RSSerpent now builds docker images! Check out [Docker Hub](https://hub.docker.com/r/queensferry/rsserpent/) & [GitHub Container Registry](https://github.com/RSSerpent-Rev/RSSerpent/pkgs/container/rsserpent)
 - RSSerpent core has made a set of recommended best practices for writing plugins available to plugin authors through [`nitpick`](https://github.com/andreoliwa/nitpick)
 - RSSerpent ships some builtin tools for writing plugins, based on [`httpx`](https://github.com/encode/httpx), [`pyquery`](https://github.com/gawel/pyquery), and [`pyppeteer`](https://github.com/pyppeteer/pyppeteer)
     ```python
