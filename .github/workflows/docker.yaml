@@ -27,7 +27,7 @@ jobs:
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - name: "Login to GitHub Container Registry"
-        if: github.repository == 'ekkog/RSSerpent' && github.event_name != 'pull_request'
+        if: github.repository == 'RSSerpent-Rev/RSSerpent' && github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -36,7 +36,7 @@ jobs:
       - uses: docker/metadata-action@v3
         id: meta
         with:
-          images: ghcr.io/ekkog/rsserpent
+          images: ghcr.io/rsserpent-rev/rsserpent
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -48,5 +48,5 @@ jobs:
           context: .
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.repository == 'ekkog/RSSerpent' && github.event_name != 'pull_request' }}
+          push: ${{ github.repository == 'RSSerpent-Rev/RSSerpent' && github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
