@@ -37,4 +37,5 @@ jobs:
         run: poetry install
       - name: "Build Latest Document"
         run: |
+          git fetch origin doc:doc
           poetry run mike deploy --push --update-aliases latest
