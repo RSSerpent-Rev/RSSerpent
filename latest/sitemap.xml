@@ -1,123 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-         <loc>https://docs.rsserpent.com/latest/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/faq/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/faq/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/faq/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/faq/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/faq/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/faq/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/outline/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/outline/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/outline/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/outline/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/outline/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/outline/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/contribution/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/contribution/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/contribution/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/contribution/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/contribution/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/contribution/core/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/contribution/core/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/core/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/contribution/core/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/contribution/core/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/contribution/core/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/contribution/plugin/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/contribution/plugin/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/plugin/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/contribution/plugin/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/contribution/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/contribution/plugin/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/contribution/plugin/data/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/contribution/plugin/data/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/plugin/data/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/contribution/plugin/data/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/contribution/plugin/data/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/contribution/plugin/data/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/deployment/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/deployment/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/deployment/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/deployment/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/deployment/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/deployment/deta/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/deployment/deta/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/deta/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/deployment/deta/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/deployment/deta/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/deployment/deta/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/deployment/heroku/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/deployment/heroku/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/heroku/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/deployment/heroku/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/deployment/heroku/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/deployment/heroku/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/deployment/plugin/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/deployment/plugin/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/plugin/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/deployment/plugin/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/deployment/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/deployment/plugin/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/deployment/vercel/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/deployment/vercel/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/vercel/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/deployment/vercel/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/deployment/vercel/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/deployment/vercel/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/plugin/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/plugin/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/plugin/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/plugin/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/plugin/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/usage/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/usage/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/usage/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/usage/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/usage/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/usage/"/>
     </url>
     <url>
-         <loc>https://docs.rsserpent.com/latest/usage/router/</loc>
-         <lastmod>2024-05-19</lastmod>
-         <changefreq>daily</changefreq>
-         <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/en/usage/router/"/>
-         <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/usage/router/"/>
-         
+        <loc>https://docs.rsserpent.com/latest/usage/router/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest/usage/router/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latestzh/usage/router/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latest"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/faq/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/faq/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestfaq/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/outline/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/outline/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestoutline/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/contribution/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestcontribution/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/contribution/core/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/core/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestcontribution/core/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/contribution/plugin/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestcontribution/plugin/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/contribution/plugin/data/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/contribution/plugin/data/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestcontribution/plugin/data/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/deployment/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestdeployment/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/deployment/deta/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/deta/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestdeployment/deta/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/deployment/heroku/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/heroku/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestdeployment/heroku/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/deployment/plugin/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestdeployment/plugin/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/deployment/vercel/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/deployment/vercel/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestdeployment/vercel/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/plugin/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestplugin/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/usage/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/usage/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestusage/"/>
+    </url>
+    <url>
+        <loc>https://docs.rsserpent.com/latest/zh/usage/router/</loc>
+        <lastmod>2024-05-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://docs.rsserpent.com/latest/zh/usage/router/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://docs.rsserpent.com/latestusage/router/"/>
     </url>
 </urlset>
