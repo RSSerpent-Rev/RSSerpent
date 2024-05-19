@@ -1,5 +1,6 @@
 <p align="center">
-<img alt="RSSerpent" src="https://i.loli.net/2021/07/31/14nQw2XRFCPuLDN.png" width="250" />
+
+<img alt="RSSerpent" src="./docs/__asset__/logo-200.png" width="250" />
 </p>
 
 [![python: 3.7.0+](https://img.shields.io/badge/python->=3.7.0-blue.svg)](https://www.python.org/downloads/)
@@ -26,18 +27,18 @@ RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org
 
 # Quick Start
 
-- Official Instance: <https://www.rsserpent.com/>
-- Documentation: <https://docs.rsserpent.com/>
+<!-- - Official Instance: <https://www.rsserpent.com/> -->
+- Documentation: <https://rsserpent-rev.github.io/RSSerpent/latest/>
 
 # Thanks
 The RSSerpent Project is heavily inspired by [RSSHub](https://github.com/DIYgod/RSSHub) 🎉 We pay the highest possible tribute to RSSHub & its maintainers.
 
 Thanks to [RSSerpent](https://github.com/RSSerpent/RSSerpent) and [queensferryme](https://github.com/queensferryme), the original authors of the project.
 
-## Sponsors
+<!-- ## Sponsors
 
-<a href="https://linktr.ee/rss3" target="_blank"><img alt="rss3" src="https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" width="200" /></a>
+<a href="https://linktr.ee/rss3" target="_blank"><img alt="rss3" src="https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" width="200" /></a> -->
 
 # People
 
-The RSSerpent Project is created by [@queensferry](https://github.com/queensferryme/), supported by various [project members](https://github.com/orgs/RSSerpent/people) & [contributors](https://github.com/RSSerpent-Rev/RSSerpent/graphs/contributors).
+The RSSerpent Project is original created by [@queensferry](https://github.com/queensferryme/), current maintain by [@EkkoG](https://github.com/EkkoG), supported by various [project members](https://github.com/orgs/RSSerpent-Rev/people) & [contributors](https://github.com/RSSerpent-Rev/RSSerpent/graphs/contributors).
