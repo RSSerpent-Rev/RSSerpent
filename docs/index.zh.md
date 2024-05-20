@@ -2,21 +2,21 @@
 
 [![pypi: version](https://img.shields.io/pypi/v/rsserpent)](https://pypi.org/project/rsserpent/)
 [![downloads: per month](https://img.shields.io/pypi/dm/rsserpent)](https://pypi.org/project/rsserpent/)
-[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent)
+[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
 RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikipedia.org/wiki/RSS) 订阅那些不支持 RSS 订阅的网站。
 
 ## 快速开始
 
-- 示例：<https://www.rsserpent.com/>
-- 文档：<https://docs.rsserpent.com/>
+- 示例：<https://rsserpent.imciel.com/>
+- 文档：<https://rsserpent-rev.github.io/RSSerpent/latest/>
 
 ## 致谢
 RSSerpent 项目是在 [RSSHub](https://github.com/DIYgod/RSSHub) 的启发下开发的 🎉 我们向 RSSHub 项目及其维护者致以敬意。
 
-## 赞助商
+<!-- ## 赞助商
 
-[![rss3](https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu){ width=200 }](https://linktr.ee/rss3)
+[![rss3](https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu){ width=200 }](https://linktr.ee/rss3) -->
 
 ## 成员
 

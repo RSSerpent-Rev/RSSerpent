@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="RSSerpent" src="https://i.loli.net/2021/07/31/14nQw2XRFCPuLDN.png" width="250" />
+<img alt="RSSerpent" src="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png" width="250" />
 </p>
 
 [![python: 3.7.0+](https://img.shields.io/badge/python->=3.7.0-blue.svg)](https://www.python.org/downloads/)
@@ -16,7 +16,7 @@
 [![github docker status](https://img.shields.io/github/workflow/status/RSSerpent-Rev/RSSerpent/Build%20Docker%20Image?label=docker&logo=docker)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/docker.yaml)
 [![netlify status](https://img.shields.io/netlify/8fc96574-bda5-4f06-9188-3673818b3eb5?label=docs&logo=netlify)](https://app.netlify.com/sites/rsserpent/deploys)
 
-[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent)
+[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
 RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikipedia.org/wiki/RSS) 订阅那些不支持 RSS 订阅的网站。
 
@@ -24,8 +24,8 @@ RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikiped
 
 # 快速开始
 
-- 示例：<https://www.rsserpent.com/>
-- 文档：<https://docs.rsserpent.com/>
+- 示例：<https://rsserpent.imciel.com/>
+- 文档：<https://rsserpent-rev.github.io/RSSerpent/latest/>
 
 # 致谢
 RSSerpent 项目是在 [RSSHub](https://github.com/DIYgod/RSSHub) 的启发下开发的 🎉 我们向 RSSHub 项目及其维护者致以敬意。

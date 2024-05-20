@@ -17,7 +17,7 @@
 [![github docker status](https://img.shields.io/github/workflow/status/RSSerpent-Rev/RSSerpent/Build%20Docker%20Image?label=docker&logo=docker)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/docker.yaml)
 [![netlify status](https://img.shields.io/netlify/8fc96574-bda5-4f06-9188-3673818b3eb5?label=docs&logo=netlify)](https://app.netlify.com/sites/rsserpent/deploys)
 
-[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent)
+[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
 > This snake helps you reconnect the Web, with RSS feeds!
 
@@ -27,7 +27,7 @@ RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org
 
 # Quick Start
 
-<!-- - Official Instance: <https://www.rsserpent.com/> -->
+- Official Instance: <https://rsserpent.imciel.com/>
 - Documentation: <https://rsserpent-rev.github.io/RSSerpent/latest/>
 
 # Thanks

@@ -3,7 +3,7 @@ extra:
     - icon: fontawesome/brands/github-alt
       link: https://github.com/RSSerpent-Rev/RSSerpent
     - icon: fontawesome/brands/telegram
-      link: https://t.me/rsserpent_rev
+      link: https://t.me/rsserpent_rev_rev
   version:
     provider: mike
 
@@ -71,10 +71,10 @@ repo_name: RSSerpent-Rev/RSSerpent
 repo_url: https://github.com/RSSerpent-Rev/RSSerpent
 
 site_name: RSSerpent Docs
-site_url: https://docs.rsserpent.com/
+site_url: https://rsserpent-rev.github.io/RSSerpent/latest/
 
 theme:
-  favicon: 'https://i.loli.net/2021/07/31/LCsB3u2yInHfwak.png'
+  favicon: 'https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png'
   features:
     - header.autohide
     - navigation.expand
