@@ -7,7 +7,7 @@ RUN pip install poetry
 
 COPY README.md LICENSE pyproject.toml poetry.lock ./
 
-RUN poetry config virtualenvs.create false
+# RUN poetry config virtualenvs.create false
 
 # Dependencies
 RUN poetry install
