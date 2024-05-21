@@ -39,7 +39,7 @@ Jinja2 = "^3.0.1"
 playwright = "^1.18.1"
 pydantic = {extras = ["email"], version = "^1.8.2"}
 pyquery = "^1.4.3"
-starlette = "^0.18.0"
+starlette = "0.37.2"
 mike = "^1.1.2"
 
 [tool.poetry.dev-dependencies]
