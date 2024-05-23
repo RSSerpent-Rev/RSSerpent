@@ -113,5 +113,5 @@ addopts = "--cov"
 asyncio_mode = "auto"
 
 [build-system]
-requires = ["poetry-core^1.6"]
+requires = ["poetry-core>=1.6"]
 build-backend = "poetry.core.masonry.api"
