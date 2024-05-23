@@ -9,7 +9,7 @@
 [![pypi: version](https://img.shields.io/pypi/v/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
 [![pypi downloads: per month](https://img.shields.io/pypi/dm/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
 
-[![github test status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/test.yaml?branch=main&label=test&logo=github&message=passed)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/test.yaml)
+[![github test status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/test.yaml?branch=master&label=test&logo=github&message=passed)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/test.yaml)
 [![codecov status](https://codecov.io/gh/RSSerpent-Rev/RSSerpent/branch/master/graph/badge.svg?token=FQZ5OWOQRO)](https://codecov.io/gh/RSSerpent-Rev/RSSerpent)
 [![github docker status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/docker.yaml?label=docker&logo=docker)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/docker.yaml)
 
