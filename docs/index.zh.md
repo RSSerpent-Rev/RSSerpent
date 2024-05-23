@@ -1,7 +1,7 @@
 # 介绍
 
-[![pypi: version](https://img.shields.io/pypi/v/rsserpent)](https://pypi.org/project/rsserpent/)
-[![downloads: per month](https://img.shields.io/pypi/dm/rsserpent)](https://pypi.org/project/rsserpent/)
+[![pypi: version](https://img.shields.io/pypi/v/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
+[![downloads: per month](https://img.shields.io/pypi/dm/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
 [![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
 RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikipedia.org/wiki/RSS) 订阅那些不支持 RSS 订阅的网站。

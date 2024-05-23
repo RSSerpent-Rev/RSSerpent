@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 # Copy
 WORKDIR /app
-COPY rsserpent rsserpent
+COPY rsserpent_rev rsserpent_rev
 RUN pip install poetry
 
 COPY README.md LICENSE pyproject.toml poetry.lock ./
