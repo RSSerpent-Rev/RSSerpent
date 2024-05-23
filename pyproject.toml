@@ -66,7 +66,7 @@ include = '\.pyi?$'
 target-version = ["py310"]
 
 [tool.coverage.run]
-include = ["rsserpent/*"]
+include = ["rsserpent_rev/*"]
 plugins = ["coverage_conditional_plugin"]
 
 [tool.coverage.report]
