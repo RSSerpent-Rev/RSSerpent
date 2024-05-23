@@ -13,7 +13,7 @@
 # Flake8
 [".flake8".flake8]
 count = true
-max-line-length = 88
+max-line-length = 120
 ## darglint
 strictness = "long"
 docstring-style = "google"
