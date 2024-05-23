@@ -7,6 +7,7 @@ on:
       - 'poetry.lock'
       - 'rsserpent_rev/**'
       - 'tests/**'
+      - 'coveragerc.conf'
   push:
     branches:
       - 'master'
