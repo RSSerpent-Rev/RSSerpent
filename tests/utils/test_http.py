@@ -1,4 +1,4 @@
-from rsserpent.utils.http import Browser, HTTPClient
+from rsserpent_rev.utils.http import Browser, HTTPClient
 
 
 async def test_browser() -> None:

@@ -7,7 +7,7 @@ from hypothesis.provisional import urls
 from hypothesis.strategies import builds, dictionaries, functions, just, text
 from pydantic import validate_model
 
-from rsserpent.models.plugin import Persona, Plugin, PluginModelError, ProviderFn
+from rsserpent_rev.models.plugin import Persona, Plugin, PluginModelError, ProviderFn
 from tests.conftest import Times
 
 

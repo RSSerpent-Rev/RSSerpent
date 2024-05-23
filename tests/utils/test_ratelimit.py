@@ -2,7 +2,7 @@ import time
 
 import pytest
 
-from rsserpent.utils.ratelimit import RateLimitError, ratelimit
+from rsserpent_rev.utils.ratelimit import RateLimitError, ratelimit
 
 
 @ratelimit(calls=3, period=100)

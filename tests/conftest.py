@@ -7,8 +7,8 @@ from hypothesis import settings, strategies
 from hypothesis.provisional import urls
 from starlette.testclient import TestClient
 
-from rsserpent import app
-from rsserpent.main import startup
+from rsserpent_rev import app
+from rsserpent_rev.main import startup
 
 
 startup()

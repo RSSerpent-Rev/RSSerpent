@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "rsserpent"
+name = "rsserpent-rev"
 version = "0.1.4"
 
 authors = ["Queensferry <queensferry.me@gmail.com>"]
@@ -62,7 +62,7 @@ mkdocs-static-i18n = "^1.2"
 
 [tool.black]
 include = '\.pyi?$'
-target-version = ["py37"]
+target-version = ["py310"]
 
 [tool.coverage.run]
 include = ["rsserpent/*"]
