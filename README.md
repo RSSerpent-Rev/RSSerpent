@@ -14,7 +14,6 @@
 [![codecov status](https://codecov.io/gh/RSSerpent-Rev/RSSerpent/branch/master/graph/badge.svg?token=FQZ5OWOQRO)](https://codecov.io/gh/RSSerpent-Rev/RSSerpent)
 [![github docker status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/docker.yaml?label=docker&logo=docker)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/docker.yaml)
 
-[![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
 [![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
