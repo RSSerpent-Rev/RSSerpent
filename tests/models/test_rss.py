@@ -3,7 +3,7 @@ from typing import Optional
 from hypothesis import given, infer, settings
 from pydantic import validate_model
 
-from rsserpent_rev.models.rss import Item, RSSModelError
+from rsserpent.models.rss import Item, RSSModelError
 from tests.conftest import Times
 
 

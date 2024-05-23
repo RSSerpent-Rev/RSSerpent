@@ -6,9 +6,9 @@ from hypothesis.strategies import integers
 from pydantic import IPvAnyAddress
 from starlette.testclient import TestClient
 
-from rsserpent_rev.plugins.builtin import example_cache
-from rsserpent_rev.utils.cache import get_cache
-from rsserpent_rev.utils.ratelimit import RateLimitError
+from rsserpent.plugins.builtin import example_cache
+from rsserpent.utils.cache import get_cache
+from rsserpent.utils.ratelimit import RateLimitError
 from tests.conftest import Times
 
 

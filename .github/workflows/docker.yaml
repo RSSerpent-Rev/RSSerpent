@@ -6,7 +6,7 @@ on:
       - '.github/workflows/docker.yaml'
       - 'Dockerfile'
       - 'poetry.lock'
-      - 'rsserpent_rev/**'
+      - 'rsserpent/**'
   push:
     branches:
       - 'master'
@@ -14,7 +14,7 @@ on:
       - '.github/workflows/docker.yaml'
       - 'Dockerfile'
       - 'poetry.lock'
-      - 'rsserpent_rev/**'
+      - 'rsserpent/**'
     tags:
       - '*.*.*'
   workflow_dispatch:

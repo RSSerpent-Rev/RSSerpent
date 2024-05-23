@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from hypothesis import given, infer, settings
 
-from rsserpent_rev.utils import fetch_data
+from rsserpent.utils import fetch_data
 from tests.conftest import Times
 
 

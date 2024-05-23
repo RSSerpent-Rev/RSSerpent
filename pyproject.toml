@@ -1,6 +1,9 @@
 [tool.poetry]
 name = "rsserpent-rev"
 version = "0.1.4"
+packages = [
+    { include = "rsserpent" },
+]
 
 authors = ["Queensferry <queensferry.me@gmail.com>"]
 description = "🐍 This snake helps you reconnect the Web, with RSS feeds!"
@@ -42,13 +45,13 @@ pyquery = "^1.4.3"
 starlette = "0.37.2"
 mike = "^1.1.2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pre-commit = "^2.15.0"
 uvicorn = "^0.29.0"
 # testing
 coverage-conditional-plugin = "^0.5.0"
 hypothesis = "^6.23.0"
-pytest = "^7.0.1"
+pytest = "^8.0"
 pytest-asyncio = "^0.18.1"
 pytest-cov = "^3.0.0"
 pytest-randomly = "^3.10.1"
@@ -66,7 +69,7 @@ include = '\.pyi?$'
 target-version = ["py310"]
 
 [tool.coverage.run]
-include = ["rsserpent_rev/*"]
+include = ["rsserpent/*"]
 plugins = ["coverage_conditional_plugin"]
 
 [tool.coverage.report]
@@ -110,5 +113,5 @@ addopts = "--cov"
 asyncio_mode = "auto"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core^1.6"]
 build-backend = "poetry.core.masonry.api"
