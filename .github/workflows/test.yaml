@@ -15,6 +15,7 @@ on:
       - 'poetry.lock'
       - 'rsserpent_rev/**'
       - 'tests/**'
+      - 'coveragerc.conf'
     tags-ignore:
       - '**'
   workflow_dispatch:
