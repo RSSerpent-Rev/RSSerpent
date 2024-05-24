@@ -22,4 +22,4 @@ ENV PYTHONUNBUFFERED=1
 # Run
 EXPOSE 8000
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
-CMD [ "poetry", "run", "uvicorn", "rsserpent:app", "--host", "0.0.0.0" ]
+CMD [ "poetry", "run", "uvicorn", "rsserpent_rev:app", "--host", "0.0.0.0" ]
