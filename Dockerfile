@@ -1,8 +1,10 @@
 FROM python:3.12-slim
 
-# Copy
+# Install git, for third-party plugins
+RUN apt-get update && apt-get install -y git
+RUN apt-get clean
+
 WORKDIR /app
-COPY rsserpent rsserpent
 RUN pip install poetry
 
 COPY README.md LICENSE pyproject.toml poetry.lock ./
@@ -10,11 +12,14 @@ COPY README.md LICENSE pyproject.toml poetry.lock ./
 # RUN poetry config virtualenvs.create false
 
 # Dependencies
-RUN poetry install
+RUN poetry install --only main,deploy --no-root --no-directory
 
-# Install git
-RUN apt-get update && apt-get install -y git
+# Copy
+COPY rsserpent_rev rsserpent_rev
 
+RUN poetry install --only main
+
+RUN poetry cache clear pypi --all
 COPY scripts/docker-entrypoint.sh /
 
 ENV PYTHONUNBUFFERED=1

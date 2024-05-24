@@ -13,7 +13,7 @@ from hypothesis.strategies import (
     text,
 )
 
-from rsserpent.utils.cache import CacheKey, cached, get_cache
+from rsserpent_rev.utils.cache import CacheKey, cached, get_cache
 from tests.conftest import Times
 
 

@@ -5,7 +5,7 @@ on:
     paths:
       - '.github/workflows/test.yaml'
       - 'poetry.lock'
-      - 'rsserpent/**'
+      - 'rsserpent_rev/**'
       - 'tests/**'
       - 'pyproject.toml'
   push:
@@ -14,7 +14,7 @@ on:
     paths:
       - '.github/workflows/test.yaml'
       - 'poetry.lock'
-      - 'rsserpent/**'
+      - 'rsserpent_rev/**'
       - 'tests/**'
       - 'pyproject.toml'
     tags-ignore:

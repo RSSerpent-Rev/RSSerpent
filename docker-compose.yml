@@ -1,5 +1,5 @@
 services:
-  web:
+  rsserpent:
     container_name: rsserpent
     image: ghcr.io/rsserpent-rev/rsserpent:master
     ports:

@@ -8,7 +8,7 @@ ignore =
     # D104: missing docstring in public package
     D104
 max-complexity = 6
-max-line-length = 88
+max-line-length = 120
 
 ## darglint
 strictness = long

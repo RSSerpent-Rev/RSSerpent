@@ -1,9 +1,6 @@
 [tool.poetry]
 name = "rsserpent-rev"
 version = "0.1.4"
-packages = [
-    { include = "rsserpent" },
-]
 
 authors = ["Queensferry <queensferry.me@gmail.com>"]
 description = "🐍 This snake helps you reconnect the Web, with RSS feeds!"
@@ -43,12 +40,16 @@ playwright = "^1.44.0"
 pydantic = {extras = ["email"], version = "^1.8.2"}
 pyquery = "^1.4.3"
 starlette = "0.37.2"
-mike = "^1.1.2"
+types-lxml = "^2024.4.14"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^2.15.0"
+
+[tool.poetry.group.deploy.dependencies]
 uvicorn = "^0.29.0"
+
 # testing
+[tool.poetry.group.tests.dependencies]
 coverage-conditional-plugin = "^0.5.0"
 hypothesis = "^6.23.0"
 pytest = "^8.0"
@@ -58,7 +59,14 @@ pytest-randomly = "^3.10.1"
 pytest-xdist = "^2.4.0"
 requests = "^2.26.0"
 uvloop = "^0.19.0"
+
 # documentation
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+setuptools = "*"
+mike = "^1.1.2"
 mkdocs = "^1.2.1"
 mkdocs-git-revision-date-plugin = "^0.3.1"
 mkdocs-material = "^8.0.4"
