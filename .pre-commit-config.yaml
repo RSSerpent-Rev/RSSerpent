@@ -57,6 +57,7 @@ repos:
           - pytest-asyncio
           - starlette
           - types-dataclasses
+          - types-lxml
   - repo: https://github.com/PyCQA/flake8
     rev: 7.0.0
     hooks:
