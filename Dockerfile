@@ -23,6 +23,7 @@ RUN poetry cache clear pypi --all
 COPY scripts/docker-entrypoint.sh /
 
 ENV PYTHONUNBUFFERED=1
+ENV PIP_ARGS="--no-cache-dir --upgrade --upgrade-strategy eager"
 
 # Run
 EXPOSE 8000

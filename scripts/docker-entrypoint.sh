@@ -2,7 +2,7 @@
 set -e
 
 if [ -f /app/rsserpent.txt ]; then
-    poetry run pip install -r /app/rsserpent.txt --no-cache-dir
+    poetry run pip install -r /app/rsserpent.txt $PIP_ARGS
 fi
 
 exec "$@"
