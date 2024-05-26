@@ -15,6 +15,6 @@ You are encouraged to self-host an RSSerpent instance.
 
 RSSerpent has hosted some official instances. If you believe self-hosting is not a viable option for you, consider using one of the follows:
 
-- <https://rsserpent.imciel.com>, hosted on [vercel.com](https://vercel.com/) [[source](https://github.com/RSSerpent-Rev/RSSerpent-deploy-vercel)];
+- <https://rsserpent.imciel.com>, hosted on [vultr.com](https://www.vultr.com/) [[source](https://github.com/RSSerpent-Rev/rsserpent-official)];
 <!-- - <https://rsserpent.deta.dev>, hosted on [deta.sh](https://www.deta.sh/) [[source](https://github.com/RSSerpent-Rev/RSSerpent-deploy-deta)];
 - <https://rsserpent.herokuapp.com>, hosted on [heroku.com](https://www.heroku.com/) [[source](https://github.com/RSSerpent-Rev/RSSerpent-deploy-heroku)]; -->
