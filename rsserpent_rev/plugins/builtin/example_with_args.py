@@ -5,7 +5,16 @@ path = "/_/example/{n:int}"
 
 
 async def provider(n: int) -> Dict[str, Any]:
-    """Define a example data provider function with arguments."""
+    # """Define a example data provider function with arguments."""
+    """Define a example data provider function with arguments.
+
+    Args:
+        n (int): The number of items to generate.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the feed data.
+    """
+
     return {
         "title": "Example",
         "link": "https://example.com",

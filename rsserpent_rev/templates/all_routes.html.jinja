@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        main {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            height: 100vh;
+            justify-content: flex-start;
+            padding: 20vh 0;
+            text-align: center;
+        }
+        main a {
+            color: green!important;
+        }
+        main h1 {
+            padding-bottom: 1em;
+        }
+        main img {
+            max-width: 12em;
+        }
+        main p {
+            padding: .3em 0;
+        }
+                body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .author-info a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        .routes {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    </style>
+    <title>RSSerpent</title>
+</head>
+<body>
+    <main>
+        <img alt="RSSerpent" src="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png" />
+        <h1>Welcome to <a href="https://github.com/RSSerpent-Rev/RSSerpent">RSSerpent</a>!</h1>
+        <p>🎉 RSSerpent is up & running at <a href="{{request.base_url}}">{{request.base_url}}</a></p>
+        <p><h2>Plugins Information</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Repository</th>
+                <th>Routers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plugin in plugins %}
+            <tr>
+                <td>{{ plugin.name }}</td>
+                <td class="author-info">
+                    <a href="{{ plugin.author.link }}">{{ plugin.author.name }}</a><br>
+                    <a href="mailto:{{ plugin.author.email }}">{{ plugin.author.email }}</a>
+                </td>
+                <td><a href="{{ plugin.repository }}">{{ plugin.repository }}</a></td>
+                <td>
+                    <ul class="routes">
+                        {% for path, provider in plugin.routers.items() %}
+                        <!-- <li><strong>{{ path }}</strong>: {{ provider.__doc__ }}</li> -->
+                        <!-- provider.__doc__ is mutiple line, box it -->
+                        <li><strong>{{ path }}</strong>: <pre>{{ provider.__doc__ }}</pre></li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table></p>
+        <p>
+            <a href="https://rsserpent-rev.github.io/RSSerpent/latest/">Document</a> |
+            <a href="https://github.com/RSSerpent-Rev/RSSerpent/issues">Issue</a> |
+            <a href="https://t.me/rsserpent_rev">Telegram</a>
+        </p>
+    </main>
+</body>
+</html>

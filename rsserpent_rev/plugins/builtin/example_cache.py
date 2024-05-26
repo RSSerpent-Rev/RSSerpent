@@ -9,7 +9,13 @@ path = "/_/example/cache"
 
 @cached
 async def provider() -> Dict[str, Any]:
-    """Define a basic example data provider function with `@cached`."""
+    # """Define a basic example data provider function with `@cached`."""
+    """Define a basic example data provider function with `@cached`.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the feed data.
+    """
+
     global count
     count += 1
     return {
