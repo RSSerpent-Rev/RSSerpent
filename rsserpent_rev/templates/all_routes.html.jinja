@@ -89,8 +89,6 @@
                 <td>
                     <ul class="routes">
                         {% for path, provider in plugin.routers.items() %}
-                        <!-- <li><strong>{{ path }}</strong>: {{ provider.__doc__ }}</li> -->
-                        <!-- provider.__doc__ is mutiple line, box it -->
                         <li><strong>{{ path }}</strong>: <pre>{{ provider.__doc__ }}</pre></li>
                         {% endfor %}
                     </ul>
