@@ -19,7 +19,7 @@
             height: 100vh;
             justify-content: flex-start;
             padding: 20vh 0;
-            text-align: center;
+            /* text-align: center; */
         }
         main a {
             color: green!important;
@@ -33,32 +33,50 @@
         main p {
             padding: .3em 0;
         }
-                body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .author-info a {
-            text-decoration: none;
-            color: #007BFF;
-        }
-        .routes {
-            list-style-type: none;
-            padding-left: 0;
-        }
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+.plugin-list {
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: center; */
+}
+
+.plugin-info {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px;
+    max-width: 400px;
+}
+
+.author-info a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.routes {
+    margin-top: 10px;
+}
+
+.routes ul {
+    padding-left: 0;
+}
+
+.routes li {
+    list-style: none;
+}
     </style>
     <title>RSSerpent</title>
 </head>
@@ -68,35 +86,26 @@
         <h1>Welcome to <a href="https://github.com/RSSerpent-Rev/RSSerpent">RSSerpent</a>!</h1>
         <p>🎉 RSSerpent is up & running at <a href="{{request.base_url}}">{{request.base_url}}</a></p>
         <p><h2>Plugins Information</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Author</th>
-                <th>Repository</th>
-                <th>Routers</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for plugin in plugins %}
-            <tr>
-                <td>{{ plugin.name }}</td>
-                <td class="author-info">
-                    <a href="{{ plugin.author.link }}">{{ plugin.author.name }}</a><br>
-                    <a href="mailto:{{ plugin.author.email }}">{{ plugin.author.email }}</a>
-                </td>
-                <td><a href="{{ plugin.repository }}">{{ plugin.repository }}</a></td>
-                <td>
-                    <ul class="routes">
-                        {% for path, provider in plugin.routers.items() %}
-                        <li><strong>{{ path }}</strong>: <pre>{{ provider.__doc__ }}</pre></li>
-                        {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table></p>
+            <div class="plugin-list">
+                {% for plugin in plugins %}
+                <div class="plugin-info">
+                    <h2>{{ plugin.name }}</h2>
+                    <div class="author-info">
+                        <a href="{{ plugin.author.link }}">{{ plugin.author.name }}</a><br>
+                        <a href="mailto:{{ plugin.author.email }}">{{ plugin.author.email }}</a>
+                    </div>
+                    <div><strong>Repository:</strong> <a href="{{ plugin.repository }}">{{ plugin.repository }}</a></div>
+                    <div class="routes">
+                        <strong>Routers:</strong>
+                        <ul>
+                            {% for path, provider in plugin.routers.items() %}
+                            <li><strong>{{ path }}</strong>: <pre>{{ provider.__doc__ }}</pre></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         <p>
             <a href="https://rsserpent-rev.github.io/RSSerpent/latest/">Document</a> |
             <a href="https://github.com/RSSerpent-Rev/RSSerpent/issues">Issue</a> |
