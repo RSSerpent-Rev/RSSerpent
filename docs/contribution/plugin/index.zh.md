@@ -20,7 +20,7 @@ sudo apt install cookiecutter
 现在可以开始搭建项目了！在你的终端里，打开一个新的会话页面并执行：
 
 ```bash
-cookiecutter gh:rsserpent/template
+cookiecutter gh:rsserpent-rev/template
 ```
 
 这个命令首先会从 GitHub 下载 RSSerpent 官方插件模板，随后会提示你填写一些信息（从上往下依次是插件名、插件描述、作者名、作者主页链接、作者邮箱）：

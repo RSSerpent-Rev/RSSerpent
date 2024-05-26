@@ -9,7 +9,7 @@
 
 如果你希望通过 RSSerpent 来订阅一些不支持 RSS 的网站，那么同理 —— 你也需要找到对应资源的订阅链接。对于 RSSerpent 来说，订阅链接同样分成域名与路由两部分：
 
-- 每个域名都对应着一个 RSSerpent 实例，例如官方域名 [www.rsserpent.com](https://www.rsserpent.com) 就对应着官方实例。你可以在[[部署]](../deployment/index.md)页面上找到一些官方实例，但我们更推荐你自建实例以满足你个人变化而多样的需求。
+- 每个域名都对应着一个 RSSerpent 实例，例如官方域名 [rsserpent.imciel.com](https://rsserpent.imciel.com) 就对应着官方实例。你可以在[[部署]](../deployment/index.md)页面上找到一些官方实例，但我们更推荐你自建实例以满足你个人变化而多样的需求。
 - 默认情况下，RSSerpent 实例不装载任何路由。实例的维护者需要通过[[安装插件]](../deployment/plugin.md)来为实例装载路由。如果你在使用某个他人的实例时发现缺少了你需要的插件或路由，你可以向实例维护者提出申请，或者选择自建实例。
 
 !!!note
@@ -18,7 +18,7 @@
 !!!note
     每个 RSSerpent 插件都包含一个或多个路由。
 
-RSSerpent 的[官方实例](https://www.rsserpent.com)上装载了哔哩哔哩[插件](https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili)。因此，你可以在官方实例上使用路由 `/bilibili/user/{id}/video` 来订阅某个用户发布的视频。例如，如果你希望订阅 [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg) 在哔哩哔哩的官方[中文翻译频道](https://space.bilibili.com/297786973)，那么通过拼接官方实例的域名 `www.rsserpent.com` 与路由 `/bilibili/user/297786973/video` 你可以得到如下订阅链接：
+RSSerpent 的[官方实例](https://rsserpent.imciel.com)上装载了哔哩哔哩[插件](https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili)。因此，你可以在官方实例上使用路由 `/bilibili/user/{id}/video` 来订阅某个用户发布的视频。例如，如果你希望订阅 [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg) 在哔哩哔哩的官方[中文翻译频道](https://space.bilibili.com/297786973)，那么通过拼接官方实例的域名 `rsserpent.imciel.com` 与路由 `/bilibili/user/297786973/video` 你可以得到如下订阅链接：
 
 ![RSSerpent Bilibili Chubbyemu](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/rsserpent-bilibili-chubbyemu.png)
 

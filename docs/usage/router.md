@@ -9,7 +9,7 @@ Under normal circumstances, every RSS feed has a subscription link. For example,
 
 If you wish to subscribe to news sources without RSS through RSSerpent, you will need to find the subscription link, as usual. RSSerpent's subscription links, similarly, consist of a domain and a route:
 
-- Every domain corresponds to an RSSerpent instance. For example, the official domain [www.rsserpent.com](https://www.rsserpent.com) corresponds to the official instance. You can find more official instances to use on the [[Deploy]](../deployment/index.md) page, but we recommend self-hosting to accommodate your growing and varied requirements.
+- Every domain corresponds to an RSSerpent instance. For example, the official domain [rsserpent.imciel.com](https://rsserpent.imciel.com) corresponds to the official instance. You can find more official instances to use on the [[Deploy]](../deployment/index.md) page, but we recommend self-hosting to accommodate your growing and varied requirements.
 - By default, an RSSerpent instance contains no route. Maintainers of instances will need to [[Install Plugins]](../deployment/plugin.md) to import routes. If you found a plugin/route missing while using an RSSerpent hosted by others, you can appeal to the instance maintainer or, as recommended, self-host an instance on your own.
 
 !!!note
@@ -18,7 +18,7 @@ If you wish to subscribe to news sources without RSS through RSSerpent, you will
 !!!note
     Every RSSerpent plugin contains one or more routes.
 
-RSSerpent's official [instance](https://www.rsserpent.com) comes with the <abbr title="A Chinese video sharing platform akin to Youtube">Bilibili</abbr> [plugin](https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili). Therefore, you can access the `/bilibili/user/{id}/video` route on the official instance to subscribe to some users' published videos. For example, if you wish to subscribe to [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg)'s official Chinese translation [channel](https://space.bilibili.com/297786973) on Bilibili, you could concatenate the official domain `www.rsserpent.com` and the route `/bilibili/user/297786973/video` to generate the subscription link as follows:
+RSSerpent's official [instance](https://rsserpent.imciel.com) comes with the <abbr title="A Chinese video sharing platform akin to Youtube">Bilibili</abbr> [plugin](https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili). Therefore, you can access the `/bilibili/user/{id}/video` route on the official instance to subscribe to some users' published videos. For example, if you wish to subscribe to [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg)'s official Chinese translation [channel](https://space.bilibili.com/297786973) on Bilibili, you could concatenate the official domain `rsserpent.imciel.com` and the route `/bilibili/user/297786973/video` to generate the subscription link as follows:
 
 ![RSSerpent Bilibili Chubbyemu](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/rsserpent-bilibili-chubbyemu.png)
 

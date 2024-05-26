@@ -20,7 +20,7 @@ sudo apt install cookiecutter
 Now it's time to scaffold you project! In your terminal, start a new session and run:
 
 ```bash
-cookiecutter gh:rsserpent/template
+cookiecutter gh:rsserpent-rev/template
 ```
 
 This will download the official RSSerpent plugin [template](https://github.com/RSSerpent/template) from GitHub. You will then be prompted to fill in some information:
