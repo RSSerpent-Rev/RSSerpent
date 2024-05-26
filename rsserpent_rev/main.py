@@ -10,6 +10,7 @@ from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.routing import Route
 from starlette.templating import Jinja2Templates, _TemplateResponse as TemplateResponse
+from starlette.responses import PlainTextResponse
 
 from .models import Feed, Plugin, ProviderFn
 from .plugins import plugins
@@ -71,6 +72,13 @@ for plugin in plugins:
 
         routes.append(Route(path, endpoint=endpoint))
 
+async def all_routes(request: Request) -> PlainTextResponse:
+    """Return all available routes."""
+    all_routes = list(map(lambda x: x.routers, plugins))
+    all_routes = [item for sublist in all_routes for item in sublist]
+    return PlainTextResponse('\n'.join(all_routes))
+
+routes.append(Route("/all_routes", endpoint=all_routes))
 
 app = Starlette(
     debug=bool(os.environ.get("DEBUG")),
