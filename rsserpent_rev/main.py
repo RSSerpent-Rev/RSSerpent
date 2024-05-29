@@ -63,6 +63,16 @@ for plugin in plugins:
             data = await fetch_data(
                 provider, request.path_params, dict(request.query_params)
             )
+            if 'title_include' in request.query_params:
+                data['items'] = [item for item in data['items'] if re.search(request.query_params['title_include'], item['title'])]
+            if 'title_exclude' in request.query_params:
+                data['items'] = [item for item in data['items'] if re.search(request.query_params['title_exclude'], item['title']) is None]
+            if 'description_include' in request.query_params:
+                data['items'] = [item for item in data['items'] if re.search(request.query_params['description_include'], item['description'])]
+            if 'description_exclude' in request.query_params:
+                data['items'] = [item for item in data['items'] if re.search(request.query_params['description_exclude'], item['description']) is None]
+            if 'limit' in request.query_params:
+                data['items'] = data['items'][:int(request.query_params['limit'])]
             return templates.TemplateResponse(
                 "rss.xml.jinja",
                 {"data": Feed(**data), "plugin": plugin, "request": request},
@@ -71,12 +81,14 @@ for plugin in plugins:
 
         routes.append(Route(path, endpoint=endpoint))
 
+
 async def all_routes(request: Request) -> TemplateResponse:
     """Return all available routes."""
     return templates.TemplateResponse(
         "all_routes.html.jinja",
         {"plugins": plugins, "request": request},
     )
+
 
 routes.append(Route("/all_routes", endpoint=all_routes))
 
