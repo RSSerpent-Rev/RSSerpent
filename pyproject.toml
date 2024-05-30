@@ -73,10 +73,6 @@ mkdocs-git-revision-date-plugin = "^0.3.1"
 mkdocs-material = "^8.0.4"
 mkdocs-static-i18n = "^1.2"
 
-[tool.black]
-include = '\.pyi?$'
-target-version = ["py310"]
-
 [tool.coverage.run]
 include = ["rsserpent_rev/*"]
 plugins = ["coverage_conditional_plugin"]
@@ -89,12 +85,6 @@ exclude_lines = [
 
 [tool.coverage.coverage_conditional_plugin.rules]
 is_not_linux = "sys_platform != 'linux'"
-
-[tool.isort]
-balanced_wrapping = true
-combine_as_imports = true
-lines_after_imports = 2
-profile = "black"
 
 [tool.ruff.lint]
 select = [

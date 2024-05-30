@@ -76,7 +76,7 @@ class Item(BaseModel):
 
     @root_validator
     def validate(  # type: ignore[override]
-        cls, # noqa: N805
+        cls,  # noqa: N805
         values: dict[str, Any],  # noqa: N805
     ) -> dict[str, Any]:
         """Ensure at least one of `<title>` or `<description>` is present."""

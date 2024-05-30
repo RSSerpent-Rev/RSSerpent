@@ -43,7 +43,7 @@ class Plugin(BaseModel):
 
     @root_validator
     def validate(  # type: ignore[override]
-        cls, # noqa: N805
+        cls,  # noqa: N805
         values: dict[str, Any],  # noqa: N805
     ) -> dict[str, Any]:
         """Ensure all paths in `routers` starts with `prefix`."""
@@ -64,7 +64,7 @@ class Plugin(BaseModel):
 
     @validator("routers")
     def validate_routers(
-        cls, # noqa: N805
+        cls,  # noqa: N805
         routers: dict[str, ProviderFn],  # noqa: N805
     ) -> dict[str, ProviderFn]:
         """Ensure `routers` is not empty & all provider functions are async."""
