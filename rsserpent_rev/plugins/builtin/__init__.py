@@ -7,7 +7,6 @@ from . import (
     example_pyquery,
     example_ratelimit,
     example_with_args,
-    proxy,
 )
 
 
@@ -28,7 +27,6 @@ plugin = Plugin(
         example_pyquery.path: example_pyquery.provider,
         example_ratelimit.path: example_ratelimit.provider,
         example_with_args.path: example_with_args.provider,
-        proxy.path: proxy.provider,
     },
 )
 
