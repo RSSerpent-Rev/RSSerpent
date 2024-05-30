@@ -1,8 +1,8 @@
 import threading
 import time
+from collections.abc import Awaitable, Callable
 from functools import partial, wraps
-from typing import Any, Awaitable, Callable, Dict, Tuple, TypeVar, cast
-
+from typing import Any, TypeVar, cast
 
 RATELIMIT_PERIOD = 3600
 
@@ -25,7 +25,7 @@ def decorator(fn: AsyncFn, *, calls: int, period: float) -> AsyncFn:
     max_calls = calls
 
     @wraps(fn)
-    async def wrapper(*args: Tuple[Any, ...], **kwds: Dict[str, Any]) -> Any:
+    async def wrapper(*args: tuple[Any, ...], **kwds: dict[str, Any]) -> Any:
         """Wrap the original async `fn`.
 
         At most `calls` invocations are allow within `period` seconds.
@@ -50,17 +50,13 @@ def decorator(fn: AsyncFn, *, calls: int, period: float) -> AsyncFn:
             called += 1
             # raise if rate limit exceeded
             if called > max_calls:
-                raise RateLimitError(
-                    f"{fn.__module__}.{fn.__name__}", called, max_calls
-                )
+                raise RateLimitError(f"{fn.__module__}.{fn.__name__}", called, max_calls)
             return await fn(*args, **kwds)
 
     return cast(AsyncFn, wrapper)
 
 
-def ratelimit(
-    *, calls: int, period: float = RATELIMIT_PERIOD
-) -> Callable[[AsyncFn], AsyncFn]:
+def ratelimit(*, calls: int, period: float = RATELIMIT_PERIOD) -> Callable[[AsyncFn], AsyncFn]:
     """Rate limit function calls.
 
     Args:

@@ -1,13 +1,12 @@
-from typing import Any, Dict
+from typing import Any
 
 from ...utils import ratelimit
-
 
 path = "/_/example/ratelimit"
 
 
 @ratelimit(calls=1)
-async def provider() -> Dict[str, Any]:
+async def provider() -> dict[str, Any]:
     """Define a basic example data provider function with rate limit."""
     return {
         "title": "Example",

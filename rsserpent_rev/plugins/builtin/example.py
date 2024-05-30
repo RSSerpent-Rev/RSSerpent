@@ -1,10 +1,9 @@
-from typing import Any, Dict
-
+from typing import Any
 
 path = "/_/example"
 
 
-async def provider() -> Dict[str, Any]:
+async def provider() -> dict[str, Any]:
     """Define a basic example data provider function."""
     return {
         "title": "Example",

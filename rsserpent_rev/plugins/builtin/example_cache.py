@@ -1,14 +1,13 @@
-from typing import Any, Dict
+from typing import Any
 
 from ...utils import cached
-
 
 count = 0
 path = "/_/example/cache"
 
 
 @cached
-async def provider() -> Dict[str, Any]:
+async def provider() -> dict[str, Any]:
     # """Define a basic example data provider function with `@cached`."""
     """Define a basic example data provider function with `@cached`.
 

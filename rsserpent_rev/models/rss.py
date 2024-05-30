@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import arrow
 from arrow import Arrow
 from pydantic import BaseModel, Field, root_validator
-
 
 if TYPE_CHECKING:
     AnyUrl = str
@@ -15,16 +14,14 @@ else:
 class RSSModelError(ValueError):
     """Exception for `Feed` model validation error."""
 
-    empty_title_and_description = (
-        "at least one of <title> or <description> must be present."
-    )
+    empty_title_and_description = "at least one of <title> or <description> must be present."
 
 
 class Category(BaseModel):
     """Data model for the `<category>` field in an RSS 2.0 feed."""
 
     name: str
-    domain: Optional[HttpUrl]
+    domain: HttpUrl | None
 
 
 class Enclosure(BaseModel):
@@ -48,39 +45,40 @@ class Image(BaseModel):
     url: HttpUrl
     title: str
     link: HttpUrl
-    width: Optional[int] = 88
-    height: Optional[int] = 31
-    description: Optional[str]
+    width: int | None = 88
+    height: int | None = 31
+    description: str | None
 
 
 class Source(BaseModel):
     """Data model for the `<source>` field in an RSS 2.0 feed."""
 
     name: str
-    url: Optional[HttpUrl]
+    url: HttpUrl | None
 
 
 class Item(BaseModel):
     """Data model for the `<item>` field in an RSS 2.0 feed."""
 
-    title: Optional[str]
-    link: Optional[HttpUrl]
-    description: Optional[str]
-    author: Optional[str]
-    categories: Optional[List[Category]]
-    comments: Optional[HttpUrl]
-    enclosure: Optional[Enclosure]
-    guid: Optional[Guid]
-    pub_date: Optional[Arrow]
-    source: Optional[Source]
+    title: str | None
+    link: HttpUrl | None
+    description: str | None
+    author: str | None
+    categories: list[Category] | None
+    comments: HttpUrl | None
+    enclosure: Enclosure | None
+    guid: Guid | None
+    pub_date: Arrow | None
+    source: Source | None
 
     class Config:  # noqa: D106
         arbitrary_types_allowed = True
 
     @root_validator
     def validate(  # type: ignore[override]
-        cls, values: Dict[str, Any]  # noqa: N805
-    ) -> Dict[str, Any]:
+        cls, # noqa: N805
+        values: dict[str, Any],  # noqa: N805
+    ) -> dict[str, Any]:
         """Ensure at least one of `<title>` or `<description>` is present."""
         title, description = values.get("title"), values.get("description")
         if title is None and description is None:
@@ -103,18 +101,18 @@ class Feed(BaseModel):
     title: str
     link: HttpUrl
     description: str
-    language: Optional[str]
-    copyright: Optional[str]
-    managing_editor: Optional[str]
-    web_master: Optional[str]
-    pub_date: Optional[Arrow] = Field(default_factory=arrow.utcnow)
-    last_build_date: Optional[Arrow] = Field(default_factory=arrow.utcnow)
-    categories: Optional[List[Category]]
-    generator: Optional[str] = __package__.split(".")[0]
-    docs: Optional[HttpUrl] = "https://www.rssboard.org/rss-specification"
-    ttl: Optional[int] = 60
-    image: Optional[Image]
-    items: Optional[List[Item]]
+    language: str | None
+    copyright: str | None
+    managing_editor: str | None
+    web_master: str | None
+    pub_date: Arrow | None = Field(default_factory=arrow.utcnow)
+    last_build_date: Arrow | None = Field(default_factory=arrow.utcnow)
+    categories: list[Category] | None
+    generator: str | None = __package__.split(".")[0]
+    docs: HttpUrl | None = "https://www.rssboard.org/rss-specification"
+    ttl: int | None = 60
+    image: Image | None
+    items: list[Item] | None
 
     class Config:  # noqa: D106
         arbitrary_types_allowed = True

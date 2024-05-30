@@ -1,5 +1,3 @@
-from typing import Optional
-
 from hypothesis import given, infer, settings
 from pydantic import validate_model
 
@@ -12,7 +10,7 @@ class TestItem:
 
     @settings(max_examples=Times.THOROUGH)
     @given(title=infer, description=infer)
-    def test_validation(self, title: Optional[str], description: Optional[str]) -> None:
+    def test_validation(self, title: str | None, description: str | None) -> None:
         """Test if the `@root_validator` of `Item` class works properly."""
         _, _, e = validate_model(
             Item,

@@ -1,10 +1,9 @@
-from typing import Any, Dict
-
+from typing import Any
 
 path = "/_/example/{n:int}"
 
 
-async def provider(n: int) -> Dict[str, Any]:
+async def provider(n: int) -> dict[str, Any]:
     # """Define a example data provider function with arguments."""
     """Define a example data provider function with arguments.
 
@@ -19,8 +18,5 @@ async def provider(n: int) -> Dict[str, Any]:
         "title": "Example",
         "link": "https://example.com",
         "description": "An example rsserpent plugin.",
-        "items": [
-            {"title": f"Example Title {i}", "description": f"Example Description {i}"}
-            for i in range(1, n + 1)
-        ],
+        "items": [{"title": f"Example Title {i}", "description": f"Example Description {i}"} for i in range(1, n + 1)],
     }

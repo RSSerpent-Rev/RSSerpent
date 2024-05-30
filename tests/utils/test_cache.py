@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple
+from typing import Any
 
 import pytest
 from hypothesis import given, settings
@@ -16,7 +16,6 @@ from hypothesis.strategies import (
 from rsserpent_rev.utils.cache import CacheKey, cached, get_cache
 from tests.conftest import Times
 
-
 primitive = booleans() | floats() | integers() | text()
 
 
@@ -28,7 +27,7 @@ class TestCacheKey:
         args=lists(primitive).map(tuple),
         kwds=dictionaries(text(), primitive),
     )
-    def test(self, args: Tuple[Any, ...], kwds: Dict[str, Any]) -> None:
+    def test(self, args: tuple[Any, ...], kwds: dict[str, Any]) -> None:
         """Test if the `CacheKey` class works properly.
 
         * `make`, `__eq__`, `__hash__`, `__init__`

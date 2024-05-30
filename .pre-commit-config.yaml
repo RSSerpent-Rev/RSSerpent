@@ -10,34 +10,12 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.9.0
-    hooks:
-      - id: python-check-blanket-noqa
-        name: Check Blanket "#noqa"
-      - id: python-check-blanket-type-ignore
-        name: 'Check Blanket "#type:ignore"'
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
-    hooks:
-      - id: pyupgrade
-        name: Upgrade Python Syntax
   - repo: https://github.com/crate-ci/typos
     rev: typos-v0.10.23
     hooks:
       - id: typos
         name: Check Typos
         args: []
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-      - id: black
-        name: Format Source Code
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: Sort Imports
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.10.0
     hooks:
@@ -58,23 +36,6 @@ repos:
           - starlette
           - types-dataclasses
           - types-lxml
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
-    hooks:
-      - id: flake8
-        name: Lint
-        additional_dependencies:
-          - darglint
-          - flake8-bugbear
-          - flake8-builtins
-          - flake8-comprehensions
-          - flake8-datetimez
-          - flake8-debugger
-          - flake8-docstrings
-          - flake8-eradicate
-          - flake8-print
-          - pep8-naming
-          - tryceratops
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v2.20.0
     hooks:

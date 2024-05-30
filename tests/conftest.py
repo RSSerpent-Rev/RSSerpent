@@ -10,7 +10,6 @@ from starlette.testclient import TestClient
 from rsserpent_rev import app
 from rsserpent_rev.main import startup
 
-
 startup()
 
 settings.register_profile("ci", deadline=500, max_examples=200)

@@ -9,7 +9,6 @@ from . import (
     example_with_args,
 )
 
-
 plugin = Plugin(
     name="rsserpent-plugin-builtin",
     author=Persona(

@@ -2,21 +2,15 @@ import os
 import threading
 import time
 from collections import OrderedDict
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from functools import partial, wraps
 from typing import (
     Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Optional,
-    Tuple,
     TypeVar,
-    Union,
     cast,
     overload,
 )
-
 
 __all__ = ("cached",)
 
@@ -41,7 +35,7 @@ class CacheKey:
     __sentinel__ = object()
     __slots__ = "hashvalue"
 
-    def __init__(self, key: Tuple[Any, ...]) -> None:
+    def __init__(self, key: tuple[Any, ...]) -> None:
         self.hashvalue = hash(key)
 
     def __eq__(self, other: object) -> bool:
@@ -53,7 +47,7 @@ class CacheKey:
         return self.hashvalue
 
     @classmethod
-    def make(cls, args: Tuple[Any, ...], kwds: Dict[str, Any]) -> "CacheKey":
+    def make(cls, args: tuple[Any, ...], kwds: dict[str, Any]) -> "CacheKey":
         """Create a `CacheKey` instance from any function parameters.
 
         Note that parameters of non-primitive types are discarded.
@@ -102,7 +96,7 @@ class LRUCache(OrderedDict):  # type: ignore[type-arg]
         self.lock = threading.RLock()
         super().__init__()
 
-    def __getitem__(self, key: CacheKey) -> Optional[CacheValue]:
+    def __getitem__(self, key: CacheKey) -> CacheValue | None:
         """Get cache value by key.
 
         In case of cache miss / expire, `None` is returned. Otherwise the cached value
@@ -145,7 +139,7 @@ def decorator(fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
     cache = LRUCache(maxsize=maxsize)
 
     @wraps(fn)
-    async def wrapper(*args: Tuple[Any, ...], **kwds: Dict[str, Any]) -> Any:
+    async def wrapper(*args: tuple[Any, ...], **kwds: dict[str, Any]) -> Any:
         """Wrap the original async `fn`.
 
         Cached results will be returned if cache hit, otherwise
@@ -173,25 +167,21 @@ def decorator(fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
 
 
 @overload
-def cached(fn: AsyncFn) -> AsyncFn:
-    ...  # pragma: no cover
+def cached(fn: AsyncFn) -> AsyncFn: ...  # pragma: no cover
 
 
 @overload
-def cached(
-    *, expire: int = CACHE_EXPIRE, maxsize: int = 0
-) -> Callable[[AsyncFn], AsyncFn]:
-    ...  # pragma: no cover
+def cached(*, expire: int = CACHE_EXPIRE, maxsize: int = 0) -> Callable[[AsyncFn], AsyncFn]: ...  # pragma: no cover
 
 
 def cached(
-    fn: Optional[AsyncFn] = None, *, expire: int = CACHE_EXPIRE, maxsize: int = 0
-) -> Union[AsyncFn, Callable[[AsyncFn], AsyncFn]]:
+    fn: AsyncFn | None = None, *, expire: int = CACHE_EXPIRE, maxsize: int = 0
+) -> AsyncFn | Callable[[AsyncFn], AsyncFn]:
     """Cache function results."""
     if fn is not None:
         return decorator(fn, expire=expire, maxsize=maxsize)
     return partial(decorator, expire=expire, maxsize=maxsize)
 
 
-def get_cache(fn: AsyncFn) -> Optional[LRUCache]:
+def get_cache(fn: AsyncFn) -> LRUCache | None:
     return fn.__dict__.get("cache")

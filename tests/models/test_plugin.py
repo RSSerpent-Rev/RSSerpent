@@ -1,6 +1,7 @@
 import asyncio
+from collections.abc import Awaitable, Callable
 from functools import partial, wraps
-from typing import Any, Awaitable, Callable, Dict, Tuple
+from typing import Any
 
 from hypothesis import given, settings
 from hypothesis.provisional import urls
@@ -18,7 +19,7 @@ def to_async(fn: Callable[..., Any]) -> Callable[..., Awaitable[Any]]:
     """
 
     @wraps(fn)
-    async def async_fn(*args: Tuple[Any, ...], **kwds: Dict[str, Any]) -> Any:
+    async def async_fn(*args: tuple[Any, ...], **kwds: dict[str, Any]) -> Any:
         loop = asyncio.get_event_loop()
         partial_fn = partial(fn, *args, **kwds)
         return await loop.run_in_executor(None, partial_fn)
@@ -47,7 +48,7 @@ class TestPlugin:
         author: Persona,
         repository: str,
         prefix: str,
-        routers: Dict[str, ProviderFn],
+        routers: dict[str, ProviderFn],
     ) -> None:
         """Test if the `Plugin` class validates `name` properly."""
         _, _, e = validate_model(
@@ -69,9 +70,7 @@ class TestPlugin:
         author=builds(Persona),
         repository=urls(),
         prefix=just("/prefix"),
-        routers=dictionaries(
-            text().map(lambda s: f"/prefix/{s}"), functions(), min_size=1
-        ),
+        routers=dictionaries(text().map(lambda s: f"/prefix/{s}"), functions(), min_size=1),
     )
     def test_routers_validation(
         self,
@@ -79,7 +78,7 @@ class TestPlugin:
         author: Persona,
         repository: str,
         prefix: str,
-        routers: Dict[str, ProviderFn],
+        routers: dict[str, ProviderFn],
     ) -> None:
         """Test if the `Plugin` class validates `routers` properly."""
         _, _, e = validate_model(
@@ -122,7 +121,7 @@ class TestPlugin:
         author: Persona,
         repository: str,
         prefix: str,
-        routers: Dict[str, ProviderFn],
+        routers: dict[str, ProviderFn],
     ) -> None:
         """Test if the `@root_validator` of `Item` class works properly."""
         _, _, e = validate_model(

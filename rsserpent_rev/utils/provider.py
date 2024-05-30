@@ -1,6 +1,6 @@
 import inspect
 from inspect import Parameter
-from typing import Any, Dict
+from typing import Any
 
 from ..models import ProviderFn
 
@@ -12,9 +12,7 @@ def convert(value: str, type_: type) -> Any:
     return type_(value)
 
 
-async def fetch_data(
-    provider: ProviderFn, path_params: Dict[str, Any], query_params: Dict[str, str]
-) -> Any:
+async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> Any:
     """Fetch data by using the data provider function.
 
     We first inspect the signature of the `provider` function to determine what
@@ -54,9 +52,7 @@ async def fetch_data(
     return await provider(**kwds)
 
 
-def look_up_parameter_value(
-    parameter: Parameter, path_params: Dict[str, Any], query_params: Dict[str, str]
-) -> Any:
+def look_up_parameter_value(parameter: Parameter, path_params: dict[str, Any], query_params: dict[str, str]) -> Any:
     """Look up value for a specific parameter from `path_params` & `query_params`.
 
     Args:

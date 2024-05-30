@@ -1,5 +1,5 @@
 import math
-from typing import Any, Dict
+from typing import Any
 
 from hypothesis import given, infer, settings
 
@@ -7,9 +7,7 @@ from rsserpent_rev.utils import fetch_data
 from tests.conftest import Times
 
 
-async def provider(
-    a: int, *, b: float, c: bool, d: int = 1, **_: Dict[str, Any]
-) -> Dict[str, Any]:
+async def provider(a: int, *, b: float, c: bool, d: int = 1, **_: dict[str, Any]) -> dict[str, Any]:
     """Define an example data provider function for testing."""
     if c:
         return {"value": a + b + d}

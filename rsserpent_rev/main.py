@@ -9,12 +9,12 @@ import arrow
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.routing import Route
-from starlette.templating import Jinja2Templates, _TemplateResponse as TemplateResponse
+from starlette.templating import Jinja2Templates
+from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .models import Feed, Plugin, ProviderFn
 from .plugins import plugins
 from .utils import fetch_data
-
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 templates.env.autoescape = True
@@ -34,6 +34,10 @@ async def exception_handler(request: Request, exception: Exception) -> TemplateR
             "traceback": tb,
         },
     )
+
+
+def statup() -> None:
+    pass
 
 
 def startup() -> None:
@@ -60,19 +64,31 @@ for plugin in plugins:
             request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider
         ) -> TemplateResponse:
             """Return an RSS feed of XML format."""
-            data = (await fetch_data(
-                provider, request.path_params, dict(request.query_params)
-            )).copy()
-            if 'title_include' in request.query_params:
-                data['items'] = [item for item in data['items'] if re.search(request.query_params['title_include'], item['title'])]
-            if 'title_exclude' in request.query_params:
-                data['items'] = [item for item in data['items'] if re.search(request.query_params['title_exclude'], item['title']) is None]
-            if 'description_include' in request.query_params:
-                data['items'] = [item for item in data['items'] if re.search(request.query_params['description_include'], item['description'])]
-            if 'description_exclude' in request.query_params:
-                data['items'] = [item for item in data['items'] if re.search(request.query_params['description_exclude'], item['description']) is None]
-            if 'limit' in request.query_params:
-                data['items'] = data['items'][:int(request.query_params['limit'])]
+            data = (await fetch_data(provider, request.path_params, dict(request.query_params))).copy()
+            if "title_include" in request.query_params:
+                data["items"] = [
+                    item for item in data["items"] if re.search(request.query_params["title_include"], item["title"])
+                ]
+            if "title_exclude" in request.query_params:
+                data["items"] = [
+                    item
+                    for item in data["items"]
+                    if re.search(request.query_params["title_exclude"], item["title"]) is None
+                ]
+            if "description_include" in request.query_params:
+                data["items"] = [
+                    item
+                    for item in data["items"]
+                    if re.search(request.query_params["description_include"], item["description"])
+                ]
+            if "description_exclude" in request.query_params:
+                data["items"] = [
+                    item
+                    for item in data["items"]
+                    if re.search(request.query_params["description_exclude"], item["description"]) is None
+                ]
+            if "limit" in request.query_params:
+                data["items"] = data["items"][: int(request.query_params["limit"])]
             return templates.TemplateResponse(
                 "rss.xml.jinja",
                 {"data": Feed(**data), "plugin": plugin, "request": request},

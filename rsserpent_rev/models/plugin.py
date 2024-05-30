@@ -1,9 +1,9 @@
 import asyncio
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Optional
+from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
-
 
 if TYPE_CHECKING:
     EmailStr = str
@@ -12,7 +12,7 @@ else:
     from pydantic import EmailStr, HttpUrl
 
 
-ProviderFn = Callable[..., Awaitable[Dict[str, Any]]]
+ProviderFn = Callable[..., Awaitable[dict[str, Any]]]
 
 
 class PluginModelError(ValueError):
@@ -39,15 +39,16 @@ class Plugin(BaseModel):
     author: Persona
     repository: HttpUrl
     prefix: str
-    routers: Dict[str, ProviderFn]
+    routers: dict[str, ProviderFn]
 
     @root_validator
     def validate(  # type: ignore[override]
-        cls, values: Dict[str, Any]  # noqa: N805
-    ) -> Dict[str, Any]:
+        cls, # noqa: N805
+        values: dict[str, Any],  # noqa: N805
+    ) -> dict[str, Any]:
         """Ensure all paths in `routers` starts with `prefix`."""
-        prefix: Optional[str] = values.get("prefix")
-        routers: Optional[Dict[str, ProviderFn]] = values.get("routers")
+        prefix: str | None = values.get("prefix")
+        routers: dict[str, ProviderFn] | None = values.get("routers")
         assert prefix is not None and routers is not None
         for path in routers:
             if not path.startswith(prefix):
@@ -63,8 +64,9 @@ class Plugin(BaseModel):
 
     @validator("routers")
     def validate_routers(
-        cls, routers: Dict[str, ProviderFn]  # noqa: N805
-    ) -> Dict[str, ProviderFn]:
+        cls, # noqa: N805
+        routers: dict[str, ProviderFn],  # noqa: N805
+    ) -> dict[str, ProviderFn]:
         """Ensure `routers` is not empty & all provider functions are async."""
         if len(routers) < 1:
             raise PluginModelError(PluginModelError.empty_router)
