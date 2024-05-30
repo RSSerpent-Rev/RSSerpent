@@ -60,9 +60,9 @@ for plugin in plugins:
             request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider
         ) -> TemplateResponse:
             """Return an RSS feed of XML format."""
-            data = await fetch_data(
+            data = (await fetch_data(
                 provider, request.path_params, dict(request.query_params)
-            )
+            )).copy()
             if 'title_include' in request.query_params:
                 data['items'] = [item for item in data['items'] if re.search(request.query_params['title_include'], item['title'])]
             if 'title_exclude' in request.query_params:
