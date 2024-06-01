@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING, Any
 from pydantic import BaseModel, validator
 from pydantic.class_validators import root_validator
 
-from ..log import get_logger
-
 if TYPE_CHECKING:
     EmailStr = str
     HttpUrl = str
@@ -45,7 +43,6 @@ class Plugin(BaseModel):
 
     def __init__(self, **data: Any):
         super().__init__(**data)
-        logger = get_logger(self.name)
 
     @root_validator
     def validate(  # type: ignore[override]
