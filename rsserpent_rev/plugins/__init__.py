@@ -1,4 +1,4 @@
-from ..utils import logger
+from ..log import logger
 from .builtin import plugin as builtin_plugin
 from .externals import plugins as external_plugins
 

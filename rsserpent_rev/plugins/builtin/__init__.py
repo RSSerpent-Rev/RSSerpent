@@ -3,6 +3,7 @@ from . import (
     example,
     example_cache,
     example_httpx,
+    example_log,
     example_playwright,
     example_pyquery,
     example_ratelimit,
@@ -26,6 +27,7 @@ plugin = Plugin(
         example_pyquery.path: example_pyquery.provider,
         example_ratelimit.path: example_ratelimit.provider,
         example_with_args.path: example_with_args.provider,
+        example_log.path: example_log.provider,
     },
 )
 

@@ -12,9 +12,10 @@ from starlette.routing import Route
 from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
 
+from .log import logger
 from .models import Feed, Plugin, ProviderFn
 from .plugins import plugins
-from .utils import fetch_data, logger
+from .utils import fetch_data
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 templates.env.autoescape = True

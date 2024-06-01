@@ -1,7 +1,6 @@
 from .cache import cached
 from .http import Browser, HTTPClient
-from .log import logger
 from .provider import fetch_data
 from .ratelimit import ratelimit
 
-__all__ = ("Browser", "HTTPClient", "cached", "fetch_data", "ratelimit", "logger")
+__all__ = ("Browser", "HTTPClient", "cached", "fetch_data", "ratelimit")
