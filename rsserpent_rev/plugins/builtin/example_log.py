@@ -6,6 +6,7 @@ path = "/_/log_example"
 
 logger = get_logger(__name__)
 
+
 async def provider() -> dict[str, Any]:
     """Define a basic example data provider function."""
     logger.info("Example plugin is called.")
