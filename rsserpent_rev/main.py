@@ -14,7 +14,7 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .models import Feed, Plugin, ProviderFn
 from .plugins import plugins
-from .utils import fetch_data
+from .utils import fetch_data, logger
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 templates.env.autoescape = True
@@ -36,16 +36,12 @@ async def exception_handler(request: Request, exception: Exception) -> TemplateR
     )
 
 
-def statup() -> None:
-    pass
-
-
 def startup() -> None:
     """Install Chromium on start-up."""
     if sys.platform == "linux" and "PLAYWRIGHT_BROWSERS_PATH" not in os.environ:
         os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp"  # pragma: is_not_linux
-    print("Running on", sys.platform)
-    print(f"Installing Chromium at {os.environ.get('PLAYWRIGHT_BROWSERS_PATH')}")
+    logger.info(f"Running on {sys.platform}")
+    logger.info(f"Installing Chromium at {os.environ.get('PLAYWRIGHT_BROWSERS_PATH')}")
     subprocess.run("playwright install chromium".split())
 
 
