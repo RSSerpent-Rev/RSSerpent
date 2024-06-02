@@ -59,13 +59,14 @@ routes = [Route("/", endpoint=index)]
 
 async def rss20(request: Request, plugin: Plugin, data: dict[str:Any]) -> TemplateResponse:
     p = request.query_params
+    condi = ["description_include", "description_exclude", "title_include", "title_exclude"]
     data["items"] = [
         item
         for item in data["items"]
-        if re.search(p.get("description_include", ""), item["description"])
-        and re.search(p.get("description_exclude", ""), item["description"]) is None
-        and re.search(p.get("title_include", ""), item["title"])
-        and re.search(p.get("title_exclude", ""), item["title"]) is None
+        if all(
+            p.get(cond) is None or re.search(p[cond], item[cond.split("_")[0]])
+            for cond in condi
+        )
     ]
     if "limit" in request.query_params:
         data["items"] = data["items"][: int(request.query_params["limit"])]
@@ -87,7 +88,6 @@ for plugin in plugins:
             if isinstance(data, dict):
                 return await rss20(request, plugin, data.copy())
             feed: feedgen.feed.FeedGenerator = data
-            feed.generator = plugin.name
             return Response(content=feed.atom_str(pretty=True), media_type="application/atom+xml")
 
         routes.append(Route(path, endpoint=endpoint))
