@@ -57,7 +57,7 @@ async def index(request: Request) -> TemplateResponse:
 routes = [Route("/", endpoint=index)]
 
 
-async def rss20(request: Request, plugin: Plugin, data: dict[str:Any]) -> TemplateResponse:
+async def rss20(request: Request, plugin: Plugin, data: dict[str, Any]) -> TemplateResponse:
     p = request.query_params
     include_condi = ["description_include", "title_include"]
     exclude_condi = ["description_exclude", "title_exclude"]
@@ -80,9 +80,7 @@ async def rss20(request: Request, plugin: Plugin, data: dict[str:Any]) -> Templa
 for plugin in plugins:
     for path, provider in plugin.routers.items():
 
-        async def endpoint(
-            request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider
-        ) -> TemplateResponse:
+        async def endpoint(request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider) -> Response:
             """Return an RSS feed of XML format."""
             data = await fetch_data(provider, request.path_params, dict(request.query_params))
             if isinstance(data, dict):

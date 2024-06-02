@@ -1,6 +1,6 @@
 from feedgen.feed import FeedGenerator
 
-from rsserpent_rev.models import Feed
+from rsserpent_rev.models.plugin import Feed
 
 path = "/_/example/feedgen"
 

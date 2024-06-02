@@ -2,7 +2,7 @@ import logging
 import os
 
 
-def get_logger(name: str):
+def get_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     try:
         from uvicorn.logging import DefaultFormatter
