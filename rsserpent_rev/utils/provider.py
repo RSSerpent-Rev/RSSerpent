@@ -2,7 +2,7 @@ import inspect
 from inspect import Parameter
 from typing import Any
 
-from ..models import ProviderFn
+from ..models import Feed, ProviderFn
 
 
 def convert(value: str, type_: type) -> Any:
@@ -12,7 +12,7 @@ def convert(value: str, type_: type) -> Any:
     return type_(value)
 
 
-async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> Any:
+async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> Feed:
     """Fetch data by using the data provider function.
 
     We first inspect the signature of the `provider` function to determine what

@@ -12,7 +12,11 @@ else:
     from pydantic import EmailStr, HttpUrl
 
 
-ProviderFn = Callable[..., Awaitable[dict[str, Any]]]
+from feedgen.feed import FeedGenerator
+
+Feed = dict[str, Any] | FeedGenerator
+
+ProviderFn = Callable[..., Awaitable[Feed]]
 
 
 class PluginModelError(ValueError):

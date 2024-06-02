@@ -4,10 +4,13 @@ import subprocess
 import sys
 import traceback
 from pathlib import Path
+from typing import Any
 
 import arrow
+import feedgen
 from starlette.applications import Starlette
 from starlette.requests import Request
+from starlette.responses import Response
 from starlette.routing import Route
 from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
@@ -54,6 +57,25 @@ async def index(request: Request) -> TemplateResponse:
 routes = [Route("/", endpoint=index)]
 
 
+async def rss20(request: Request, plugin: Plugin, data: dict[str:Any]) -> TemplateResponse:
+    p = request.query_params
+    data["items"] = [
+        item
+        for item in data["items"]
+        if re.search(p.get("description_include", ""), item["description"])
+        and re.search(p.get("description_exclude", ""), item["description"]) is None
+        and re.search(p.get("title_include", ""), item["title"])
+        and re.search(p.get("title_exclude", ""), item["title"]) is None
+    ]
+    if "limit" in request.query_params:
+        data["items"] = data["items"][: int(request.query_params["limit"])]
+    return templates.TemplateResponse(
+        "rss.xml.jinja",
+        {"data": Feed(**data), "plugin": plugin, "request": request},
+        media_type="application/xml",
+    )
+
+
 for plugin in plugins:
     for path, provider in plugin.routers.items():
 
@@ -61,36 +83,12 @@ for plugin in plugins:
             request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider
         ) -> TemplateResponse:
             """Return an RSS feed of XML format."""
-            data = (await fetch_data(provider, request.path_params, dict(request.query_params))).copy()
-            if "title_include" in request.query_params:
-                data["items"] = [
-                    item for item in data["items"] if re.search(request.query_params["title_include"], item["title"])
-                ]
-            if "title_exclude" in request.query_params:
-                data["items"] = [
-                    item
-                    for item in data["items"]
-                    if re.search(request.query_params["title_exclude"], item["title"]) is None
-                ]
-            if "description_include" in request.query_params:
-                data["items"] = [
-                    item
-                    for item in data["items"]
-                    if re.search(request.query_params["description_include"], item["description"])
-                ]
-            if "description_exclude" in request.query_params:
-                data["items"] = [
-                    item
-                    for item in data["items"]
-                    if re.search(request.query_params["description_exclude"], item["description"]) is None
-                ]
-            if "limit" in request.query_params:
-                data["items"] = data["items"][: int(request.query_params["limit"])]
-            return templates.TemplateResponse(
-                "rss.xml.jinja",
-                {"data": Feed(**data), "plugin": plugin, "request": request},
-                media_type="application/xml",
-            )
+            data = await fetch_data(provider, request.path_params, dict(request.query_params))
+            if isinstance(data, dict):
+                return await rss20(request, plugin, data.copy())
+            feed: feedgen.feed.FeedGenerator = data
+            feed.generator = plugin.name
+            return Response(content=feed.atom_str(pretty=True), media_type="application/atom+xml")
 
         routes.append(Route(path, endpoint=endpoint))
 

@@ -2,6 +2,7 @@ from ...models import Persona, Plugin
 from . import (
     example,
     example_cache,
+    example_feedgen,
     example_httpx,
     example_log,
     example_playwright,
@@ -28,6 +29,7 @@ plugin = Plugin(
         example_ratelimit.path: example_ratelimit.provider,
         example_with_args.path: example_with_args.provider,
         example_log.path: example_log.provider,
+        example_feedgen.path: example_feedgen.provider,
     },
 )
 
