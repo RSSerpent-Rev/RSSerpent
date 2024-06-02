@@ -2,7 +2,7 @@ from typing import Any
 
 from rsserpent_rev.log import get_logger
 
-path = "/_/log_example"
+path = "/_/example/log"
 
 logger = get_logger(__name__)
 

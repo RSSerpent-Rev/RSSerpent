@@ -12,6 +12,23 @@ from rsserpent_rev.utils.ratelimit import RateLimitError
 from tests.conftest import Times
 
 
+def test_example_feedgen(client: TestClient) -> None:
+    """Test the `/_/example/feedgen` route."""
+    response = client.get("/_/example/feedgen")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/atom+xml"
+    assert response.text.count("<entry>") == 1
+    assert "<title>Some Testfeed</title>" in response.text
+
+
+def test_example_log(client: TestClient) -> None:
+    """Test the `/_/example` route."""
+    response = client.get("/_/example/log")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 1
+
+
 def test_example(client: TestClient) -> None:
     """Test the `/_/example` route."""
     response = client.get("/_/example")
