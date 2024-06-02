@@ -15,7 +15,7 @@
 
 [![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
-RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikipedia.org/wiki/RSS) 订阅那些不支持 RSS 订阅的网站。
+RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikipedia.org/wiki/RSS) 或 [Atom](https://zh.wikipedia.org/zh-cn/Atom_(%E6%A8%99%E6%BA%96)) 订阅那些不支持 RSS 订阅的网站。
 
 [English](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/README.md) | [中文](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/README.zh.md)
 
@@ -25,11 +25,12 @@ RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikiped
 - 文档：<https://rsserpent-rev.github.io/RSSerpent/latest/>
 
 # 致谢
+
 RSSerpent 项目是在 [RSSHub](https://github.com/DIYgod/RSSHub) 的启发下开发的 🎉 我们向 RSSHub 项目及其维护者致以敬意。
 
-## 赞助商
+<!-- ## 赞助商
 
-<a href="https://linktr.ee/rss3" target="_blank"><img alt="rss3" src="https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" width="200" /></a>
+<a href="https://linktr.ee/rss3" target="_blank"><img alt="rss3" src="https://ipfs.rss3.page/ipfs/QmUG6H3Z7D5P511shn7sB4CPmpjH5uZWu4m5mWX7U3Gqbu" width="200" /></a> -->
 
 # 成员
 

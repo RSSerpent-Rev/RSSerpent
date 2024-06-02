@@ -19,7 +19,7 @@
 
 > This snake helps you reconnect the Web, with RSS feeds!
 
-RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org/wiki/RSS) feeds for websites without them.
+RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org/wiki/RSS) or [Atom](https://en.wikipedia.org/wiki/Atom_(web_standard)) feeds for websites without them.
 
 [English](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/README.md) | [中文](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/README.zh.md)
 
@@ -29,6 +29,7 @@ RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org
 - Documentation: <https://rsserpent-rev.github.io/RSSerpent/latest/>
 
 # Thanks
+
 The RSSerpent Project is heavily inspired by [RSSHub](https://github.com/DIYgod/RSSHub) 🎉 We pay the highest possible tribute to RSSHub & its maintainers.
 
 Thanks to [RSSerpent](https://github.com/RSSerpent/RSSerpent) and [queensferryme](https://github.com/queensferryme), the original authors of the project.

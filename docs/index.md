@@ -4,7 +4,7 @@
 [![downloads: per month](https://img.shields.io/pypi/dm/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
 [![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
-RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org/wiki/RSS) feeds for websites without them.
+RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org/wiki/RSS) or [Atom](https://en.wikipedia.org/wiki/Atom_(web_standard)) feeds for websites without them.
 
 ## Quick Start
 
