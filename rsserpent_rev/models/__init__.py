@@ -1,4 +1,4 @@
 from .plugin import Persona, Plugin, ProviderFn
-from .rss import Feed
+from .rss import Feed, Item
 
-__all__ = ("Feed", "Persona", "Plugin", "ProviderFn")
+__all__ = ("Feed", "Item", "Persona", "Plugin", "ProviderFn")

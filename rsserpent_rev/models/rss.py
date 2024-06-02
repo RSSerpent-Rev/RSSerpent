@@ -2,7 +2,10 @@ from typing import TYPE_CHECKING, Any
 
 import arrow
 from arrow import Arrow
+from feedgen.feed import FeedGenerator
 from pydantic import BaseModel, Field, root_validator
+
+from . import Plugin
 
 if TYPE_CHECKING:
     AnyUrl = str
@@ -116,3 +119,66 @@ class Feed(BaseModel):
 
     class Config:  # noqa: D106
         arbitrary_types_allowed = True
+
+    def apply_defaults(self, plugin: Plugin) -> None:
+        self.managing_editor = (
+            f"{plugin.author.email} ({plugin.author.name})" if self.managing_editor is None else self.managing_editor
+        )
+        self.web_master = (
+            f"{plugin.author.email} ({plugin.author.name})" if self.web_master is None else self.web_master
+        )
+        self.last_build_date = arrow.utcnow() if self.last_build_date is None else self.last_build_date
+        self.pub_date = arrow.utcnow() if self.pub_date is None else self.pub_date
+
+    def to_feedgen(self) -> FeedGenerator:
+        """Convert the `Feed` model to a `feedgen.feed.FeedGenerator` object."""
+        fg = FeedGenerator()
+        fg.title(self.title)
+        fg.link(href=self.link)
+        fg.description(self.description)
+        fg.language(self.language)
+        fg.copyright(self.copyright)
+        fg.managingEditor(self.managing_editor)
+        fg.webMaster(self.web_master)
+        fg.lastBuildDate(self.last_build_date.datetime)
+        fg.generator(self.generator)
+        fg.docs(self.docs)
+        fg.ttl(self.ttl)
+        if self.image:
+            fg.image(
+                url=self.image.url,
+                title=self.image.title,
+                link=self.image.link,
+                width=self.image.width,
+                height=self.image.height,
+                description=self.image.description,
+            )
+        if self.categories:
+            for category in self.categories:
+                fg.category(category.name, domain=category.domain)
+        if self.items:
+            for item in self.items:
+                fe = fg.add_entry()
+                fe.title(item.title)
+                fe.link(href=item.link)
+                fe.description(item.description)
+                fe.author(item.author)
+                fe.comments(item.comments)
+                if item.enclosure:
+                    fe.enclosure(
+                        url=item.enclosure.url,
+                        length=item.enclosure.length,
+                        type=item.enclosure.type,
+                    )
+                if item.guid:
+                    fe.guid(item.guid.value, isPermaLink=item.guid.is_perma_link)
+                if item.pub_date:
+                    fe.pubDate(item.pub_date.datetime)
+                else:
+                    fe.pubDate(arrow.utcnow().datetime)
+                if item.source:
+                    fe.source(title=item.source.name, url=item.source.url)
+                if item.categories:
+                    for category in item.categories:
+                        fe.category(category.name, domain=category.domain)
+        return fg

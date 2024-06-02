@@ -1,13 +1,14 @@
+import copy
 import os
 import re
 import subprocess
 import sys
 import traceback
 from pathlib import Path
-from typing import Any
 
 import arrow
 import feedgen
+import feedgen.feed
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import Response
@@ -16,7 +17,7 @@ from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .log import logger
-from .models import Feed, Plugin, ProviderFn
+from .models import Feed, Item, Plugin, ProviderFn
 from .plugins import plugins
 from .utils import fetch_data
 
@@ -57,24 +58,20 @@ async def index(request: Request) -> TemplateResponse:
 routes = [Route("/", endpoint=index)]
 
 
-async def rss20(request: Request, plugin: Plugin, data: dict[str, Any]) -> TemplateResponse:
+def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> feedgen.feed.FeedGenerator:
     p = request.query_params
-    include_condi = ["description_include", "title_include"]
-    exclude_condi = ["description_exclude", "title_exclude"]
-
-    data["items"] = [
-        item
-        for item in data["items"]
-        if all(p.get(cond) is None or re.search(p[cond], item[cond.split("_")[0]]) for cond in include_condi)
-        and all(p.get(cond) is None or not re.search(p[cond], item[cond.split("_")[0]]) for cond in exclude_condi)
+    new_entry = [
+        entry
+        for entry in fg.entry()
+        if ("title_include" not in p or re.search(p["title_include"], entry.title()))
+        and ("title_exclude" not in p or not re.search(p["title_exclude"], entry.title()))
+        and ("description_include" not in p or re.search(p["description_include"], entry.description()))
+        and ("description_exclude" not in p or not re.search(p["description_exclude"], entry.description()))
     ]
-    if "limit" in request.query_params:
-        data["items"] = data["items"][: int(request.query_params["limit"])]
-    return templates.TemplateResponse(
-        "rss.xml.jinja",
-        {"data": Feed(**data), "plugin": plugin, "request": request},
-        media_type="application/xml",
-    )
+    if "limit" in p:
+        new_entry = new_entry[: int(p["limit"])]
+    fg.entry(new_entry, replace=True)
+    return fg
 
 
 for plugin in plugins:
@@ -84,9 +81,17 @@ for plugin in plugins:
             """Return an RSS feed of XML format."""
             data = await fetch_data(provider, request.path_params, dict(request.query_params))
             if isinstance(data, dict):
-                return await rss20(request, plugin, data.copy())
-            feed: feedgen.feed.FeedGenerator = data
-            return Response(content=feed.atom_str(pretty=True), media_type="application/atom+xml")
+                rss20_feed = Feed(**data)
+                if "items" in data:
+                    rss20_feed.items = [Item(**item) for item in data["items"]]
+                rss20_feed.apply_defaults(plugin)
+                fg = copy.copy(rss20_feed.to_feedgen())
+                fg = filter_fg(fg, request)
+                return Response(content=fg.rss_str(pretty=True), media_type="application/xml")
+            else:
+                fg = copy.copy(data)
+                fg = filter_fg(fg, request)
+                return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml")
 
         routes.append(Route(path, endpoint=endpoint))
 
