@@ -1,4 +1,3 @@
-
 from feedgen.feed import FeedGenerator
 
 from rsserpent_rev.models import Feed

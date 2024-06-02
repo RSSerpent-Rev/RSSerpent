@@ -59,14 +59,14 @@ routes = [Route("/", endpoint=index)]
 
 async def rss20(request: Request, plugin: Plugin, data: dict[str:Any]) -> TemplateResponse:
     p = request.query_params
-    condi = ["description_include", "description_exclude", "title_include", "title_exclude"]
+    include_condi = ["description_include", "title_include"]
+    exclude_condi = ["description_exclude", "title_exclude"]
+
     data["items"] = [
         item
         for item in data["items"]
-        if all(
-            p.get(cond) is None or re.search(p[cond], item[cond.split("_")[0]])
-            for cond in condi
-        )
+        if all(p.get(cond) is None or re.search(p[cond], item[cond.split("_")[0]]) for cond in include_condi)
+        and all(p.get(cond) is None or not re.search(p[cond], item[cond.split("_")[0]]) for cond in exclude_condi)
     ]
     if "limit" in request.query_params:
         data["items"] = data["items"][: int(request.query_params["limit"])]

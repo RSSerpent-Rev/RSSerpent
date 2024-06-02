@@ -77,3 +77,58 @@ def test_example_with_args(client: TestClient, n: int) -> None:
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/xml"
     assert response.text.count("<item>") == n
+
+
+def test_title_include(client: TestClient) -> None:
+    response = client.get("/_/example/10?title_include=Example")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 10
+
+    response = client.get("/_/example/10?title_include=Example Title 10")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 1
+
+
+def test_title_exclude(client: TestClient) -> None:
+    response = client.get("/_/example/10?title_exclude=Example")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 0
+
+    response = client.get("/_/example/10?title_exclude=Example Title 10")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 9
+
+
+def test_description_include(client: TestClient) -> None:
+    response = client.get("/_/example/10?description_include=Example")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 10
+
+    response = client.get("/_/example/10?description_include=Example Description 10")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 1
+
+
+def test_description_exclude(client: TestClient) -> None:
+    response = client.get("/_/example/10?description_exclude=Example")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 0
+
+    response = client.get("/_/example/10?description_exclude=Example Description 10")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 9
+
+
+def test_limit(client: TestClient) -> None:
+    response = client.get("/_/example/10?limit=5")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 5
