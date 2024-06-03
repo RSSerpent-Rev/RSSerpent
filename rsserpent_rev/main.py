@@ -90,7 +90,7 @@ for plugin in plugins:
             """Return an RSS feed of XML format."""
             path_params = request.path_params
             for key, value in request.path_params.items():
-                if value.endswith(".rss") or value.endswith(".atom"):
+                if isinstance(value, str) and (value.endswith(".rss") or value.endswith(".atom")):
                     path_params[key] = value[:-5]
             data = await fetch_data(provider, request.path_params, dict(request.query_params))
             if isinstance(data, dict):

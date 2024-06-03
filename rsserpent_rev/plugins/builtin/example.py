@@ -9,5 +9,5 @@ async def provider() -> dict[str, Any]:
         "title": "Example",
         "link": "https://example.com",
         "description": "An example rsserpent plugin.",
-        "items": [{"title": "Example Title", "description": "Example Description"}],
+        "items": [{"title": "Example Title", "description": "Example Description", "link": "https://example.com"}],
     }

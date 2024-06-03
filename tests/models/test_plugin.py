@@ -136,3 +136,63 @@ class TestPlugin:
         )
         assert e is not None
         assert PluginModelError.unexpected_router_path_prefix in str(e)
+
+    @settings(max_examples=Times.SOME)
+    @given(
+        name=text().map(lambda s: f"rsserpent-plugin-{s}"),
+        author=builds(Persona),
+        repository=urls(),
+        prefix=just("/prefix"),
+        routers=dictionaries(text().map(lambda s: f"/prefix/{s}.atom"), functions().map(to_async), min_size=1),
+    )
+    def test_suffix_validation_atom(
+        self,
+        name: str,
+        author: Persona,
+        repository: str,
+        prefix: str,
+        routers: dict[str, ProviderFn],
+    ) -> None:
+        """Test if the `@root_validator` of `Item` class works properly."""
+        _, _, e = validate_model(
+            Plugin,
+            {
+                "name": name,
+                "author": author,
+                "repository": repository,
+                "prefix": prefix,
+                "routers": routers,
+            },
+        )
+        assert e is not None
+        assert PluginModelError.unexpected_router_path_suffix in str(e)
+
+    @settings(max_examples=Times.SOME)
+    @given(
+        name=text().map(lambda s: f"rsserpent-plugin-{s}"),
+        author=builds(Persona),
+        repository=urls(),
+        prefix=just("/prefix"),
+        routers=dictionaries(text().map(lambda s: f"/prefix/{s}.rss"), functions().map(to_async), min_size=1),
+    )
+    def test_suffix_validation_rss(
+        self,
+        name: str,
+        author: Persona,
+        repository: str,
+        prefix: str,
+        routers: dict[str, ProviderFn],
+    ) -> None:
+        """Test if the `@root_validator` of `Item` class works properly."""
+        _, _, e = validate_model(
+            Plugin,
+            {
+                "name": name,
+                "author": author,
+                "repository": repository,
+                "prefix": prefix,
+                "routers": routers,
+            },
+        )
+        assert e is not None
+        assert PluginModelError.unexpected_router_path_suffix in str(e)

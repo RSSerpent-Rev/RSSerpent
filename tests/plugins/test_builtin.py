@@ -27,6 +27,7 @@ def test_example_log(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/xml"
     assert response.text.count("<item>") == 1
+    assert "<title>Example</title>" in response.text
 
 
 def test_example(client: TestClient) -> None:
@@ -35,6 +36,19 @@ def test_example(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/xml"
     assert response.text.count("<item>") == 1
+    assert "<title>Example</title>" in response.text
+
+    response = client.get("/_/example.rss")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml"
+    assert response.text.count("<item>") == 1
+    assert "<title>Example</title>" in response.text
+
+    response = client.get("/_/example.atom")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/atom+xml"
+    assert response.text.count("<entry>") == 1
+    assert "<title>Example</title>" in response.text
 
 
 def test_example_cached(client: TestClient) -> None:
