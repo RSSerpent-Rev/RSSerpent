@@ -25,7 +25,8 @@ class PluginModelError(ValueError):
     empty_router = "plugin must include at least one router."
     provider_not_async = "provider functions must be asynchronous."
     unexpected_plugin_name = 'plugin names must start with "rsserpent-plugin-".'
-    unexpected_router_path = "all path in `routers` must starts with `prefix`."
+    unexpected_router_path_prefix = "all path in `routers` must starts with `prefix`."
+    unexpected_router_path_suffix = "all path in `routers` must not ends with `.rss` or `.atom`."
 
 
 class Persona(BaseModel):
@@ -59,7 +60,9 @@ class Plugin(BaseModel):
         assert prefix is not None and routers is not None
         for path in routers:
             if not path.startswith(prefix):
-                raise PluginModelError(PluginModelError.unexpected_router_path)
+                raise PluginModelError(PluginModelError.unexpected_router_path_prefix)
+            if path.endswith(".rss") or path.endswith(".atom"):
+                raise PluginModelError(PluginModelError.unexpected_router_path_suffix)
         return values
 
     @validator("name")

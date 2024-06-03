@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import os
 import re
 import subprocess
@@ -58,7 +59,7 @@ async def index(request: Request) -> TemplateResponse:
 routes = [Route("/", endpoint=index)]
 
 
-def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> feedgen.feed.FeedGenerator:
+def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request):
     p = request.query_params
     new_entry = [
         entry
@@ -71,7 +72,15 @@ def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> feedgen.feed.
     if "limit" in p:
         new_entry = new_entry[: int(p["limit"])]
     fg.entry(new_entry, replace=True)
-    return fg
+
+
+def gen_ids(fg: feedgen.feed.FeedGenerator):
+    if not fg.id():
+        fg.id(hashlib.md5(fg.title().encode()).hexdigest())
+    for entry in fg.entry():
+        if not entry.id():
+            hash_content = entry.title() + entry.description()
+            entry.id(hashlib.md5(hash_content.encode()).hexdigest())
 
 
 for plugin in plugins:
@@ -79,6 +88,10 @@ for plugin in plugins:
 
         async def endpoint(request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider) -> Response:
             """Return an RSS feed of XML format."""
+            path_params = request.path_params
+            for key, value in request.path_params.items():
+                if value.endswith(".rss") or value.endswith(".atom"):
+                    path_params[key] = value[:-5]
             data = await fetch_data(provider, request.path_params, dict(request.query_params))
             if isinstance(data, dict):
                 rss20_feed = Feed(**data)
@@ -86,14 +99,21 @@ for plugin in plugins:
                     rss20_feed.items = [Item(**item) for item in data["items"]]
                 rss20_feed.apply_defaults(plugin)
                 fg = copy.copy(rss20_feed.to_feedgen())
-                fg = filter_fg(fg, request)
+                filter_fg(fg, request)
+                if request.url.path.endswith(".atom"):
+                    gen_ids(fg)
+                    return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml")
                 return Response(content=fg.rss_str(pretty=True), media_type="application/xml")
             else:
                 fg = copy.copy(data)
-                fg = filter_fg(fg, request)
+                filter_fg(fg, request)
+                if request.url.path.endswith(".rss"):
+                    return Response(content=fg.rss_str(pretty=True), media_type="application/xml")
                 return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml")
 
         routes.append(Route(path, endpoint=endpoint))
+        routes.append(Route(path + ".rss", endpoint=endpoint))
+        routes.append(Route(path + ".atom", endpoint=endpoint))
 
 
 async def all_routes(request: Request) -> TemplateResponse:

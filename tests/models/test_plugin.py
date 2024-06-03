@@ -135,4 +135,4 @@ class TestPlugin:
             },
         )
         assert e is not None
-        assert PluginModelError.unexpected_router_path in str(e)
+        assert PluginModelError.unexpected_router_path_prefix in str(e)
