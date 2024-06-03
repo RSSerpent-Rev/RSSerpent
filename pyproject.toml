@@ -176,6 +176,11 @@ strict = true
 module = ["pyquery.*"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = ["feedgen.*"]
+ignore_errors = true
+ignore_missing_imports = true
+
 [tool.nitpick]
 style = ["./styles/main.toml", "./styles/local.toml"]
 cache = "never"

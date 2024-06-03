@@ -59,7 +59,7 @@ async def index(request: Request) -> TemplateResponse:
 routes = [Route("/", endpoint=index)]
 
 
-def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request):
+def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> None:
     p = request.query_params
     new_entry = [
         entry
@@ -74,7 +74,7 @@ def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request):
     fg.entry(new_entry, replace=True)
 
 
-def gen_ids(fg: feedgen.feed.FeedGenerator):
+def gen_ids(fg: feedgen.feed.FeedGenerator) -> None:
     if not fg.id():
         fg.id(hashlib.md5(fg.title().encode()).hexdigest())
     for entry in fg.entry():
