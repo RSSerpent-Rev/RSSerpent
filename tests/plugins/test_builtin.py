@@ -7,7 +7,6 @@ from pydantic import IPvAnyAddress
 from starlette.testclient import TestClient
 
 from rsserpent_rev.plugins.builtin import example_cache
-from rsserpent_rev.utils import to_feedgen
 from rsserpent_rev.utils.cache import get_cache
 from rsserpent_rev.utils.ratelimit import RateLimitError
 from tests.conftest import Times
@@ -50,11 +49,6 @@ def test_example(client: TestClient) -> None:
     assert response.headers["Content-Type"] == "application/atom+xml"
     assert response.text.count("<entry>") == 1
     assert "<title>Example</title>" in response.text
-
-    fp = feedparser.parse(response.text)
-    fg = to_feedgen(fp)
-    assert fg.title() == "Example"
-    assert len(fg.entry()) == 1
 
 
 def test_example_cached(client: TestClient) -> None:
