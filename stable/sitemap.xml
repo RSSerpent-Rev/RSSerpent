@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/faq/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/faq/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/faq/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/outline/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/outline/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/outline/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/contribution/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/core/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/core/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/contribution/core/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/plugin/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/contribution/plugin/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/plugin/data/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/contribution/plugin/data/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/contribution/plugin/data/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/deployment/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/deta/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/deta/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/deployment/deta/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/heroku/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/heroku/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/deployment/heroku/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/plugin/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/deployment/plugin/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/vercel/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/deployment/vercel/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/deployment/vercel/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/plugin/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/plugin/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/usage/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/usage/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/usage/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/usage/router/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/usage/router/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablezh/usage/router/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/faq/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/faq/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablefaq/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/outline/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/outline/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stableoutline/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablecontribution/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/core/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/core/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablecontribution/core/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/plugin/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablecontribution/plugin/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/plugin/data/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/contribution/plugin/data/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stablecontribution/plugin/data/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stabledeployment/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/deta/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/deta/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stabledeployment/deta/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/heroku/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/heroku/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stabledeployment/heroku/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/plugin/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stabledeployment/plugin/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/vercel/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/deployment/vercel/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stabledeployment/vercel/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/plugin/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stableplugin/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/usage/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/usage/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stableusage/"/>
+    </url>
+    <url>
+        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/usage/router/</loc>
+        <lastmod>2024-06-04</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/stable/zh/usage/router/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/stableusage/router/"/>
+    </url>
+</urlset>
