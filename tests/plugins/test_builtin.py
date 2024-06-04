@@ -1,6 +1,5 @@
 import re
 
-import feedparser
 import pytest
 from hypothesis import given, settings
 from hypothesis.strategies import integers
