@@ -1,6 +1,6 @@
 <p align="center">
 
-<img alt="RSSerpent" src="./docs/__asset__/logo-200.png" width="250" />
+<img alt="RSSerpent" src="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png" width="250" />
 </p>
 
 [![python: 3.10.0+](https://img.shields.io/badge/python->=3.10.0-blue.svg)](https://www.python.org/downloads/)
