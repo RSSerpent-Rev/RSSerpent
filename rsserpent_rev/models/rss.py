@@ -180,5 +180,10 @@ class Feed(BaseModel):
                     fe.source(title=item.source.name, url=item.source.url)
                 if item.categories:
                     for category in item.categories:
-                        fe.category(category.name, domain=category.domain)
+                        cat = {
+                            "term": category.name,
+                        }
+                        if category.domain:
+                            cat["scheme"] = category.domain
+                        fe.category(cat)
         return fg

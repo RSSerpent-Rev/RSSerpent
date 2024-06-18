@@ -68,6 +68,14 @@ def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> None:
         and ("title_exclude" not in p or not re.search(p["title_exclude"], entry.title()))
         and ("description_include" not in p or re.search(p["description_include"], entry.description()))
         and ("description_exclude" not in p or not re.search(p["description_exclude"], entry.description()))
+        and (
+            "category_include" not in p
+            or any(re.search(p["category_include"], category["term"]) for category in entry.category())
+        )
+        and (
+            "category_exclude" not in p
+            or not any(re.search(p["category_exclude"], category["term"]) for category in entry.category())
+        )
     ]
     if "limit" in p:
         new_entry = new_entry[: int(p["limit"])]
@@ -102,13 +110,20 @@ for plugin in plugins:
                 filter_fg(fg, request)
                 if request.url.path.endswith(".atom"):
                     gen_ids(fg)
-                    return Response(content=fg.atom_str(pretty=True).decode("UTF-8"), media_type="application/atom+xml;charset=utf-8")
-                return Response(content=fg.rss_str(pretty=True).decode("UTF-8"), media_type="application/xml;charset=utf-8")
+                    return Response(
+                        content=fg.atom_str(pretty=True).decode("UTF-8"),
+                        media_type="application/atom+xml;charset=utf-8",
+                    )
+                return Response(
+                    content=fg.rss_str(pretty=True).decode("UTF-8"), media_type="application/xml;charset=utf-8"
+                )
             else:
                 fg = copy.copy(data)
                 filter_fg(fg, request)
                 if request.url.path.endswith(".rss"):
-                    return Response(content=fg.rss_str(pretty=True).decode("UTF-8"), media_type="application/xml;charset=utf-8")
+                    return Response(
+                        content=fg.rss_str(pretty=True).decode("UTF-8"), media_type="application/xml;charset=utf-8"
+                    )
                 return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml;charset=utf-8")
 
         routes.append(Route(path, endpoint=endpoint))

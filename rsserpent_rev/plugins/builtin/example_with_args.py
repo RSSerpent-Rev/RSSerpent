@@ -18,5 +18,14 @@ async def provider(n: int) -> dict[str, Any]:
         "title": "Example",
         "link": "https://example.com",
         "description": "An example rsserpent plugin.",
-        "items": [{"title": f"Example Title {i}", "description": f"Example Description {i}"} for i in range(1, n + 1)],
+        "id": "example",
+        "items": [
+            {
+                "title": f"Example Title {i}",
+                "description": f"Example Description {i}",
+                "id": i,
+                "categories": [{"name": f"example{i % 2}"}],
+            }
+            for i in range(1, n + 1)
+        ],
     }
