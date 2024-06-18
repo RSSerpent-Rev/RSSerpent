@@ -158,7 +158,7 @@ class Feed(BaseModel):
                 fg.category(category.name, domain=category.domain)
         if self.items:
             for item in self.items:
-                fe = fg.add_entry()
+                fe = fg.add_entry(order="append")
                 fe.title(item.title)
                 fe.link(href=item.link)
                 fe.description(item.description)
