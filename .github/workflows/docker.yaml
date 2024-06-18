@@ -10,7 +10,7 @@ on:
       - 'rsserpent_rev/**'
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - '.github/workflows/docker.yaml'
       - 'Dockerfile'

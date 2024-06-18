@@ -10,7 +10,7 @@ on:
       - 'pyproject.toml'
   push:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - '.github/workflows/test.yaml'
       - 'poetry.lock'
