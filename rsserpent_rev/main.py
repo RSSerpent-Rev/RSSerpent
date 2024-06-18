@@ -102,14 +102,14 @@ for plugin in plugins:
                 filter_fg(fg, request)
                 if request.url.path.endswith(".atom"):
                     gen_ids(fg)
-                    return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml")
-                return Response(content=fg.rss_str(pretty=True), media_type="application/xml")
+                    return Response(content=fg.atom_str(pretty=True).decode("UTF-8"), media_type="application/atom+xml;charset=utf-8")
+                return Response(content=fg.rss_str(pretty=True).decode("UTF-8"), media_type="application/xml;charset=utf-8")
             else:
                 fg = copy.copy(data)
                 filter_fg(fg, request)
                 if request.url.path.endswith(".rss"):
-                    return Response(content=fg.rss_str(pretty=True), media_type="application/xml")
-                return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml")
+                    return Response(content=fg.rss_str(pretty=True).decode("UTF-8"), media_type="application/xml;charset=utf-8")
+                return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml;charset=utf-8")
 
         routes.append(Route(path, endpoint=endpoint))
         routes.append(Route(path + ".rss", endpoint=endpoint))
