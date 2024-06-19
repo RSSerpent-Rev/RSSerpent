@@ -71,7 +71,7 @@ class Item(BaseModel):
     comments: HttpUrl | None = None
     enclosure: Enclosure | None = None
     guid: Guid | None = None
-    pub_date: Arrow | None = None
+    pub_date: Arrow = arrow.utcnow()
     source: Source | None = None
 
     class Config:  # noqa: D106
@@ -136,6 +136,7 @@ class Feed(BaseModel):
         fg.copyright(self.copyright)
         fg.managingEditor(self.managing_editor)
         fg.webMaster(self.web_master)
+        fg.pubDate(self.pub_date.datetime)
         fg.lastBuildDate(self.last_build_date.datetime)
         fg.generator(self.generator)
         fg.docs(self.docs)
@@ -173,12 +174,11 @@ class Feed(BaseModel):
                     )
                 if item.guid:
                     fe.guid(item.guid.value, isPermaLink=item.guid.is_perma_link)
-                if item.pub_date:
-                    fe.pubDate(item.pub_date.datetime)
-                else:
-                    fe.pubDate(arrow.utcnow().datetime)
+
+                fe.pubDate(item.pub_date.datetime)
                 if item.source:
                     fe.source(title=item.source.name, url=item.source.url)
+
                 if item.categories:
                     for category in item.categories:
                         cat = {
