@@ -75,7 +75,6 @@ def test_example_httpx(client: TestClient) -> None:
     assert IPvAnyAddress._validate(match.group(1)) is not None
 
 
-@pytest.mark.skipif("sys.version_info < (3, 8)")
 def test_example_playwright(client: TestClient) -> None:
     """Test the `/_/example/playwright` route."""
     response = client.get("/_/example/playwright")
