@@ -73,7 +73,7 @@ def test_example_httpx(client: TestClient) -> None:
 
     match = re.search("<title>(.*)</title>", response.text)
     assert match is not None
-    assert IPvAnyAddress.validate(match.group(1)) is not None
+    assert IPvAnyAddress._validate(match.group(1)) is not None
 
 
 @pytest.mark.skipif("sys.version_info < (3, 8)")

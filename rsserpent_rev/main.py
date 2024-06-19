@@ -18,7 +18,7 @@ from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .log import logger
-from .models import Feed, Item, Plugin, ProviderFn
+from .models import Feed, Plugin, ProviderFn
 from .plugins import plugins
 from .utils import fetch_data
 
@@ -102,9 +102,7 @@ for plugin in plugins:
                     path_params[key] = value[:-5]
             data = await fetch_data(provider, request.path_params, dict(request.query_params))
             if isinstance(data, dict):
-                rss20_feed = Feed(**data)
-                if "items" in data:
-                    rss20_feed.items = [Item(**item) for item in data["items"]]
+                rss20_feed = Feed.model_validate(data)
                 rss20_feed.apply_defaults(plugin)
                 fg = copy.copy(rss20_feed.to_feedgen())
                 filter_fg(fg, request)

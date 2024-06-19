@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 import arrow
 from arrow import Arrow
 from feedgen.feed import FeedGenerator
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
 
 from . import Plugin
 
@@ -24,7 +24,7 @@ class Category(BaseModel):
     """Data model for the `<category>` field in an RSS 2.0 feed."""
 
     name: str
-    domain: HttpUrl | None
+    domain: HttpUrl | None = None
 
 
 class Enclosure(BaseModel):
@@ -50,7 +50,7 @@ class Image(BaseModel):
     link: HttpUrl
     width: int | None = 88
     height: int | None = 31
-    description: str | None
+    description: str | None = None
 
 
 class Source(BaseModel):
@@ -63,21 +63,21 @@ class Source(BaseModel):
 class Item(BaseModel):
     """Data model for the `<item>` field in an RSS 2.0 feed."""
 
-    title: str | None
-    link: HttpUrl | None
-    description: str | None
-    author: str | None
-    categories: list[Category] | None
-    comments: HttpUrl | None
-    enclosure: Enclosure | None
-    guid: Guid | None
-    pub_date: Arrow | None
-    source: Source | None
+    title: str | None = None
+    link: HttpUrl | None = None
+    description: str | None = None
+    author: str | None = None
+    categories: list[Category] | None = None
+    comments: HttpUrl | None = None
+    enclosure: Enclosure | None = None
+    guid: Guid | None = None
+    pub_date: Arrow | None = None
+    source: Source | None = None
 
     class Config:  # noqa: D106
         arbitrary_types_allowed = True
 
-    @root_validator
+    @model_validator(mode="before")
     def validate(  # type: ignore[override]
         cls,  # noqa: N805
         values: dict[str, Any],  # noqa: N805
@@ -104,18 +104,18 @@ class Feed(BaseModel):
     title: str
     link: HttpUrl
     description: str
-    language: str | None
-    copyright: str | None
-    managing_editor: str | None
-    web_master: str | None
+    language: str | None = None
+    copyright: str | None = None
+    managing_editor: str | None = None
+    web_master: str | None = None
     pub_date: Arrow | None = Field(default_factory=arrow.utcnow)
     last_build_date: Arrow | None = Field(default_factory=arrow.utcnow)
-    categories: list[Category] | None
+    categories: list[Category] | None = None
     generator: str | None = __package__.split(".")[0]
     docs: HttpUrl | None = "https://www.rssboard.org/rss-specification"
     ttl: int | None = 60
-    image: Image | None
-    items: list[Item] | None
+    image: Image | None = None
+    items: list[Item] | None = None
 
     class Config:  # noqa: D106
         arbitrary_types_allowed = True
@@ -134,7 +134,7 @@ class Feed(BaseModel):
         """Convert the `Feed` model to a `feedgen.feed.FeedGenerator` object."""
         fg = FeedGenerator()
         fg.title(self.title)
-        fg.link(href=self.link)
+        fg.link({"href": str(self.link)})
         fg.description(self.description)
         fg.language(self.language)
         fg.copyright(self.copyright)
@@ -146,27 +146,32 @@ class Feed(BaseModel):
         fg.ttl(self.ttl)
         if self.image:
             fg.image(
-                url=self.image.url,
+                url=str(self.image.url),
                 title=self.image.title,
-                link=self.image.link,
+                link=str(self.image.link),
                 width=self.image.width,
                 height=self.image.height,
                 description=self.image.description,
             )
         if self.categories:
             for category in self.categories:
-                fg.category(category.name, domain=category.domain)
+                cat = {
+                    "term": category.name,
+                }
+                if category.domain:
+                    cat["scheme"] = category.domain
+                fg.category(cat)
         if self.items:
             for item in self.items:
                 fe = fg.add_entry(order="append")
                 fe.title(item.title)
-                fe.link(href=item.link)
+                fe.link({"href": str(item.link)})
                 fe.description(item.description)
                 fe.author(item.author)
                 fe.comments(item.comments)
                 if item.enclosure:
                     fe.enclosure(
-                        url=item.enclosure.url,
+                        url=(str(item.enclosure.url)),
                         length=item.enclosure.length,
                         type=item.enclosure.type,
                     )

@@ -2,8 +2,7 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseModel, validator
-from pydantic.class_validators import root_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 if TYPE_CHECKING:
     EmailStr = str
@@ -49,7 +48,8 @@ class Plugin(BaseModel):
     def __init__(self, **data: Any):
         super().__init__(**data)
 
-    @root_validator
+    @model_validator(mode="before")
+    @classmethod
     def validate(  # type: ignore[override]
         cls,  # noqa: N805
         values: dict[str, Any],  # noqa: N805
@@ -65,14 +65,14 @@ class Plugin(BaseModel):
                 raise PluginModelError(PluginModelError.unexpected_router_path_suffix)
         return values
 
-    @validator("name")
+    @field_validator("name")
     def validate_name(cls, name: str) -> str:  # noqa: N805
         r"""Ensure any plugin name starts with `"rsserpent-plugin-"`."""
         if not name.startswith("rsserpent-plugin-"):
             raise PluginModelError(PluginModelError.unexpected_plugin_name)
         return name
 
-    @validator("routers")
+    @field_validator("routers")
     def validate_routers(
         cls,  # noqa: N805
         routers: dict[str, ProviderFn],  # noqa: N805

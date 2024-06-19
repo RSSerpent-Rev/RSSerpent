@@ -3,10 +3,11 @@ from collections.abc import Awaitable, Callable
 from functools import partial, wraps
 from typing import Any
 
+import pytest
 from hypothesis import given, settings
 from hypothesis.provisional import urls
 from hypothesis.strategies import builds, dictionaries, functions, just, text
-from pydantic import validate_model
+from pydantic import ValidationError
 
 from rsserpent_rev.models.plugin import Persona, Plugin, PluginModelError, ProviderFn
 from tests.conftest import Times
@@ -51,17 +52,18 @@ class TestPlugin:
         routers: dict[str, ProviderFn],
     ) -> None:
         """Test if the `Plugin` class validates `name` properly."""
-        _, _, e = validate_model(
-            Plugin,
-            {
-                "name": name,
-                "author": author,
-                "repository": repository,
-                "prefix": prefix,
-                "routers": routers,
-            },
-        )
-        assert e is not None
+
+        with pytest.raises(ValidationError) as e:
+            Plugin.model_validate(
+                {
+                    "name": name,
+                    "author": author,
+                    "repository": repository,
+                    "prefix": prefix,
+                    "routers": routers,
+                }
+            )
+
         assert PluginModelError.unexpected_plugin_name in str(e)
 
     @settings(max_examples=Times.SOME)
@@ -81,29 +83,29 @@ class TestPlugin:
         routers: dict[str, ProviderFn],
     ) -> None:
         """Test if the `Plugin` class validates `routers` properly."""
-        _, _, e = validate_model(
-            Plugin,
-            {
-                "name": name,
-                "author": author,
-                "repository": repository,
-                "prefix": prefix,
-                "routers": routers,
-            },
-        )
+        with pytest.raises(ValidationError) as e:
+            Plugin.model_validate(
+                {
+                    "name": name,
+                    "author": author,
+                    "repository": repository,
+                    "prefix": prefix,
+                    "routers": routers,
+                }
+            )
         assert e is not None
         assert PluginModelError.provider_not_async in str(e)
 
-        _, _, e = validate_model(
-            Plugin,
-            {
-                "name": name,
-                "author": author,
-                "repository": repository,
-                "prefix": prefix,
-                "routers": {},
-            },
-        )
+        with pytest.raises(ValidationError) as e:
+            Plugin.model_validate(
+                {
+                    "name": name,
+                    "author": author,
+                    "repository": repository,
+                    "prefix": prefix,
+                    "routers": {},
+                }
+            )
         assert e is not None
         assert PluginModelError.empty_router in str(e)
 
@@ -123,17 +125,18 @@ class TestPlugin:
         prefix: str,
         routers: dict[str, ProviderFn],
     ) -> None:
-        """Test if the `@root_validator` of `Item` class works properly."""
-        _, _, e = validate_model(
-            Plugin,
-            {
-                "name": name,
-                "author": author,
-                "repository": repository,
-                "prefix": prefix,
-                "routers": routers,
-            },
-        )
+        """Test if the `@model_validator` of `Item` class works properly."""
+        with pytest.raises(ValidationError) as e:
+            Plugin.model_validate(
+                {
+                    "name": name,
+                    "author": author,
+                    "repository": repository,
+                    "prefix": prefix,
+                    "routers": routers,
+                }
+            )
+
         assert e is not None
         assert PluginModelError.unexpected_router_path_prefix in str(e)
 
@@ -153,17 +156,17 @@ class TestPlugin:
         prefix: str,
         routers: dict[str, ProviderFn],
     ) -> None:
-        """Test if the `@root_validator` of `Item` class works properly."""
-        _, _, e = validate_model(
-            Plugin,
-            {
-                "name": name,
-                "author": author,
-                "repository": repository,
-                "prefix": prefix,
-                "routers": routers,
-            },
-        )
+        """Test if the `@model_validator` of `Item` class works properly."""
+        with pytest.raises(ValidationError) as e:
+            Plugin.model_validate(
+                {
+                    "name": name,
+                    "author": author,
+                    "repository": repository,
+                    "prefix": prefix,
+                    "routers": routers,
+                }
+            )
         assert e is not None
         assert PluginModelError.unexpected_router_path_suffix in str(e)
 
@@ -183,16 +186,17 @@ class TestPlugin:
         prefix: str,
         routers: dict[str, ProviderFn],
     ) -> None:
-        """Test if the `@root_validator` of `Item` class works properly."""
-        _, _, e = validate_model(
-            Plugin,
-            {
-                "name": name,
-                "author": author,
-                "repository": repository,
-                "prefix": prefix,
-                "routers": routers,
-            },
-        )
+        """Test if the `@model_validator` of `Item` class works properly."""
+        with pytest.raises(ValidationError) as e:
+            Plugin.model_validate(
+                {
+                    "name": name,
+                    "author": author,
+                    "repository": repository,
+                    "prefix": prefix,
+                    "routers": routers,
+                }
+            )
+
         assert e is not None
         assert PluginModelError.unexpected_router_path_suffix in str(e)
