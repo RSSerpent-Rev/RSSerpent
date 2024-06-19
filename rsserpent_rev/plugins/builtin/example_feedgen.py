@@ -1,7 +1,8 @@
 from feedgen.feed import FeedGenerator
 
-from ...utils import cached
 from rsserpent_rev.models.plugin import Feed
+
+from ...utils import cached
 
 path = "/_/example/feedgen"
 

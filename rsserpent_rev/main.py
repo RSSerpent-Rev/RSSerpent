@@ -1,5 +1,4 @@
 import copy
-import hashlib
 import os
 import re
 import subprocess
@@ -8,8 +7,7 @@ import traceback
 from pathlib import Path
 
 import arrow
-import feedgen
-import feedgen.feed
+from feedgen.feed import FeedGenerator
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import Response
@@ -20,12 +18,20 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 from .log import logger
 from .models import Feed, Plugin, ProviderFn
 from .plugins import plugins
-from .utils import fetch_data
-from .utils import filter_fg, gen_ids
+from .utils import fetch_data, filter_fg, gen_ids_for
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 templates.env.autoescape = True
 templates.env.globals["arrow"] = arrow
+
+ATOM_MIMETYPE = "application/atom+xml;charset=utf-8"
+RSS_MIMETYPE = "application/xml;charset=utf-8"
+
+
+class MainError(Exception):
+    """Exception for `Main` class."""
+
+    unexpected_data_type = "unexpected data type."
 
 
 async def exception_handler(request: Request, exception: Exception) -> TemplateResponse:
@@ -65,33 +71,28 @@ for plugin in plugins:
 
         async def endpoint(request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider) -> Response:
             """Return an RSS feed of XML format."""
-            path_params = request.path_params
+            path_params = copy.copy(request.path_params)
             for key, value in request.path_params.items():
                 if isinstance(value, str) and (value.endswith(".rss") or value.endswith(".atom")):
-                    path_params[key] = value[:-5]
-            data = await fetch_data(provider, request.path_params, dict(request.query_params))
+                    path_params[key] = value[:-4] if value.endswith(".rss") else value[:-5]
+            data = await fetch_data(provider, path_params, dict(request.query_params))
             if isinstance(data, dict):
-                rss20_feed = Feed.model_validate(data)
-                rss20_feed.apply_defaults(plugin)
-                fg = rss20_feed.to_feedgen()
-                filter_fg(fg, request)
-                if request.url.path.endswith(".atom"):
-                    gen_ids(fg)
-                    return Response(
-                        content=fg.atom_str(pretty=True),
-                        media_type="application/atom+xml;charset=utf-8",
-                    )
-                return Response(
-                    content=fg.rss_str(pretty=True), media_type="application/xml;charset=utf-8"
-                )
-            else:
+                feed = Feed.model_validate(data)
+                feed.populate_defaults_with(plugin)
+                fg = feed.to_feedgen()
+            elif isinstance(data, Feed):
+                feed = copy.copy(data)
+                feed.populate_defaults_with(plugin)
+                fg = feed.to_feedgen()
+            elif isinstance(data, FeedGenerator):
                 fg = copy.copy(data)
-                filter_fg(fg, request)
-                if request.url.path.endswith(".rss"):
-                    return Response(
-                        content=fg.rss_str(pretty=True), media_type="application/xml;charset=utf-8"
-                    )
-                return Response(content=fg.atom_str(pretty=True), media_type="application/atom+xml;charset=utf-8")
+            else:
+                raise MainError(MainError.unexpected_data_type)
+            gen_ids_for(fg)
+            filter_fg(fg, request)
+            if request.url.path.endswith(".atom"):
+                return Response(content=fg.atom_str(pretty=True), media_type=ATOM_MIMETYPE)
+            return Response(content=fg.rss_str(pretty=True), media_type=RSS_MIMETYPE)
 
         routes.append(Route(path, endpoint=endpoint))
         routes.append(Route(path + ".rss", endpoint=endpoint))

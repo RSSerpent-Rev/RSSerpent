@@ -120,15 +120,15 @@ class Feed(BaseModel):
     class Config:  # noqa: D106
         arbitrary_types_allowed = True
 
-    def apply_defaults(self, plugin: Plugin) -> None:
-        self.managing_editor = (
-            f"{plugin.author.email} ({plugin.author.name})" if self.managing_editor is None else self.managing_editor
-        )
-        self.web_master = (
-            f"{plugin.author.email} ({plugin.author.name})" if self.web_master is None else self.web_master
-        )
-        self.last_build_date = arrow.utcnow() if self.last_build_date is None else self.last_build_date
-        self.pub_date = arrow.utcnow() if self.pub_date is None else self.pub_date
+    def populate_defaults_with(self, plugin: Plugin) -> None:
+        if self.managing_editor is None:
+            self.managing_editor = f"{plugin.author.email} ({plugin.author.name})"
+        if self.web_master is None:
+            self.web_master = f"{plugin.author.email} ({plugin.author.name})"
+        if self.last_build_date is None:
+            self.last_build_date = arrow.utcnow()
+        if self.pub_date is None:
+            self.pub_date = arrow.utcnow()
 
     def to_feedgen(self) -> FeedGenerator:
         """Convert the `Feed` model to a `feedgen.feed.FeedGenerator` object."""

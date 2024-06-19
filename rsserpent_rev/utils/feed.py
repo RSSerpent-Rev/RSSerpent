@@ -1,7 +1,9 @@
+import hashlib
 import re
+
 import feedgen
 from starlette.requests import Request
-import hashlib
+
 
 def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> None:
     p = request.query_params
@@ -26,7 +28,7 @@ def filter_fg(fg: feedgen.feed.FeedGenerator, request: Request) -> None:
     fg.entry(new_entry, replace=True)
 
 
-def gen_ids(fg: feedgen.feed.FeedGenerator) -> None:
+def gen_ids_for(fg: feedgen.feed.FeedGenerator) -> None:
     if not fg.id():
         fg.id(hashlib.md5(fg.title().encode()).hexdigest())
     for entry in fg.entry():
