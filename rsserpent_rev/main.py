@@ -90,6 +90,7 @@ for plugin in plugins:
                 raise MainError(MainError.unexpected_data_type)
             gen_ids_for(fg)
             filter_fg(fg, request)
+            fg.generator(plugin.name)
             if request.url.path.endswith(".atom"):
                 return Response(content=fg.atom_str(pretty=True), media_type=ATOM_MIMETYPE)
             return Response(content=fg.rss_str(pretty=True), media_type=RSS_MIMETYPE)

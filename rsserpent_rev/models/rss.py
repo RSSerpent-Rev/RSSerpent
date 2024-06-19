@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 import arrow
 from arrow import Arrow
 from feedgen.feed import FeedGenerator
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, model_validator
 
 from . import Plugin
 
@@ -108,12 +108,12 @@ class Feed(BaseModel):
     copyright: str | None = None
     managing_editor: str | None = None
     web_master: str | None = None
-    pub_date: Arrow | None = Field(default_factory=arrow.utcnow)
-    last_build_date: Arrow | None = Field(default_factory=arrow.utcnow)
+    pub_date: Arrow = arrow.utcnow()
+    last_build_date: Arrow = arrow.utcnow()
     categories: list[Category] | None = None
-    generator: str | None = __package__.split(".")[0]
-    docs: HttpUrl | None = "https://www.rssboard.org/rss-specification"
-    ttl: int | None = 60
+    generator: str = __package__.split(".")[0]
+    docs: HttpUrl = "https://www.rssboard.org/rss-specification"
+    ttl: int = 60
     image: Image | None = None
     items: list[Item] | None = None
 
@@ -125,10 +125,6 @@ class Feed(BaseModel):
             self.managing_editor = f"{plugin.author.email} ({plugin.author.name})"
         if self.web_master is None:
             self.web_master = f"{plugin.author.email} ({plugin.author.name})"
-        if self.last_build_date is None:
-            self.last_build_date = arrow.utcnow()
-        if self.pub_date is None:
-            self.pub_date = arrow.utcnow()
 
     def to_feedgen(self) -> FeedGenerator:
         """Convert the `Feed` model to a `feedgen.feed.FeedGenerator` object."""
