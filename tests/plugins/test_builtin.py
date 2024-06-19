@@ -17,7 +17,7 @@ def test_example_feedgen(client: TestClient) -> None:
     response = client.get("/_/example/feedgen")
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/atom+xml;charset=utf-8"
-    assert response.text.count("<entry>") == 1
+    assert response.text.count("<entry>") == 2
     assert "<title>Some Testfeed</title>" in response.text
 
 
@@ -63,7 +63,6 @@ def test_example_cached(client: TestClient) -> None:
         cache.clear()
     response3 = client.get("/_/example/cache")
     assert "<title>Example 2</title>" in response3.text
-
 
 def test_example_httpx(client: TestClient) -> None:
     """Test the `/_/example/httpx` route."""
@@ -187,3 +186,37 @@ def test_limit(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/xml;charset=utf-8"
     assert response.text.count("<item>") == 5
+
+def test_example_cache_with_limit(client: TestClient) -> None:
+    response = client.get("/_/example/10")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml;charset=utf-8"
+    assert response.text.count("<item>") == 10
+
+    response = client.get("/_/example/10?limit=5")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml;charset=utf-8"
+    assert response.text.count("<item>") == 5
+
+    # make sure limit do not affect the cache, so the response should be 10
+    response = client.get("/_/example/10")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/xml;charset=utf-8"
+    assert response.text.count("<item>") == 10
+
+def test_example_cache_with_limit_fg(client: TestClient) -> None:
+    response = client.get("/_/example/feedgen")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/atom+xml;charset=utf-8"
+    assert response.text.count("<entry>") == 2
+
+    response = client.get("/_/example/feedgen?limit=1")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/atom+xml;charset=utf-8"
+    assert response.text.count("<entry>") == 1
+
+    # make sure limit do not affect the cache, so the response should always be 2
+    response = client.get("/_/example/feedgen")
+    assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/atom+xml;charset=utf-8"
+    assert response.text.count("<entry>") == 2
