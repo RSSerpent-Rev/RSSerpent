@@ -89,7 +89,7 @@ class Item(BaseModel):
         return values
 
 
-class Feed(BaseModel):
+class RSSFeed(BaseModel):
     """Data model for RSS 2.0 feeds.
 
     See specification at https://www.rssboard.org/rss-specification.

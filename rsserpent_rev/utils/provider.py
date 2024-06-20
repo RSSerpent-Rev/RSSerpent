@@ -2,8 +2,7 @@ import inspect
 from inspect import Parameter
 from typing import Any
 
-from ..models import ProviderFn
-from ..models.plugin import Feed
+from ..models import Feed, ProviderFn
 
 
 def convert(value: str, type_: type) -> Any:

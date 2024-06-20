@@ -15,7 +15,7 @@ from feedgen.feed import FeedGenerator
 
 Feed = dict[str, Any] | FeedGenerator
 
-ProviderFn = Callable[..., Awaitable[Feed]]
+ProviderFn = Callable[..., Awaitable[Feed]]  # type: ignore[valid-type]
 
 
 class PluginModelError(ValueError):

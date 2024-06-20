@@ -1,7 +1,7 @@
 from typing import Any
 
 import httpx
-from fake_useragent import UserAgent  # type: ignore[import]
+from fake_useragent import UserAgent  # type: ignore[import-not-found]
 from playwright.async_api import async_playwright
 from playwright.async_api._generated import Page
 
@@ -23,7 +23,7 @@ class Browser:
     async def __aexit__(self, *_: Any) -> None:
         """Leave the context manager."""
         await self.browser.close()
-        await self.context.stop()  # type: ignore[func-returns-value]
+        await self.context.stop()
 
 
 class HTTPClient(httpx.AsyncClient):

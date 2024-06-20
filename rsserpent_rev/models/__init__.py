@@ -1,5 +1,5 @@
-from .plugin import Persona, Plugin, ProviderFn
+from .plugin import Feed, Persona, Plugin, ProviderFn
 from .qs import QueryString
-from .rss import Feed, Item
+from .rss import Item, RSSFeed
 
-__all__ = ("Feed", "Item", "Persona", "Plugin", "ProviderFn", "QueryString")
+__all__ = ("RSSFeed", "Item", "Persona", "Plugin", "ProviderFn", "QueryString", "Feed")

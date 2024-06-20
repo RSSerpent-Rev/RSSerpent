@@ -16,7 +16,7 @@ settings.register_profile("ci", deadline=500, max_examples=200)
 settings.register_profile("default", max_examples=50)
 settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
 strategies.register_type_strategy(pydantic.EmailStr, strategies.emails())
-strategies.register_type_strategy(pydantic.HttpUrl.__origin__, urls())
+strategies.register_type_strategy(pydantic.HttpUrl.__origin__, urls())  # type: ignore [attr-defined]
 
 
 @dataclass
