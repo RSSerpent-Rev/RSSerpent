@@ -13,7 +13,9 @@ else:
 
 from feedgen.feed import FeedGenerator
 
-Feed = dict[str, Any] | FeedGenerator
+from .rss import RSSFeed
+
+Feed = dict[str, Any] | FeedGenerator | RSSFeed
 
 ProviderFn = Callable[..., Awaitable[Feed]]  # type: ignore[valid-type]
 

@@ -5,8 +5,6 @@ from arrow import Arrow
 from feedgen.feed import FeedGenerator
 from pydantic import BaseModel, model_validator
 
-from . import Plugin
-
 if TYPE_CHECKING:
     AnyUrl = str
     HttpUrl = str
@@ -119,12 +117,6 @@ class RSSFeed(BaseModel):
 
     class Config:  # noqa: D106
         arbitrary_types_allowed = True
-
-    def populate_defaults_with(self, plugin: Plugin) -> None:
-        if self.managing_editor is None:
-            self.managing_editor = f"{plugin.author.email} ({plugin.author.name})"
-        if self.web_master is None:
-            self.web_master = f"{plugin.author.email} ({plugin.author.name})"
 
     def to_feedgen(self) -> FeedGenerator:
         """Convert the `Feed` model to a `feedgen.feed.FeedGenerator` object."""

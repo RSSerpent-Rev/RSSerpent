@@ -79,11 +79,9 @@ for plugin in plugins:
             data = await fetch_data(provider, path_params, dict(request.query_params))
             if isinstance(data, dict):
                 feed = RSSFeed.model_validate(data)
-                feed.populate_defaults_with(plugin)
                 fg = feed.to_feedgen()
             elif isinstance(data, RSSFeed):
                 feed = copy.copy(data)
-                feed.populate_defaults_with(plugin)
                 fg = feed.to_feedgen()
             elif isinstance(data, FeedGenerator):
                 fg = copy.copy(data)
@@ -92,7 +90,11 @@ for plugin in plugins:
             gen_ids_for(fg)
             if qs:
                 filter_fg(fg, qs)
-            fg.generator(plugin.name)
+            fg.generator(plugin.name, uri=str(plugin.repository))
+            if fg.managingEditor() is None:
+                fg.managingEditor(f"{plugin.author.email} ({plugin.author.name})")
+            if fg.webMaster() is None:
+                fg.webMaster(f"{plugin.author.email} ({plugin.author.name})")
             if request.url.path.endswith(".atom"):
                 return Response(content=fg.atom_str(pretty=True), media_type=ATOM_MIMETYPE)
             return Response(content=fg.rss_str(pretty=True), media_type=RSS_MIMETYPE)
