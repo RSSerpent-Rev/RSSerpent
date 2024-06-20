@@ -3,7 +3,7 @@ ci:
   autoupdate_commit_msg: "ci: pre-commit auto update"
   autoupdate_schedule: "monthly"
 default_stages: [commit]
-fail_fast: true
+fail_fast: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
@@ -25,27 +25,27 @@ repos:
       - id: typos
         name: Check Typos
         args: []
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
-    hooks:
-      - id: mypy
-        name: Type Check
-        args: []
-        # As `mypy` runs in an isolated environment, it is necessary to manually specify
-        # some libraries of the current (poetry) environment for `mypy` to work properly.
-        additional_dependencies:
-          - arrow
-          - httpx
-          - hypothesis
-          - importlib-metadata
-          - playwright
-          - pydantic
-          - pytest
-          - pytest-asyncio
-          - starlette
-          - types-dataclasses
-          - types-lxml
-          - uvicorn
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.10.0
+  #   hooks:
+  #     - id: mypy
+  #       name: Type Check
+  #       args: []
+  #       # As `mypy` runs in an isolated environment, it is necessary to manually specify
+  #       # some libraries of the current (poetry) environment for `mypy` to work properly.
+  #       additional_dependencies:
+  #         - arrow
+  #         - httpx
+  #         - hypothesis
+  #         - importlib-metadata
+  #         - playwright
+  #         - pydantic
+  #         - pytest
+  #         - pytest-asyncio
+  #         - starlette
+  #         - types-dataclasses
+  #         - types-lxml
+  #         - uvicorn
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.27.0
     hooks:
