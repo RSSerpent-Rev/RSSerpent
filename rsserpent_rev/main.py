@@ -16,7 +16,7 @@ from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .log import logger
-from .models import Feed, Plugin, ProviderFn
+from .models import Feed, Plugin, ProviderFn, QueryString
 from .plugins import plugins
 from .utils import fetch_data, filter_fg, gen_ids_for
 
@@ -71,6 +71,7 @@ for plugin in plugins:
 
         async def endpoint(request: Request, plugin: Plugin = plugin, provider: ProviderFn = provider) -> Response:
             """Return an RSS feed of XML format."""
+            qs = QueryString.model_validate(dict(request.query_params)) if request.query_params else None
             path_params = copy.copy(request.path_params)
             for key, value in request.path_params.items():
                 if isinstance(value, str) and (value.endswith(".rss") or value.endswith(".atom")):
@@ -89,7 +90,8 @@ for plugin in plugins:
             else:
                 raise MainError(MainError.unexpected_data_type)
             gen_ids_for(fg)
-            filter_fg(fg, request)
+            if qs:
+                filter_fg(fg, qs)
             fg.generator(plugin.name)
             if request.url.path.endswith(".atom"):
                 return Response(content=fg.atom_str(pretty=True), media_type=ATOM_MIMETYPE)
