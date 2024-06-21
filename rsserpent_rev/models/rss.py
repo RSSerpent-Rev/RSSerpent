@@ -155,7 +155,9 @@ class RSSFeed(BaseModel):
                 fe = fg.add_entry(order="append")
                 fe.title(item.title)
                 fe.link({"href": str(item.link)})
-                fe.description(item.description)
+                if item.description:
+                    fe.description(item.description)
+                    fe.content(item.description, type="html" if "<" in item.description else None)
                 fe.author(item.author)
                 fe.comments(item.comments)
                 if item.enclosure:
