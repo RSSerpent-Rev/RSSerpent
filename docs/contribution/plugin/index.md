@@ -60,7 +60,7 @@ async def provider() -> Dict[str, Any]:
 ```
 
 !!!note
-    See more example routers [here](https://github.com/RSSerpent-Rev/RSSerpent/tree/master/rsserpent/plugins/builtin).
+    See more example routers [here](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent/plugins/builtin).
 
 !!!warning
     The `provider` function must be **async** and can **not** have [position-only arguments](https://docs.python.org/3/faq/programming.html#faq-positional-only-arguments).
@@ -131,7 +131,7 @@ Lint.....................................................................Passed
 
 !!!note
     In pre-commit hooks we run [black](https://github.com/psf/black), [isort](https://github.com/pycqa/isort) for source code formatting, [mypy](https://github.com/python/mypy) for type checking, and [flake8](https://github.com/PyCQA/flake8) for linting.
-    We also run [**nitpick**](https://github.com/andreoliwa/nitpick), which contains a set of recommended [configurations](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/styles/main.toml) for black/isort/mypy/flake8 etc from the upstream.
+    We also run [**nitpick**](https://github.com/andreoliwa/nitpick), which contains a set of recommended [configurations](https://github.com/RSSerpent-Rev/RSSerpent/blob/main/styles/main.toml) for black/isort/mypy/flake8 etc from the upstream.
 
 !!!warning
     If no pre-commit hooks are triggered (that's to say, you didn't see lines of checks marked with either *Passed* or *Failed*, as shown above) when you do `git commit`, you can manually install the pre-commit hooks with `pre-commit install -t pre-commit -t commit-msg`.

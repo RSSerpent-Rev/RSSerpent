@@ -47,20 +47,13 @@ After successful installation, you need to run `python -V` (or `python3 -V`) to 
 
 ## Poetry
 
-[Poetry](https://python-poetry.org/) is a modern Python packaging and dependency management tool and is currently used by RSSerpent. Install `poetry` with:
+[Poetry](https://python-poetry.org/) is a modern Python packaging and dependency management tool and is currently used by RSSerpent. To Install `poetry` please view:
 
-=== "Unix"
-    ```bash
-    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
-    ```
-
-=== "Windows"
-    ```bash
-    (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py -UseBasicParsing).Content | python -
+https://github.com/python-poetry/install.python-poetry.org
     ```
 
 ## Further Steps
 
 - If you are contributing to the RSSerpent core, or an existing RSSerpent plugin project, please refer to [Core](core.md);
 - If you are starting a new RSSerpent plugin project, please refer to [Plugin](./plugin/index.md);
-- If you'd like to financially support the RSSerpent project, check out [Open Collective](https://opencollective.com/rsserpent) or [爱发电](https://afdian.net/@rsserpent).
+<!-- - If you'd like to financially support the RSSerpent project, check out [Open Collective](https://opencollective.com/rsserpent) or [爱发电](https://afdian.net/@rsserpent). -->

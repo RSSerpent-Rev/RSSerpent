@@ -32,7 +32,7 @@ This will install project dependencies as well as [pre-commit](https://pre-commi
 
 ## Branch
 
-In you local repository, create a new branch by running `git checkout -b <branch name>`. Do all you work on this branch, instead of the `master` (or `main`) branch. This will keep your fork free of conflict with the original repository.
+In you local repository, create a new branch by running `git checkout -b <branch name>`. Do all you work on this branch, instead of the `main` branch. This will keep your fork free of conflict with the original repository.
 
 Generally we use a different branch for each pull request.
 

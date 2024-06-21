@@ -1,7 +1,7 @@
 services:
   rsserpent:
     container_name: rsserpent
-    image: ghcr.io/rsserpent-rev/rsserpent:master
+    image: ghcr.io/rsserpent-rev/rsserpent:main
     ports:
       - "8000:8000"
     volumes:

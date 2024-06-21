@@ -60,7 +60,7 @@ async def provider() -> Dict[str, Any]:
 ```
 
 !!!note
-    你可以在[这里](https://github.com/RSSerpent-Rev/RSSerpent/tree/master/rsserpent/plugins/builtin)找到更多路由范例。
+    你可以在[这里](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent/plugins/builtin)找到更多路由范例。
 
 !!!warning
     数据提供函数 `provider` 必须是 **async** 函数，并且不能包含 [position-only arguments](https://docs.python.org/3/faq/programming.html#faq-positional-only-arguments)。
@@ -132,7 +132,7 @@ Lint.....................................................................Passed
 
 !!!note
     我们在 pre-commit 钩子中运行了 [black](https://github.com/psf/black)/[isort](https://github.com/pycqa/isort) 代码格式化, [mypy](https://github.com/python/mypy) 类型检查，以及 [flake8](https://github.com/PyCQA/flake8) 代码风格检查。
-    我们还运行了 [**nitpick**](https://github.com/andreoliwa/nitpick) 这个钩子：它包含了一系列 RSSerpent 官方推荐的 black/isort/mypy/flake8 等开发工具的[配置](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/styles/main.toml)，希望插件开发者能够遵守。
+    我们还运行了 [**nitpick**](https://github.com/andreoliwa/nitpick) 这个钩子：它包含了一系列 RSSerpent 官方推荐的 black/isort/mypy/flake8 等开发工具的[配置](https://github.com/RSSerpent-Rev/RSSerpent/blob/main/styles/main.toml)，希望插件开发者能够遵守。
 
 !!!warning
     如果你在执行 `git commit` 时，没有触发任何 pre-commit 钩子（也就是说，没有看到如上标记有 *Passed* 通过或 *Failed* 失败的若干行检查），你可以运行 `pre-commit install -t pre-commit -t commit-msg` 来手动安装 pre-commit 钩子。

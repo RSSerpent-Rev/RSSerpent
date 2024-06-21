@@ -32,7 +32,7 @@ poetry run pre-commit install -t pre-commit -t commit-msg
 
 ## 创建分支
 
-在你的本地代码仓库中，运行 `git checkout -b <分支名>` 以创建一个分支。请在这个分枝上完成你所有的工作，不要去使用 `master`（或 `main`）分支。这样做能保证你的复刻仓库与原仓库之间没有冲突。
+在你的本地代码仓库中，运行 `git checkout -b <分支名>` 以创建一个分支。请在这个分枝上完成你所有的工作，不要去使用 `main` 分支。这样做能保证你的复刻仓库与原仓库之间没有冲突。
 
 一般来说，对于每一个拉去请求，我们都使用不同的分支。取决于你的网络连接质量，安装依赖的过程可能需要数分钟不等。
 
@@ -46,7 +46,7 @@ poetry run pre-commit install -t pre-commit -t commit-msg
 完成推送后，打开浏览器，跳转到你复刻的代码仓库。你会在文件列表上方看到一个 *Pull request* 按钮。点击该按钮创建拉取请求。通过拉取请求，你能将你在自己复刻上的工作成果提交到原仓库，而原仓库的维护者会决定是否要接受你的拉取请求。
 
 !!!note
-    如需进一步了解拉取请求，请阅读 GitHub [文档](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)。
+    如需进一步了解拉取请求，请阅读 GitHub [文档]。
 
 ## 接下来…
 

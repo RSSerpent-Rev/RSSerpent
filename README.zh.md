@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="RSSerpent" src="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png" width="250" />
+<img alt="RSSerpent" src="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/main/docs/__asset__/logo-200.png" width="250" />
 </p>
 
 [![python: 3.10.0+](https://img.shields.io/badge/python->=3.10.0-blue.svg)](https://www.python.org/downloads/)
@@ -9,15 +9,15 @@
 [![pypi: version](https://img.shields.io/pypi/v/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
 [![pypi downloads: per month](https://img.shields.io/pypi/dm/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
 
-[![github test status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/test.yaml?branch=master&label=test&logo=github&message=passed)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/test.yaml)
-[![codecov status](https://codecov.io/gh/RSSerpent-Rev/RSSerpent/branch/master/graph/badge.svg?token=FQZ5OWOQRO)](https://codecov.io/gh/RSSerpent-Rev/RSSerpent)
+[![github test status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/test.yaml?branch=main&label=test&logo=github&message=passed)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/test.yaml)
+[![codecov status](https://codecov.io/gh/RSSerpent-Rev/RSSerpent/branch/main/graph/badge.svg?token=FQZ5OWOQRO)](https://codecov.io/gh/RSSerpent-Rev/RSSerpent)
 [![github docker status](https://img.shields.io/github/actions/workflow/status/RSSerpent-Rev/RSSerpent/docker.yaml?label=docker&logo=docker)](https://github.com/RSSerpent-Rev/RSSerpent/actions/workflows/docker.yaml)
 
 [![chat on telegram](https://img.shields.io/badge/chat%20on-telegram-blue.svg)](https://t.me/rsserpent_rev)
 
 RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikipedia.org/wiki/RSS) 或 [Atom](https://zh.wikipedia.org/zh-cn/Atom_(%E6%A8%99%E6%BA%96)) 订阅那些不支持 RSS 订阅的网站。
 
-[English](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/README.md) | [中文](https://github.com/RSSerpent-Rev/RSSerpent/blob/master/README.zh.md)
+[English](https://github.com/RSSerpent-Rev/RSSerpent/blob/main/README.md) | [中文](https://github.com/RSSerpent-Rev/RSSerpent/blob/main/README.zh.md)
 
 # 快速开始
 
