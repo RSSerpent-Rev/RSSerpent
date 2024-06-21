@@ -1,8 +1,9 @@
+import inspect
 import logging
 import os
 
 
-def get_logger(name: str) -> logging.Logger:
+def get_logger_by(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     try:
         from uvicorn.logging import DefaultFormatter
@@ -17,4 +18,10 @@ def get_logger(name: str) -> logging.Logger:
     return logger
 
 
-logger = get_logger("rsserpent")
+def get_logger() -> logging.Logger:
+    stack = inspect.stack()
+    caller_module = inspect.getmodule(stack[1][0]).__name__.split(".")[0]  # type: ignore[union-attr]
+    return get_logger_by(caller_module)
+
+
+logger = get_logger()

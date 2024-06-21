@@ -4,7 +4,7 @@ from rsserpent_rev.log import get_logger
 
 path = "/_/example/log"
 
-logger = get_logger(__name__)
+logger = get_logger()
 
 
 async def provider() -> dict[str, Any]:
