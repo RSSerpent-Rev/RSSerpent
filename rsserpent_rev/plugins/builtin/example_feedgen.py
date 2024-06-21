@@ -24,9 +24,11 @@ async def provider() -> Feed:
     fe.title("A second test")
     fe.link(href="http://example.com/2", rel="alternate")
     fe.content("And here the content")
+    fe.pubDate("2010-02-03T16:00:00+00:00")
     fe = fg.add_entry()
     fe.id("http://lernfunk.de/media/654323")
     fe.title("A third test")
     fe.link(href="http://example.com/3", rel="alternate")
     fe.content("And here the content")
+    fe.pubDate("2010-02-05T16:00:00+00:00")
     return fg
