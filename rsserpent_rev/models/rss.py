@@ -1,3 +1,4 @@
+import re
 from typing import TYPE_CHECKING, Any
 
 import arrow
@@ -157,7 +158,9 @@ class RSSFeed(BaseModel):
                 fe.link({"href": str(item.link)})
                 if item.description:
                     fe.description(item.description)
-                    fe.content(item.description, type="html" if "<" in item.description else None)
+
+                    is_html = re.search(r"<[^>]+>", item.description)
+                    fe.content(item.description, type="html" if is_html else None)
                 fe.author(item.author)
                 fe.comments(item.comments)
                 if item.enclosure:
