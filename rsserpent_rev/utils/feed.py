@@ -26,7 +26,7 @@ def filter_fg(fg: feedgen.feed.FeedGenerator, qs: QueryString) -> None:
         and (qs.date_after is None or entry.pubDate() > qs.date_after)
     ]
     if qs.limit:
-        new_entry = new_entry[: int(qs.limit)]
+        new_entry = new_entry[: qs.limit]
     fg.entry(new_entry, replace=True)
 
 
