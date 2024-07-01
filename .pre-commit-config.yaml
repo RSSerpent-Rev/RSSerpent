@@ -12,7 +12,7 @@ repos:
       - id: trailing-whitespace
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.4.7
+    rev: v0.5.0
     hooks:
       # Run the linter.
       - id: ruff
@@ -20,13 +20,13 @@ repos:
       # Run the formatter.
       - id: ruff-format
   - repo: https://github.com/crate-ci/typos
-    rev: v1.22.0
+    rev: v1.22.9
     hooks:
       - id: typos
         name: Check Typos
         args: []
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
+    rev: v1.10.1
     hooks:
       - id: mypy
         name: Type Check
