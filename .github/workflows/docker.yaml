@@ -45,7 +45,7 @@ jobs:
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
           cache-from: type=gha,scope=${{ github.workflow }}
           cache-to: type=gha,scope=${{ github.workflow }}
