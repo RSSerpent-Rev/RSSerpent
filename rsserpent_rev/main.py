@@ -55,7 +55,7 @@ def startup() -> None:
         os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp"  # pragma: is_not_linux
     logger.info(f"Running on {sys.platform}")
     logger.info(f"Installing Chromium at {os.environ.get('PLAYWRIGHT_BROWSERS_PATH')}")
-    subprocess.run("playwright install chromium".split())
+    subprocess.run(["playwright", "install", "chromium"])
 
 
 async def index(request: Request) -> TemplateResponse:
