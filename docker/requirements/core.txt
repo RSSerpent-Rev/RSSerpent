@@ -1,1 +1,0 @@
-# The core image does not install extra plugins.

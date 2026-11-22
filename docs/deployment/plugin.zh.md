@@ -1,31 +1,52 @@
-# 安装与启用插件
+# 配置插件并部署
 
-使用 CPython 3.14 或 3.15，将插件安装在 RSSerpent 0.3 所在的 Python 环境中。[官方插件仓库](https://github.com/RSSerpent-Rev/rsserpent-plugins)将 10 个官方插件构建为一个 `rsserpent-plugins` wheel。第三方插件可以从各自的 wheel、Git 仓库或 PyPI 安装。
-
-在 `rsserpent.toml` 中列出要启用的 Python 模块。每个模块必须导出 `plugin` 对象。
+官方镜像从 `/etc/rsserpent/rsserpent.toml` 读取配置。创建 `rsserpent.toml`，填入要安装的包和要启用的 Python 模块。
 
 ```toml
-plugins = ["rsserpent_plugins.bilibili", "my_rss_plugin"]
+plugin_requirements = ["my-rss-plugin==0.1.0"]
+plugins = ["my_rss_plugin"]
 ```
+
+每个需要安装的包写一条依赖。每个启用的模块必须导出 `plugin` 对象。请选择你信任的包和 Git 仓库。
+
+在 TOML 所在目录启动容器。
 
 ```sh
-RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
+docker run -d --name rsserpent -p 8000:8000 \
+  --mount "type=bind,source=$PWD/rsserpent.toml,target=/etc/rsserpent/rsserpent.toml,readonly" \
+  ghcr.io/rsserpent-rev/rsserpent:main
 ```
 
-未设置 `RSSERPENT_CONFIG` 或列表为空时，应用不注册插件路由。请只配置信任的模块。迁移已安装的第三方插件时，取原入口中 `:plugin` 前面的模块名即可。迁移官方插件时，安装聚合 wheel，再配置 `rsserpent_plugins` 下的对应模块。启用后仍可使用原有订阅 URL。内置示例通过 `rsserpent_rev.plugins.builtin` 启用，替代原来的 `RSSERPENT_ENABLE_EXAMPLES` 开关。
+打开[路由列表](http://localhost:8000/all_routes)确认插件已启用。如果插件定义了 `/my-feed`，可以订阅 `/my-feed.rss` 或 `/my-feed.atom`。使用仓库中的 Compose 文件时，编辑 `docker/rsserpent.toml`，然后运行 `docker compose up -d`。
 
-## 构建 Docker 镜像
+## 从 Git 安装
 
-如需运行默认 Compose 示例，在核心目录运行：
+使用完整的提交 SHA。包位于仓库的子目录时，在地址末尾加上 `#subdirectory=` 和包含它的 `pyproject.toml` 的目录路径。
 
-```sh
-docker compose up --build
+```toml
+plugin_requirements = [
+  "my-rss-plugin @ git+https://github.com/OWNER/my-rss-plugin.git@COMMIT_SHA#subdirectory=plugins/my-rss-plugin",
+]
+plugins = ["my_rss_plugin"]
 ```
 
-Compose 从固定的 Git 提交安装官方插件，并只读挂载 `docker/rsserpent.toml`。示例配置启用 Bilibili。自定义部署时，将插件安装依赖写入 `docker/requirements/custom.txt`，在 TOML 文件中列出实际要加载的模块。
+## 启用官方插件
 
-```sh
-RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt RSSERPENT_CONFIG_FILE=./my-config.toml docker compose up --build
+加上官方聚合包的依赖，并列出要启用的模块。模块名称见[官方插件模块表](https://github.com/RSSerpent-Rev/rsserpent-plugins#official-modules)。
+
+```toml
+plugin_requirements = [
+  "rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1",
+]
+plugins = ["rsserpent_plugins.bilibili"]
 ```
 
-镜像在构建时安装依赖并检查它们与锁定的核心兼容。应用在启动时加载配置的模块。用 `docker build --target core .` 构建纯核心镜像。需要 Chromium 时，选择 `--target browser` 并提供相应的插件依赖和运行配置。在 Docker 之外用 `uv run --locked playwright install chromium` 安装 Chromium。
+插件需要 Chromium 时，把 Docker 命令中的镜像换成 `ghcr.io/rsserpent-rev/rsserpent-browser:main`。发布插件前，请用目标镜像验证 Python 依赖和所需系统库。
+
+## 重启与排查
+
+容器在启动 Web 服务前安装配置中的包，并按镜像内的核心依赖版本检查冲突。遇到冲突时，容器退出。用 `docker logs rsserpent` 查看失败的依赖或模块。
+
+缓存缺少对应包时，下载需要联网。重建容器时也可能重新下载。空配置启动纯核心，跳过插件安装。
+
+修改 TOML 后，用 `docker rm -f rsserpent` 移除旧容器，再运行启动命令。用 Compose 部署时，运行 `docker compose up -d --force-recreate`。

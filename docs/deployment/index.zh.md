@@ -1,20 +1,11 @@
-# 自建
+# 自建 RSSerpent
 
-我们鼓励你自建 RSSerpent 实例。
+启动官方镜像，打开[本机的 8000 端口](http://localhost:8000/)。
 
-!!!note
-    实例是指一份正在运行中的 RSSerpent 软件体。
+```sh
+docker run --rm -p 8000:8000 ghcr.io/rsserpent-rev/rsserpent:main
+```
 
-<!-- 自建既不复杂也不困难，你不需要有任何计算机编程经验即可完成这一任务。文档提供了若干易学易懂的自建教程供你参考：
+这条命令启动纯核心。要添加订阅，请按[插件部署](plugin.zh.md)配置插件。
 
-- [[使用 Deta 部署]](deta.md)
-- [[使用 Heroku 部署]](heroku.md)
-- [[使用 Vercel 部署]](vercel.md) -->
-
-## 官方实例
-
-RSSerpent 官方部署了一些实例。如果你确认自建并不适合你自己，可以考虑使用以下之一：
-
-- <https://rsserpent.imciel.com>, 部署在 [vultr.com](https://www.vultr.com/) [[source](https://github.com/RSSerpent-Rev/rsserpent-official)]；
-<!-- - <https://rsserpent.deta.dev>, 部署在 [deta.sh](https://www.deta.sh/) [[source](https://github.com/RSSerpent-Rev/RSSerpent-deploy-deta)]；
-- <https://rsserpent.herokuapp.com>, 部署在 [heroku.com](https://www.heroku.com/) [[source](https://github.com/RSSerpent-Rev/RSSerpent-deploy-heroku)]； -->
+也可以打开[官方实例](https://rsserpent.imciel.com/)使用已有订阅。

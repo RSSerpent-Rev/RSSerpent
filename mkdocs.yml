@@ -33,9 +33,6 @@ nav:
     - usage/router.md
   - Deployment:
     - deployment/index.md
-    - deployment/deta.md
-    - deployment/heroku.md
-    - deployment/vercel.md
     - deployment/plugin.md
   - Contribution:
     - contribution/index.md

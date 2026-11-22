@@ -1,1 +1,2 @@
-plugins = ["rsserpent_plugins.bilibili"]
+plugin_requirements = []
+plugins = []

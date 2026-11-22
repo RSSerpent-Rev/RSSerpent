@@ -1,5 +1,9 @@
 # Core
 
+## Startup and the application
+
+The container startup command reads deployment TOML and prepares the Python environment. The module loader imports the selected plugins. The application factory takes loaded plugin objects and builds routes and lifespan handlers.
+
 !!!note
     Make sure you have read [Environment](index.md) before continuing.
 

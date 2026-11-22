@@ -3,7 +3,6 @@
 </p>
 
 [![CPython: 3.14 and 3.15](https://img.shields.io/badge/CPython-3.14%20%7C%203.15-blue.svg)](https://www.python.org/downloads/)
-[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue.svg)](https://github.com/python/mypy)
 
 [![pypi: version](https://img.shields.io/pypi/v/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
@@ -21,8 +20,13 @@ RSSerpent 是一个开源软件。它能帮助你使用 [RSS](https://zh.wikiped
 
 # 快速开始
 
-- 示例：<https://rsserpent.imciel.com/>
-- 文档：<https://rsserpent-rev.github.io/RSSerpent/latest/>
+用 Docker 启动官方镜像。
+
+```sh
+docker run --rm -p 8000:8000 ghcr.io/rsserpent-rev/rsserpent:main
+```
+
+[配置插件并部署](docs/deployment/plugin.zh.md) · [文档](https://rsserpent-rev.github.io/RSSerpent/latest/) · [官方实例](https://rsserpent.imciel.com/)
 
 # 致谢
 

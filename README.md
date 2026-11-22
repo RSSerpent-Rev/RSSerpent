@@ -4,7 +4,6 @@
 </p>
 
 [![CPython: 3.14 and 3.15](https://img.shields.io/badge/CPython-3.14%20%7C%203.15-blue.svg)](https://www.python.org/downloads/)
-[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![mypy: checked](https://img.shields.io/badge/mypy-checked-blue.svg)](https://github.com/python/mypy)
 
 [![pypi: version](https://img.shields.io/pypi/v/rsserpent-rev)](https://pypi.org/project/rsserpent-rev/)
@@ -25,8 +24,13 @@ RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org
 
 # Quick Start
 
-- Official Instance: <https://rsserpent.imciel.com/>
-- Documentation: <https://rsserpent-rev.github.io/RSSerpent/latest/>
+Start the official image with Docker.
+
+```sh
+docker run --rm -p 8000:8000 ghcr.io/rsserpent-rev/rsserpent:main
+```
+
+[Deploy with a plugin configuration](docs/deployment/plugin.md) · [Documentation](https://rsserpent-rev.github.io/RSSerpent/latest/) · [Official instance](https://rsserpent.imciel.com/)
 
 # Thanks
 

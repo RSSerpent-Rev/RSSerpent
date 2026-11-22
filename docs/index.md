@@ -8,8 +8,9 @@ RSSerpent is an open-source software that creates [RSS](https://en.wikipedia.org
 
 ## Quick Start
 
-- Official Instance: <https://rsserpent.imciel.com/>
-- Documentation: <https://rsserpent-rev.github.io/RSSerpent/latest/>
+- [Run the official image](deployment/index.md)
+- [Deploy with your own plugins](deployment/plugin.md)
+- [Official instance](https://rsserpent.imciel.com/)
 
 ## Thanks
 The RSSerpent Project is heavily inspired by [RSSHub](https://github.com/DIYgod/RSSHub) 🎉 We pay the highest possible tribute to RSSHub & its maintainers.

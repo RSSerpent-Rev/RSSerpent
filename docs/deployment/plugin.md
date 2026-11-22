@@ -1,31 +1,52 @@
-# Install and enable plugins
+# Deploy with plugins
 
-Install plugins in the same Python environment as RSSerpent 0.3. Use CPython 3.14 or 3.15. The [official plugin repository](https://github.com/RSSerpent-Rev/rsserpent-plugins) builds one `rsserpent-plugins` wheel for all ten official modules. Third-party plugins can use their own wheels, Git repositories or PyPI packages.
-
-In `rsserpent.toml`, list the Python modules to enable. Each module must export a `plugin` object:
+The official image reads a TOML file at `/etc/rsserpent/rsserpent.toml`. Create `rsserpent.toml` with the packages to install and the Python modules to enable.
 
 ```toml
-plugins = ["rsserpent_plugins.bilibili", "my_rss_plugin"]
+plugin_requirements = ["my-rss-plugin==0.1.0"]
+plugins = ["my_rss_plugin"]
 ```
+
+Use a requirement for each package you need. Each enabled module must export a `plugin` object. Use packages and Git repositories you trust.
+
+Run Docker from the directory that contains the TOML file.
 
 ```sh
-RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
+docker run -d --name rsserpent -p 8000:8000 \
+  --mount "type=bind,source=$PWD/rsserpent.toml,target=/etc/rsserpent/rsserpent.toml,readonly" \
+  ghcr.io/rsserpent-rev/rsserpent:main
 ```
 
-Without `RSSERPENT_CONFIG` or with an empty list, the app starts with no plugin routes. Only list modules whose code you trust. To migrate an installed third-party plugin, use the module name before `:plugin` in its old entry point. For the official plugins, install the aggregate wheel and use the corresponding modules under `rsserpent_plugins`. Existing feed URLs work after you enable the corresponding module. For built-in examples, list `rsserpent_rev.plugins.builtin` in place of the old `RSSERPENT_ENABLE_EXAMPLES` switch.
+Open [the route list](http://localhost:8000/all_routes). If your plugin defines `/my-feed`, subscribe to `/my-feed.rss` or `/my-feed.atom`. When you use the Compose file from the repository, edit `docker/rsserpent.toml` and run `docker compose up -d`.
 
-## Build a Docker image
+## Install from Git
 
-For the default Compose example, run this command from the core checkout:
+Use a full commit SHA. For a package in a repository subdirectory, add `#subdirectory=` followed by the path to the directory that contains its `pyproject.toml`.
 
-```sh
-docker compose up --build
+```toml
+plugin_requirements = [
+  "my-rss-plugin @ git+https://github.com/OWNER/my-rss-plugin.git@COMMIT_SHA#subdirectory=plugins/my-rss-plugin",
+]
+plugins = ["my_rss_plugin"]
 ```
 
-Compose installs the official plugins from a fixed Git commit and mounts `docker/rsserpent.toml` read-only. The example enables Bilibili. For another setup, put the plugin package requirements in `docker/requirements/custom.txt` and the module names in a TOML file.
+## Enable an official plugin
 
-```sh
-RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt RSSERPENT_CONFIG_FILE=./my-config.toml docker compose up --build
+Add the official package requirement and list the modules you want to enable. Use the [official module table](https://github.com/RSSerpent-Rev/rsserpent-plugins#official-modules) to find their names.
+
+```toml
+plugin_requirements = [
+  "rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1",
+]
+plugins = ["rsserpent_plugins.bilibili"]
 ```
 
-The image installs packages at build time and checks that they work with the locked core. The application loads the configured modules at startup. Run `docker build --target core .` for a core-only image. For plugins that require Chromium, use `--target browser` and the appropriate plugin requirements and runtime configuration. Outside Docker, install Chromium with `uv run --locked playwright install chromium`.
+For plugins that use Chromium, use `ghcr.io/rsserpent-rev/rsserpent-browser:main` in the same Docker command. When you publish a plugin, test that its Python packages and required system libraries work in the image.
+
+## Restart and diagnose
+
+The container installs the configured packages before it starts the web server. It uses the core image's package versions as constraints. A conflict stops startup. Read `docker logs rsserpent` to identify a requirement or module that failed.
+
+Package downloads require network access when the cache lacks the artifacts. A new container can need to download packages again. An empty configuration starts the core and skips all plugin installation.
+
+After editing the TOML, remove the old container with `docker rm -f rsserpent` and run the Docker command again. With Compose, run `docker compose up -d --force-recreate`.
