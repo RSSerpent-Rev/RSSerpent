@@ -1,3 +1,4 @@
+import asyncio
 import os
 import threading
 import time
@@ -15,6 +16,7 @@ from typing import (
 __all__ = ("cached",)
 
 CACHE_EXPIRE = int(os.environ.get("CACHE_EXPIRE", 60 * 60))
+DEFAULT_CACHE_SIZE = 256
 
 AsyncFn = TypeVar("AsyncFn", bound=Callable[..., Awaitable[Any]])
 
@@ -33,15 +35,16 @@ class CacheKey:
     """
 
     __sentinel__ = object()
-    __slots__ = "hashvalue"
+    __slots__ = ("arguments", "hashvalue")
 
     def __init__(self, key: tuple[Any, ...]) -> None:
+        self.arguments = key
         self.hashvalue = hash(key)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, CacheKey):
             raise NotImplementedError()
-        return self.hashvalue == other.hashvalue
+        return self.arguments == other.arguments
 
     def __hash__(self) -> int:
         return self.hashvalue
@@ -49,8 +52,6 @@ class CacheKey:
     @classmethod
     def make(cls, args: tuple[Any, ...], kwds: dict[str, Any]) -> "CacheKey":
         """Create a `CacheKey` instance from any function parameters.
-
-        Note that parameters of non-primitive types are discarded.
 
         Args:
             args: Positional arguments in function parameters.
@@ -67,7 +68,8 @@ class CacheKey:
         # keyword arguments
         if kwds:
             key.append(cls.__sentinel__)
-            for _, argument in sorted(kwds.items()):
+            for name, argument in sorted(kwds.items()):
+                key.append(name)
                 key.append(argument)
                 key.append(type(argument))
         return CacheKey(tuple(key))
@@ -102,14 +104,16 @@ class LRUCache(OrderedDict):  # type: ignore[type-arg]
         In case of cache miss / expire, `None` is returned. Otherwise the cached value
         is returned and moved to the end of the list.
         """
-        if key not in self:
-            return None
-        value: CacheValue = super().__getitem__(key)
-        if value.expired < time.monotonic():
-            return None
-        self.move_to_end(key)
-        self.hits += 1
-        return value
+        with self.lock:
+            if key not in self:
+                return None
+            value: CacheValue = super().__getitem__(key)
+            if value.expired <= time.monotonic():
+                del self[key]
+                return None
+            self.move_to_end(key)
+            self.hits += 1
+            return value
 
     def __setitem__(self, key: CacheKey, value: CacheValue) -> None:
         """Set a cache (key, value) pair.
@@ -120,13 +124,23 @@ class LRUCache(OrderedDict):  # type: ignore[type-arg]
         item is deleted.
         """
         with self.lock:
+            now = time.monotonic()
+            self.misses += 1
+            if value.expired <= now:
+                return
+            if len(self) >= self.maxsize:
+                for old_key in [old_key for old_key, old_value in self.items() if old_value.expired <= now]:
+                    del self[old_key]
             if key in self:
                 self.move_to_end(key)
             super().__setitem__(key, value)
-            self.misses += 1
             if len(self) > self.maxsize:
                 # do not use `self.popitem`
                 del self[next(iter(self))]
+
+    def clear(self) -> None:
+        with self.lock:
+            super().clear()
 
     @property
     def size(self) -> int:
@@ -137,9 +151,15 @@ class LRUCache(OrderedDict):  # type: ignore[type-arg]
 def decorator(fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
     """Cache decorator."""
     cache = LRUCache(maxsize=maxsize)
+    pending: dict[tuple[asyncio.AbstractEventLoop, CacheKey], asyncio.Task[Any]] = {}
+
+    async def load(key: CacheKey, args: tuple[Any, ...], kwds: dict[str, Any]) -> Any:
+        result = await fn(*args, **kwds)
+        cache[key] = CacheValue(expired=time.monotonic() + expire, data=result)
+        return result
 
     @wraps(fn)
-    async def wrapper(*args: tuple[Any, ...], **kwds: dict[str, Any]) -> Any:
+    async def wrapper(*args: Any, **kwds: Any) -> Any:
         """Wrap the original async `fn`.
 
         Cached results will be returned if cache hit, otherwise
@@ -153,13 +173,25 @@ def decorator(fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
             The (maybe cached) result of `fn(*args, **kwds)`.
         """
         key = CacheKey.make(args, kwds)
-        value = cache[key]
-        # cache miss/expired
-        if value is None:
-            result = await fn(*args, **kwds)
-            cache[key] = CacheValue(expired=time.monotonic() + expire, data=result)
-            return result
-        return value.data
+        pending_key = (asyncio.get_running_loop(), key)
+
+        def discard(task: asyncio.Task[Any]) -> None:
+            with cache.lock:
+                if pending.get(pending_key) is task:
+                    del pending[pending_key]
+            if not task.cancelled():
+                task.exception()
+
+        with cache.lock:
+            value = cache[key]
+            if value is not None:
+                return value.data
+            task = pending.get(pending_key)
+            if task is None or task.done():
+                task = asyncio.create_task(load(key, args, kwds))
+                pending[pending_key] = task
+                task.add_done_callback(discard)
+        return await asyncio.shield(task)
 
     wrapper.__dict__["cache"] = cache
     wrapper.__dict__["expire"] = expire
@@ -171,11 +203,13 @@ def cached(fn: AsyncFn) -> AsyncFn: ...  # pragma: no cover
 
 
 @overload
-def cached(*, expire: int = CACHE_EXPIRE, maxsize: int = 0) -> Callable[[AsyncFn], AsyncFn]: ...  # pragma: no cover
+def cached(
+    *, expire: int = CACHE_EXPIRE, maxsize: int = DEFAULT_CACHE_SIZE
+) -> Callable[[AsyncFn], AsyncFn]: ...  # pragma: no cover
 
 
 def cached(
-    fn: AsyncFn | None = None, *, expire: int = CACHE_EXPIRE, maxsize: int = 0
+    fn: AsyncFn | None = None, *, expire: int = CACHE_EXPIRE, maxsize: int = DEFAULT_CACHE_SIZE
 ) -> AsyncFn | Callable[[AsyncFn], AsyncFn]:
     """Cache function results."""
     if fn is not None:
