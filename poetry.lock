@@ -283,21 +283,6 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli"]
 
 [[package]]
-name = "coverage-conditional-plugin"
-version = "0.5.0"
-description = "Conditional coverage based on any rules you define!"
-optional = false
-python-versions = ">=3.6,<4.0"
-files = [
-    {file = "coverage-conditional-plugin-0.5.0.tar.gz", hash = "sha256:053af7b38b07131748c6c9548c77895fd8e6b24ac81cb657f337415b64bdd3c1"},
-    {file = "coverage_conditional_plugin-0.5.0-py3-none-any.whl", hash = "sha256:513d65ebafdd16f20455d5b0ac0b72807a12ce16b7937a0d09a1c3e810eea5c2"},
-]
-
-[package.dependencies]
-coverage = ">=5,<7"
-packaging = ">=20.4"
-
-[[package]]
 name = "cssselect"
 version = "1.2.0"
 description = "cssselect parses CSS3 Selectors and translates them to XPath 1.0"
@@ -2042,4 +2027,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10.0"
-content-hash = "1861a8af7bfe966318ac9896b206d46469965c2c60ded236a75c34938ea7bbbd"
+content-hash = "f4ac73b3e1d1a8183a6119948a8cfc0a9cc98d3bd911ad360ea61a59e056481f"

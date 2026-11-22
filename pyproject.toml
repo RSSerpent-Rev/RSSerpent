@@ -52,7 +52,6 @@ uvicorn = "^0.29.0"
 
 # testing
 [tool.poetry.group.tests.dependencies]
-coverage-conditional-plugin = "^0.5.0"
 hypothesis = "^6.23.0"
 pytest = "^8.0"
 pytest-asyncio = "^0.18.1"
@@ -76,16 +75,12 @@ mkdocs-static-i18n = "^1.2"
 
 [tool.coverage.run]
 include = ["rsserpent_rev/*"]
-plugins = ["coverage_conditional_plugin"]
 
 [tool.coverage.report]
 exclude_lines = [
     "if TYPE_CHECKING:",
     "pragma: no cover"
 ]
-
-[tool.coverage.coverage_conditional_plugin.rules]
-is_not_linux = "sys_platform != 'linux'"
 
 [tool.ruff.lint]
 select = [
