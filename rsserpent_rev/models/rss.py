@@ -150,6 +150,8 @@ class RSSFeed(BaseModel):
                     cat["scheme"] = str(category.domain)
                 fg.category(cat)
         if self.items:
+            if any(item.author for item in self.items):
+                fg.load_extension("dc", atom=False)
             for item in self.items:
                 fe = fg.add_entry(order="append")
                 fe.title(item.title)
@@ -160,7 +162,9 @@ class RSSFeed(BaseModel):
 
                     is_html = re.search(r"<[^>]+>", item.description)
                     fe.content(item.description, type="html" if is_html else None)
-                fe.author(item.author)
+                if item.author:
+                    fe.author(name=item.author)
+                    fe.dc.dc_creator(item.author)
                 fe.comments(item.comments)
                 if item.enclosure:
                     fe.enclosure(

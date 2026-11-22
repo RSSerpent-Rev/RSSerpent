@@ -51,6 +51,23 @@ def test_optional_model_fields() -> None:
     assert len(ElementTree.fromstring(response.content).findall("{http://www.w3.org/2005/Atom}entry")) == 2
 
 
+def test_item_author_name_in_rss_and_atom() -> None:
+    async def provider() -> Feed:
+        return {
+            "title": "Example",
+            "link": "https://example.org",
+            "description": "Example feed",
+            "items": [{"title": "One", "author": "Creator"}],
+        }
+
+    client = client_for("/_/authors", provider)
+    rss = ElementTree.fromstring(client.get("/_/authors.rss").content)
+    assert rss.findtext("./channel/item/{http://purl.org/dc/elements/1.1/}creator") == "Creator"
+    atom = ElementTree.fromstring(client.get("/_/authors.atom").content)
+    namespace = {"atom": "http://www.w3.org/2005/Atom"}
+    assert atom.findtext("./atom:entry/atom:author/atom:name", namespaces=namespace) == "Creator"
+
+
 def test_filter_preserves_cached_source() -> None:
     feed = FeedGenerator()
     feed.title("Cached")
