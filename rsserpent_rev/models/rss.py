@@ -70,7 +70,7 @@ class Item(BaseModel):
     comments: HttpUrl | None = None
     enclosure: Enclosure | None = None
     guid: Guid | None = None
-    pub_date: Arrow = arrow.utcnow()
+    pub_date: Arrow | None = None
     source: Source | None = None
 
     class Config:  # noqa: D106
@@ -173,7 +173,8 @@ class RSSFeed(BaseModel):
                 if item.guid:
                     fe.guid(item.guid.value, isPermaLink=item.guid.is_perma_link)
 
-                fe.pubDate(item.pub_date.datetime)
+                if item.pub_date is not None:
+                    fe.pubDate(item.pub_date.datetime)
                 if item.source:
                     fe.source(title=item.source.name, url=str(item.source.url) if item.source.url else None)
 

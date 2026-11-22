@@ -83,3 +83,20 @@ def test_invalid_provider_output(error_client: TestClient, monkeypatch: pytest.M
 def test_disabled_debug(monkeypatch: pytest.MonkeyPatch, value: str) -> None:
     monkeypatch.setenv("DEBUG", value)
     assert not main.create_app([]).debug
+
+
+def test_wrapped_upstream_error_is_logged(
+    error_client: TestClient, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    async def fail(*_args: Any) -> Feed:
+        raise HTTPException(504, "Gateway Timeout", headers={"Retry-After": "60"}) from TimeoutError(
+            "internal upstream timeout"
+        )
+
+    monkeypatch.setattr(main, "fetch_data", fail)
+    response = error_client.get("/_/example")
+    assert response.status_code == 504
+    assert response.headers["Retry-After"] == "60"
+    assert response.text == "Gateway Timeout"
+    assert "internal upstream timeout" in caplog.text
+    assert "Traceback" in caplog.text

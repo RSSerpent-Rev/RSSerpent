@@ -3,6 +3,7 @@ import os
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
+from typing import cast
 
 import arrow
 import httpx
@@ -46,6 +47,15 @@ async def exception_handler(_request: Request, exception: Exception) -> Response
     if isinstance(exception, httpx.HTTPError):
         return PlainTextResponse("Bad Gateway", status_code=502)
     return PlainTextResponse("Internal Server Error", status_code=500)
+
+
+async def http_exception_handler(_request: Request, exception: Exception) -> Response:
+    error = cast(HTTPException, exception)
+    if error.status_code >= 500:
+        logger.error("Feed request failed", exc_info=exception)
+    if error.status_code in {204, 304}:
+        return Response(status_code=error.status_code, headers=error.headers)
+    return PlainTextResponse(error.detail, status_code=error.status_code, headers=error.headers)
 
 
 def env_enabled(name: str) -> bool:
@@ -154,7 +164,11 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
 
     application = Starlette(
         debug=env_enabled("DEBUG"),
-        exception_handlers={Exception: exception_handler, httpx.HTTPError: exception_handler},
+        exception_handlers={
+            Exception: exception_handler,
+            HTTPException: http_exception_handler,
+            httpx.HTTPError: exception_handler,
+        },
         lifespan=lifespan,
         routes=routes,
     )
