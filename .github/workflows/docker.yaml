@@ -5,8 +5,13 @@ on:
     paths:
       - '.github/workflows/docker.yaml'
       - 'Dockerfile'
+      - 'README.md'
+      - 'LICENSE'
+      - '.dockerignore'
+      - 'docker/requirements/**'
+      - 'pyproject.toml'
       - 'poetry.lock'
-      - 'scripts/docker-entrypoint.sh'
+      - 'scripts/verify-plugin-install.py'
       - 'rsserpent_rev/**'
   push:
     branches:
@@ -14,8 +19,13 @@ on:
     paths:
       - '.github/workflows/docker.yaml'
       - 'Dockerfile'
+      - 'README.md'
+      - 'LICENSE'
+      - '.dockerignore'
+      - 'docker/requirements/**'
+      - 'pyproject.toml'
       - 'poetry.lock'
-      - 'scripts/docker-entrypoint.sh'
+      - 'scripts/verify-plugin-install.py'
       - 'rsserpent_rev/**'
     tags:
       - '*.*.*'
@@ -26,6 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    strategy:
+      matrix:
+        include:
+          - target: core
+            suffix: ''
+          - target: browser
+            suffix: '-browser'
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -40,16 +57,17 @@ jobs:
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          images: ghcr.io/rsserpent-rev/rsserpent
+          images: ghcr.io/rsserpent-rev/rsserpent${{ matrix.suffix }}
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       - uses: docker/build-push-action@v5
         with:
-          cache-from: type=gha,scope=${{ github.workflow }}
-          cache-to: type=gha,scope=${{ github.workflow }}
+          cache-from: type=gha,scope=${{ github.workflow }}-${{ matrix.target }}
+          cache-to: type=gha,scope=${{ github.workflow }}-${{ matrix.target }}
           context: .
+          target: ${{ matrix.target }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.repository == 'RSSerpent-Rev/RSSerpent' && github.event_name != 'pull_request' }}

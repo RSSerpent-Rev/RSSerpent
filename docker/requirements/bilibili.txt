@@ -1,0 +1,1 @@
+rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/rsserpent-plugin-bilibili.git@e148adcf7212637f839df8e2e602b40d0e8ff920

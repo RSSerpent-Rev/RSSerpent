@@ -1,5 +1,7 @@
 # Install Plugins
 
+## Deployment templates
+
 !!!warning
     Be careful not to mistake **`rsserpent.txt`** for `requirements.txt`.
 
@@ -29,3 +31,25 @@ Several things to note when writing `rsserpent.txt`:
     # Git
     rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git@0609c0bd466e5d19fbb13078d9b93e0134b8c5bd
     ```
+
+## Docker
+
+The default image contains the core service. `docker compose up --build` builds
+the example with the pinned Bilibili plugin.
+
+For a custom image, put a plugin requirements file under `docker/requirements/`.
+Pin all extra runtime packages and use full commits for Git dependencies.
+Keep the core and its locked dependencies in `poetry.lock`.
+Remove the old `/app/rsserpent.txt` volume mount from the service.
+
+```sh
+docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
+```
+
+Use `--target browser` if a plugin needs Chromium. The browser and its system
+dependencies are installed during the build. The published browser image uses
+the name `ghcr.io/rsserpent-rev/rsserpent-browser`.
+
+For local development outside Docker, run `poetry run playwright install chromium`
+before using a browser plugin. Enable the optional integration tests with
+`poetry run pytest --live -m live`.

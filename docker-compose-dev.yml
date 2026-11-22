@@ -1,11 +1,9 @@
 services:
   rsserpent:
     container_name: rsserpent
-    build: .
+    build:
+      context: .
+      args:
+        RSSERPENT_PLUGIN_REQUIREMENTS: bilibili.txt
     ports:
       - "8000:8000"
-    environment:
-      - PLAYWRIGHT_BROWSERS_PATH=/app/cache
-    volumes:
-      - ./.cache:/app/cache
-      - ./test-rsserpent.txt:/app/rsserpent.txt
