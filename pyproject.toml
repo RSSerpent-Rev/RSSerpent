@@ -39,6 +39,7 @@ Jinja2 = "^3.0.1"
 playwright = "^1.44.0"
 pydantic = {version = "^2.7.4", extras = ["email"]}
 pyquery = "^1.4.3"
+regex = "2024.11.6"
 starlette = "0.37.2"
 types-lxml = "^2024.4.14"
 feedgen = "^1.0.0"
@@ -189,7 +190,6 @@ cache = "never"
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 [tool.pytest.ini_options]
 addopts = "--cov"

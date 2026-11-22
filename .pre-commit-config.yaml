@@ -36,15 +36,17 @@ repos:
         additional_dependencies:
           - arrow
           - httpx
-          - hypothesis
+          - hypothesis==6.103.2
           - importlib-metadata
           - playwright
           - pydantic
           - pytest
           - pytest-asyncio
-          - starlette
+          - regex
+          - starlette==0.37.2
           - types-dataclasses
           - types-lxml
+          - types-regex
           - uvicorn
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.27.0

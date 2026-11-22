@@ -42,3 +42,15 @@ Route parameters are required. However, sometimes routes need to access optional
 - Multiple query parameters are separated with an ampersand `&`.
 
 For example, assuming the `/bilibili/user/{id}/video` route accepts two query parameters, of which the `sort` parameter is used to specify the sorting criteria while the `order` parameter is used to indicate ascent/descent. Given that most users would probably subscribe to the latest videos, the route by default will sort the list of videos in chronologically descending order. However, if you need to subscribe to the most trending videos, the route should look like `/bilibili/user/{id}/video?sort=hot&order=desc`.
+# Request limits
+
+The built-in example routes require `RSSERPENT_ENABLE_EXAMPLES=true`. The numbered example accepts up to 1,000 items.
+Each regular expression filter accepts up to 512 characters. Filtering has a 50 ms time budget per request.
+Invalid filters and requests that exceed these limits return HTTP 400.
+
+Standard routes return RSS by default. Use `.rss` or `.atom` to select a format.
+Routes that take a full URL keep its suffix and return RSS by default. Use `?format=atom` for Atom.
+Encode the source URL's query delimiter as `%3F` so that its query stays in the path.
+
+A missing title, description, or category cannot match an include filter and does not match an exclude filter.
+Date filters skip entries with no date. Use `limit=0` for feed metadata only. Negative limits return HTTP 400.

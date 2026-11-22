@@ -7,10 +7,8 @@ from hypothesis import settings, strategies
 from hypothesis.provisional import urls
 from starlette.testclient import TestClient
 
-from rsserpent_rev import app
-from rsserpent_rev.main import startup
-
-startup()
+from rsserpent_rev.main import create_app
+from rsserpent_rev.plugins.builtin import plugin as builtin_plugin
 
 settings.register_profile("ci", deadline=500, max_examples=200)
 settings.register_profile("default", max_examples=50)
@@ -36,4 +34,4 @@ class Times:
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     """Share one test client across the whole module with `pytest.fixture`."""
-    return TestClient(app, backend_options={"use_uvloop": True})
+    return TestClient(create_app([builtin_plugin]), backend_options={"use_uvloop": True})

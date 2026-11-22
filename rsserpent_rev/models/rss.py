@@ -132,7 +132,7 @@ class RSSFeed(BaseModel):
         fg.pubDate(self.pub_date.datetime)
         fg.lastBuildDate(self.last_build_date.datetime)
         fg.generator(self.generator)
-        fg.docs(self.docs)
+        fg.docs(str(self.docs))
         fg.ttl(self.ttl)
         if self.image:
             fg.image(
@@ -149,13 +149,14 @@ class RSSFeed(BaseModel):
                     "term": category.name,
                 }
                 if category.domain:
-                    cat["scheme"] = category.domain
+                    cat["scheme"] = str(category.domain)
                 fg.category(cat)
         if self.items:
             for item in self.items:
                 fe = fg.add_entry(order="append")
                 fe.title(item.title)
-                fe.link({"href": str(item.link)})
+                if item.link is not None:
+                    fe.link({"href": str(item.link)})
                 if item.description:
                     fe.description(item.description)
 
@@ -174,7 +175,7 @@ class RSSFeed(BaseModel):
 
                 fe.pubDate(item.pub_date.datetime)
                 if item.source:
-                    fe.source(title=item.source.name, url=item.source.url)
+                    fe.source(title=item.source.name, url=str(item.source.url) if item.source.url else None)
 
                 if item.categories:
                     for category in item.categories:
@@ -182,6 +183,6 @@ class RSSFeed(BaseModel):
                             "term": category.name,
                         }
                         if category.domain:
-                            cat["scheme"] = category.domain
+                            cat["scheme"] = str(category.domain)
                         fe.category(cat)
         return fg

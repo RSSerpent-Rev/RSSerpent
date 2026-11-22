@@ -5,6 +5,13 @@ from typing import Any
 from ..models import Feed, ProviderFn
 
 
+class ProviderInputError(ValueError):
+    """A required provider parameter is missing or has an invalid value."""
+
+    def __init__(self, name: str, *, missing: bool = False) -> None:
+        super().__init__(f"{'Missing' if missing else 'Invalid'} parameter: {name}")
+
+
 def convert(value: str, type_: type) -> Any:
     """Convert string `value` to type `type_`."""
     if type_ is bool:
@@ -36,8 +43,13 @@ async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_pa
         # ignore `*args` & `**kwds` arguments
         if parameter.kind in (Parameter.VAR_POSITIONAL, Parameter.VAR_KEYWORD):
             continue
-        parameter_value = look_up_parameter_value(parameter, path_params, query_params)
+        try:
+            parameter_value = look_up_parameter_value(parameter, path_params, query_params)
+        except ValueError as exception:
+            raise ProviderInputError(parameter.name) from exception
         if parameter_value is None:
+            if parameter.default is Parameter.empty:
+                raise ProviderInputError(parameter.name, missing=True)
             continue
         # handle positional-or-keyword & keyword-only arguments
         elif parameter.kind in (

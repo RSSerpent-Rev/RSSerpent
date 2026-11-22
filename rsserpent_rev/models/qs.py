@@ -1,4 +1,4 @@
-from pydantic import AwareDatetime, BaseModel
+from pydantic import AwareDatetime, BaseModel, Field
 
 
 class QueryString(BaseModel):
@@ -12,4 +12,4 @@ class QueryString(BaseModel):
     category_exclude: str | None = None
     date_before: AwareDatetime | None = None
     date_after: AwareDatetime | None = None
-    limit: int | None = None
+    limit: int | None = Field(default=None, ge=0)

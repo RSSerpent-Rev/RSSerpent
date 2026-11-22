@@ -1,6 +1,9 @@
 from typing import Any
 
+from starlette.exceptions import HTTPException
+
 path = "/_/example/{n:int}"
+MAX_EXAMPLE_ITEMS = 1000
 
 
 async def provider(n: int) -> dict[str, Any]:
@@ -14,6 +17,8 @@ async def provider(n: int) -> dict[str, Any]:
         Dict[str, Any]: A dictionary containing the feed data.
     """
 
+    if n > MAX_EXAMPLE_ITEMS:
+        raise HTTPException(400, f"The example supports at most {MAX_EXAMPLE_ITEMS} items")
     return {
         "title": "Example",
         "link": "https://example.com",
