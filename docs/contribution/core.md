@@ -19,8 +19,8 @@ On GitHub, navigate to the repository of the project you want to contribute. Cli
 Clone your forked repository locally. In your terminal, use `cd` to enter the directory and run:
 
 ```bash
-poetry install
-poetry run pre-commit install -t pre-commit -t commit-msg
+uv sync --locked
+uv run --locked pre-commit install -t pre-commit -t commit-msg
 ```
 
 This will install project dependencies as well as [pre-commit](https://pre-commit.com/) hooks. Depending on your network connection, it may take up to several minutes to install project dependencies.

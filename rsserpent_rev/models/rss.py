@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 import arrow
 from arrow import Arrow
 from feedgen.feed import FeedGenerator
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 if TYPE_CHECKING:
     AnyUrl = str
@@ -73,8 +73,7 @@ class Item(BaseModel):
     pub_date: Arrow | None = None
     source: Source | None = None
 
-    class Config:  # noqa: D106
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @model_validator(mode="before")
     def validate(  # type: ignore[override]
@@ -116,8 +115,7 @@ class RSSFeed(BaseModel):
     image: Image | None = None
     items: list[Item] | None = None
 
-    class Config:  # noqa: D106
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def to_feedgen(self) -> FeedGenerator:
         """Convert the `Feed` model to a `feedgen.feed.FeedGenerator` object."""

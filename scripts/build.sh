@@ -1,4 +1,4 @@
 #!/bin/sh
+set -eu
 
-poetry export -o requirements.txt --without-hashes
 docker build -t rsserpent .

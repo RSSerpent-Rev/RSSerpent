@@ -47,9 +47,7 @@ After successful installation, you need to run `python -V` (or `python3 -V`) to 
 
 ## Poetry
 
-[Poetry](https://python-poetry.org/) is a modern Python packaging and dependency management tool and is currently used by RSSerpent. To Install `poetry` please view:
-
-https://github.com/python-poetry/install.python-poetry.org
+Use [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.13.9 to manage the project. RSSerpent supports CPython 3.14 and 3.15.
     ```
 
 ## Further Steps

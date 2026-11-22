@@ -47,9 +47,7 @@ RSSerpent 使用 [Python](https://www.python.org) 编程语言编写。因此，
 
 ## Poetry
 
-[Poetry](https://python-poetry.org/) 是一个现代化的 Python 打包和依赖管理工具，RSSerpent 目前使用 Poetry 来管理项目依赖。如何安装请查看：
-
-https://github.com/python-poetry/install.python-poetry.org
+使用 [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.13.9 管理项目。RSSerpent 支持 CPython 3.14 和 3.15。
 
 ## 接下来…
 

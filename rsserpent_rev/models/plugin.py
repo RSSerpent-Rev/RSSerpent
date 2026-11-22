@@ -1,4 +1,4 @@
-import asyncio
+import inspect
 from collections.abc import Awaitable, Callable
 from contextlib import AbstractAsyncContextManager
 from typing import TYPE_CHECKING, Any
@@ -86,6 +86,6 @@ class Plugin(BaseModel):
         if len(routers) < 1:
             raise PluginModelError(PluginModelError.empty_router)
         for provider in routers.values():
-            if not asyncio.iscoroutinefunction(provider):
+            if not inspect.iscoroutinefunction(provider):
                 raise PluginModelError(PluginModelError.provider_not_async)
         return routers

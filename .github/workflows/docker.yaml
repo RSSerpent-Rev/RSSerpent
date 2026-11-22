@@ -10,8 +10,7 @@ on:
       - '.dockerignore'
       - 'docker/requirements/**'
       - 'pyproject.toml'
-      - 'poetry.lock'
-      - 'scripts/verify-plugin-install.py'
+      - 'uv.lock'
       - 'rsserpent_rev/**'
   push:
     branches:
@@ -24,8 +23,7 @@ on:
       - '.dockerignore'
       - 'docker/requirements/**'
       - 'pyproject.toml'
-      - 'poetry.lock'
-      - 'scripts/verify-plugin-install.py'
+      - 'uv.lock'
       - 'rsserpent_rev/**'
     tags:
       - '*.*.*'

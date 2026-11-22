@@ -12,9 +12,10 @@ from rsserpent_rev.plugins.builtin import plugin as builtin_plugin
 
 settings.register_profile("ci", deadline=500, max_examples=200)
 settings.register_profile("default", max_examples=50)
-settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
+profile = os.getenv("HYPOTHESIS_PROFILE", "default")
+settings.load_profile(profile)
 strategies.register_type_strategy(pydantic.EmailStr, strategies.emails())
-strategies.register_type_strategy(pydantic.HttpUrl.__origin__, urls())  # type: ignore [attr-defined]
+strategies.register_type_strategy(pydantic.HttpUrl, urls().map(pydantic.HttpUrl))
 
 
 @dataclass
@@ -27,14 +28,14 @@ class Times:
     """
 
     ONCE = 1
-    SOME = settings.default.max_examples // 3
-    THOROUGH = settings.default.max_examples
+    SOME = settings.get_profile(profile).max_examples // 3
+    THOROUGH = settings.get_profile(profile).max_examples
 
 
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     """Share one test client across the whole module with `pytest.fixture`."""
-    return TestClient(create_app([builtin_plugin]), backend_options={"use_uvloop": True})
+    return TestClient(create_app([builtin_plugin]))
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:

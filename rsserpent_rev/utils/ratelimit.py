@@ -17,7 +17,7 @@ class RateLimitError(Exception):
         super().__init__(f"function {fn} ratelimit exceeded ({called} > {max_calls}).")
 
 
-def decorator(fn: AsyncFn, *, calls: int, period: float) -> AsyncFn:
+def decorator[AsyncFn: Callable[..., Awaitable[Any]]](fn: AsyncFn, *, calls: int, period: float) -> AsyncFn:
     """Rate limit decorator."""
     called = 0
     last_reset_time = time.monotonic()

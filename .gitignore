@@ -18,7 +18,6 @@ coverage.xml
 # Toolchain
 .cache/
 .mypy_cache/
-.python-version
 __pycache__/
 dist/
 requirements.txt

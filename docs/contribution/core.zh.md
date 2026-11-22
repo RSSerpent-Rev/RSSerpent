@@ -19,8 +19,8 @@
 将你的复刻代码仓库克隆（clone）到本地。打开终端，使用 `cd` 指令进入仓库目录并运行：
 
 ```bash
-poetry install
-poetry run pre-commit install -t pre-commit -t commit-msg
+uv sync --locked
+uv run --locked pre-commit install -t pre-commit -t commit-msg
 ```
 
 以上命令会为你安装项目依赖和 [pre-commit](https://pre-commit.com/) 钩子。

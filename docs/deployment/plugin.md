@@ -39,7 +39,7 @@ the example with the pinned Bilibili plugin.
 
 For a custom image, put a plugin requirements file under `docker/requirements/`.
 Pin all extra runtime packages and use full commits for Git dependencies.
-Keep the core and its locked dependencies in `poetry.lock`.
+Keep the core and its locked dependencies in `uv.lock`.
 Remove the old `/app/rsserpent.txt` volume mount from the service.
 
 ```sh
@@ -50,6 +50,6 @@ Use `--target browser` if a plugin needs Chromium. The browser and its system
 dependencies are installed during the build. The published browser image uses
 the name `ghcr.io/rsserpent-rev/rsserpent-browser`.
 
-For local development outside Docker, run `poetry run playwright install chromium`
+For local development outside Docker, run `uv run --locked playwright install chromium`
 before using a browser plugin. Enable the optional integration tests with
-`poetry run pytest --live -m live`.
+`uv run --locked pytest --live -m live`.

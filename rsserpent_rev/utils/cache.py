@@ -50,7 +50,7 @@ class CacheKey:
         return self.hashvalue
 
     @classmethod
-    def make(cls, args: tuple[Any, ...], kwds: dict[str, Any]) -> "CacheKey":
+    def make(cls, args: tuple[Any, ...], kwds: dict[str, Any]) -> CacheKey:
         """Create a `CacheKey` instance from any function parameters.
 
         Args:
@@ -148,7 +148,7 @@ class LRUCache(OrderedDict):  # type: ignore[type-arg]
         return super().__len__()
 
 
-def decorator(fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
+def decorator[AsyncFn: Callable[..., Awaitable[Any]]](fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
     """Cache decorator."""
     cache = LRUCache(maxsize=maxsize)
     pending: dict[tuple[asyncio.AbstractEventLoop, CacheKey], asyncio.Task[Any]] = {}
@@ -199,7 +199,7 @@ def decorator(fn: AsyncFn, *, expire: int, maxsize: int) -> AsyncFn:
 
 
 @overload
-def cached(fn: AsyncFn) -> AsyncFn: ...  # pragma: no cover
+def cached[AsyncFn: Callable[..., Awaitable[Any]]](fn: AsyncFn) -> AsyncFn: ...  # pragma: no cover
 
 
 @overload
@@ -208,7 +208,7 @@ def cached(
 ) -> Callable[[AsyncFn], AsyncFn]: ...  # pragma: no cover
 
 
-def cached(
+def cached[AsyncFn: Callable[..., Awaitable[Any]]](
     fn: AsyncFn | None = None, *, expire: int = CACHE_EXPIRE, maxsize: int = DEFAULT_CACHE_SIZE
 ) -> AsyncFn | Callable[[AsyncFn], AsyncFn]:
     """Cache function results."""
@@ -217,5 +217,5 @@ def cached(
     return partial(decorator, expire=expire, maxsize=maxsize)
 
 
-def get_cache(fn: AsyncFn) -> LRUCache | None:
+def get_cache[AsyncFn: Callable[..., Awaitable[Any]]](fn: AsyncFn) -> LRUCache | None:
     return fn.__dict__.get("cache")

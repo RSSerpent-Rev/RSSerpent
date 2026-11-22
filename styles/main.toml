@@ -3,14 +3,14 @@
 ".editorconfig" = ""
 ".gitignore" = ""
 ".pre-commit-config.yaml" = ""
-"poetry.lock" = ""
+"uv.lock" = ""
 "pyproject.toml" = ""
 "tests/" = ""
 
 
 # Pyproject.toml
-["pyproject.toml".tool.poetry.dependencies]
-python = "^3.10.0"
+["pyproject.toml".project]
+requires-python = ">=3.14,<3.16"
 
 ["pyproject.toml".tool.ruff.lint]
 select = [
@@ -51,7 +51,7 @@ fixable = ["ALL"]
 ["pyproject.toml".tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py310"
+target-version = "py314"
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -93,7 +93,7 @@ docstring-code-format = true
 ["pyproject.toml".tool.mypy]
 plugins = ["pydantic.mypy"]
 pretty = true
-python_version = "3.10"
+python_version = "3.14"
 show_error_codes = true
 strict = true
 
@@ -105,7 +105,6 @@ ignore_missing_imports = true
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 
 ["pyproject.toml".tool.nitpick]
@@ -114,7 +113,7 @@ cache = "1 day"
 
 # Pre-Commit
 [".pre-commit-config.yaml"]
-default_stages = ["commit"]
+default_stages = ["pre-commit"]
 
 [".pre-commit-config.yaml".ci]
 autofix_commit_msg = "ci: pre-commit auto fixes"
@@ -129,16 +128,13 @@ yaml = """
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    hooks:
-      - id: ruff
-      - id: ruff-format
   - repo: https://github.com/crate-ci/typos
     hooks:
       - id: typos
-        args: []
-  - repo: https://github.com/pre-commit/mirrors-mypy
+  - repo: local
     hooks:
+      - id: ruff
+      - id: ruff-format
       - id: mypy
   - repo: https://github.com/commitizen-tools/commitizen
     hooks:

@@ -1,27 +1,32 @@
-ARG PYTHON_IMAGE=python:3.12.13-slim-bookworm@sha256:4766d8b510c428e595d74b9cc5bbb2fae8e26316fffb4adc89908d79aacd58a2
+ARG PYTHON_IMAGE=python:3.14.10-slim-bookworm@sha256:3fe1a0b6c2d6b2ebb572906cdabeca75aeb558c0c17db5ffefbcf8094871c32b
+FROM ghcr.io/astral-sh/uv:0.13.9@sha256:d3b601f0c7b118bc1753febf7c41cc80981df678445e0254284eecf84db79a7d AS uv
 FROM ${PYTHON_IMAGE} AS build
 
 WORKDIR /app
-ENV POETRY_VIRTUALENVS_IN_PROJECT=true \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1
-RUN apt-get update && apt-get install -y --no-install-recommends git \
+ENV LC_ALL=C \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_LINK_MODE=copy
+COPY --from=uv /uv /usr/local/bin/uv
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
-RUN python -m pip install poetry==1.8.2
 
-COPY README.md LICENSE pyproject.toml poetry.lock ./
-RUN poetry install --only main,deploy --no-root --no-interaction
+COPY README.md LICENSE pyproject.toml uv.lock ./
+RUN uv sync --locked --no-default-groups --group deploy --no-install-project
 COPY rsserpent_rev/ rsserpent_rev/
-RUN poetry build -f wheel && .venv/bin/python -m pip install --no-deps dist/*.whl
+RUN uv sync --locked --no-default-groups --group deploy --no-editable
 
 ARG RSSERPENT_PLUGIN_REQUIREMENTS=core.txt
 COPY docker/requirements/ /tmp/rss-plugins/
-COPY scripts/verify-plugin-install.py /tmp/
-RUN .venv/bin/python -m pip list --format=freeze > /tmp/rss-core-installed.txt \
-    && .venv/bin/python -m pip install --no-deps --report /app/.venv/plugin-install.json \
+RUN uv pip list --format freeze > /tmp/core-constraints.txt \
+    && uv pip freeze > /tmp/core-installed.txt \
+    && uv pip install --strict --constraint /tmp/core-constraints.txt \
         --find-links /tmp/rss-plugins -r "/tmp/rss-plugins/${RSSERPENT_PLUGIN_REQUIREMENTS}" \
-    && python /tmp/verify-plugin-install.py /tmp/rss-core-installed.txt .venv/plugin-install.json \
-    && .venv/bin/python -m pip check
+    && uv pip freeze > /tmp/plugin-installed.txt \
+    && sort -o /tmp/core-installed.txt /tmp/core-installed.txt \
+    && sort -o /tmp/plugin-installed.txt /tmp/plugin-installed.txt \
+    && comm -23 /tmp/core-installed.txt /tmp/plugin-installed.txt > /tmp/replaced.txt \
+    && if [ -s /tmp/replaced.txt ]; then cat /tmp/replaced.txt >&2; exit 1; fi \
+    && uv pip check
 
 FROM ${PYTHON_IMAGE} AS runtime
 WORKDIR /app

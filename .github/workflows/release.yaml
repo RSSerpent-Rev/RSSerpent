@@ -13,28 +13,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: fregante/setup-git-user@v2
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.x"
-      - name: "Setup Poetry"
-        run: |
-          pip install --upgrade pip
-          pip install --user poetry
-          poetry config virtualenvs.in-project true
+          version: "0.13.9"
+          python-version: "3.14"
+          enable-cache: true
       - name: "Check Version for Pre-releases"
         run: |
-          [[ "$(poetry version --short)" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] ||
+          [[ "$(uv version --short)" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] ||
           echo "IS_PRE_RELEASE=true" >> $GITHUB_ENV
       - name: "Build Stable Document"
         if: ${{ env.IS_PRE_RELEASE != true }}
         run: |
-          poetry install --only docs
+          uv sync --locked --only-group docs
           git fetch origin doc:doc
-          poetry run mike deploy --push --update-aliases stable
+          uv run --locked --only-group docs mike deploy --push --update-aliases stable
       - name: "Generate Release Note"
-        run: awk "/^## $(poetry version --short)/{mark=1;next}/^## /{mark=0}mark" CHANGELOG.md > RELEASE.md
+        run: awk "/^## $(uv version --short)/{mark=1;next}/^## /{mark=0}mark" CHANGELOG.md > RELEASE.md
       - name: "Build Project"
-        run: poetry build
+        run: uv build
       - name: "Create Release on GitHub"
         uses: softprops/action-gh-release@v2
         with:
@@ -45,5 +42,5 @@ jobs:
       - name: "Publish to PyPI"
         if: github.repository == 'RSSerpent-Rev/RSSerpent'
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        run: poetry publish
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish

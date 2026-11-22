@@ -1,6 +1,5 @@
+from importlib.metadata import entry_points
 from typing import cast
-
-from importlib_metadata import entry_points
 
 from ..models import Plugin
 

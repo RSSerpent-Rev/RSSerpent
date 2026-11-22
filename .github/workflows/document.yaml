@@ -7,7 +7,8 @@ on:
     paths:
       - '.github/workflows/document.yaml'
       - 'mkdocs.yml'
-      - 'poetry.lock'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - 'docs/**'
     tags-ignore:
       - '**'
@@ -21,21 +22,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: fregante/setup-git-user@v2
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.11"
-      - name: "Setup Poetry"
-        run: |
-          pip install --upgrade pip
-          pip install --user poetry
-          poetry config virtualenvs.in-project true
-      - uses: actions/cache@v4.0.2
-        with:
-          path: .venv
-          key: ${{ hashFiles('poetry.lock') }}
-      - name: "Install Dependencies"
-        run: poetry install --only docs
+          version: "0.13.9"
+          python-version: "3.14"
+          enable-cache: true
       - name: "Build Latest Document"
         run: |
+          uv sync --locked --only-group docs
           git fetch origin doc:doc
-          poetry run mike deploy --push --update-aliases latest
+          uv run --locked --only-group docs mike deploy --push --update-aliases latest

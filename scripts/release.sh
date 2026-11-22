@@ -1,19 +1,33 @@
 #!/bin/sh
+set -eu
 
-poetry version $1
-version=$(poetry version --short)
-
-sed -i "" -e "s/Unreleased/$version/" CHANGELOG.md
-
-git diff HEAD
-
-printf "The current release version is $version.\n"
-printf "Press [y/n] to proceed: "
-read yn
-case $yn in
-    [Yy]* )
-        git add --all
-        git commit -v
-        git tag $version;;
-    * ) exit;;
+version=$(uv version --short)
+if [ "$#" -gt 1 ]; then
+    printf 'Usage: %s [version]\n' "$0" >&2
+    exit 2
+fi
+if [ "$#" -eq 1 ]; then
+    version=$1
+fi
+printf 'Prepare release %s? [y/n] ' "$version"
+read -r answer
+case "$answer" in
+    [Yy]*) ;;
+    *) exit 0 ;;
 esac
+
+uv version "$version"
+version=$(uv version --short)
+uv run --locked --no-sync python - "$version" <<'PY'
+import sys
+from pathlib import Path
+
+changelog = Path("CHANGELOG.md")
+content = changelog.read_text()
+if "## Unreleased\n" in content:
+    changelog.write_text(content.replace("## Unreleased\n", f"## {sys.argv[1]}\n", 1))
+PY
+git diff HEAD -- pyproject.toml uv.lock CHANGELOG.md
+git add -- pyproject.toml uv.lock CHANGELOG.md
+git commit -v
+git tag "$version"

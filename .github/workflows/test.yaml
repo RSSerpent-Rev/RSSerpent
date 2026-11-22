@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/test.yaml'
-      - 'poetry.lock'
+      - 'uv.lock'
       - 'rsserpent_rev/**'
       - 'tests/**'
       - 'pyproject.toml'
@@ -13,7 +13,7 @@ on:
       - 'main'
     paths:
       - '.github/workflows/test.yaml'
-      - 'poetry.lock'
+      - 'uv.lock'
       - 'rsserpent_rev/**'
       - 'tests/**'
       - 'pyproject.toml'
@@ -33,32 +33,29 @@ jobs:
       HYPOTHESIS_PROFILE: ci
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.14', '3.15']
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v7
         with:
+          version: "0.13.9"
           python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v4.0.2
-        with:
-          path: |
-            ~/.cache/pip
-            .venv
-          key: ${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
-      - name: "Setup Poetry"
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Check Python style and types
+        if: matrix.python-version == '3.14'
         run: |
-          pip install --upgrade pip
-          pip install --user poetry
-          poetry config virtualenvs.in-project true
-          poetry install
+          uv run --locked ruff check
+          uv run --locked ruff format --check
+          uv run --locked mypy rsserpent_rev tests
       - name: "Generate Coverage Report"
-        run: poetry run pytest --cov --cov-report=term --cov-report=xml -n auto
+        run: uv run --locked pytest --cov --cov-report=term --cov-report=xml -n auto
       - name: Run live checks
-        if: github.event_name == 'workflow_dispatch' && inputs.live_tests && matrix.python-version == '3.12'
+        if: github.event_name == 'workflow_dispatch' && inputs.live_tests && matrix.python-version == '3.14'
         run: |
-          poetry run playwright install --with-deps chromium
-          poetry run pytest --no-cov --live -m live
+          uv run --locked playwright install --with-deps chromium
+          uv run --locked pytest --no-cov --live -m live
       - name: "Upload to Codecov.io"
         if: github.repository == 'RSSerpent-Rev/RSSerpent' && github.event_name != 'pull_request'
         uses: codecov/codecov-action@v4

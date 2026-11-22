@@ -35,7 +35,7 @@
 默认镜像包含核心服务。`docker compose up --build` 会构建带有固定版本 Bilibili 插件的示例。
 
 自定义镜像时，把插件清单放在 `docker/requirements/`。为所有额外的运行依赖固定版本，Git 依赖使用完整提交号。
-核心及其依赖由 `poetry.lock` 管理。迁移旧部署时，移除服务对 `/app/rsserpent.txt` 的挂载。
+核心及其依赖由 `uv.lock` 管理。迁移旧部署时，移除服务对 `/app/rsserpent.txt` 的挂载。
 
 ```sh
 docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
@@ -44,5 +44,5 @@ docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-l
 需要 Chromium 的插件使用 `--target browser`。构建时会安装浏览器和系统依赖。
 发布的浏览器镜像名为 `ghcr.io/rsserpent-rev/rsserpent-browser`。
 
-在 Docker 之外本地开发时，使用浏览器插件前先运行 `poetry run playwright install chromium`。
-通过 `poetry run pytest --live -m live` 运行可选的联网和浏览器测试。
+在 Docker 之外本地开发时，使用浏览器插件前先运行 `uv run --locked playwright install chromium`。
+通过 `uv run --locked pytest --live -m live` 运行可选的联网和浏览器测试。
