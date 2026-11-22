@@ -1,8 +1,7 @@
 import copy
 import os
-import subprocess
-import sys
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
+from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
 import arrow
@@ -23,7 +22,7 @@ from .plugins.builtin import plugin as builtin_plugin
 from .plugins.externals import plugins as external_plugins
 from .utils import fetch_data, filter_fg, gen_ids_for
 from .utils.feed import FeedFilterError, compile_filters
-from .utils.provider import ProviderInputError
+from .utils.provider import ProviderInputError, provider_resource
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 templates.env.autoescape = True
@@ -53,15 +52,6 @@ def env_enabled(name: str) -> bool:
     return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
-def startup() -> None:
-    """Install Chromium on start-up."""
-    if sys.platform == "linux" and "PLAYWRIGHT_BROWSERS_PATH" not in os.environ:
-        os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "/tmp"  # pragma: is_not_linux
-    logger.info(f"Running on {sys.platform}")
-    logger.info(f"Installing Chromium at {os.environ.get('PLAYWRIGHT_BROWSERS_PATH')}")
-    subprocess.run(["playwright", "install", "chromium"])
-
-
 async def index(request: Request) -> TemplateResponse:
     """Return the index HTML web page."""
     return templates.TemplateResponse(request, "index.html.jinja")
@@ -83,10 +73,14 @@ def feed_endpoint(
             raise HTTPException(400, "Invalid query parameters") from exception
         except FeedFilterError as exception:
             raise HTTPException(400, str(exception)) from exception
+        resources = getattr(request.state, "plugin_resources", {})
+        token = provider_resource.set(resources.get(plugin.name))
         try:
             data = await fetch_data(provider, request.path_params, query_params)
         except ProviderInputError as exception:
             raise HTTPException(400, str(exception)) from exception
+        finally:
+            provider_resource.reset(token)
         if isinstance(data, dict):
             feed = RSSFeed.model_validate(data)
             fg = feed.to_feedgen()
@@ -129,8 +123,27 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
         if env_enabled("RSSERPENT_ENABLE_EXAMPLES"):
             plugins.insert(0, builtin_plugin)
 
-    routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
+    active_plugins = []
     for plugin in plugins:
+        if plugin.enabled is not None:
+            if not plugin.enabled():
+                continue
+        elif plugin.name == "rsserpent-plugin-rss-proxy":
+            # Earlier proxy releases do not restrict upstream destinations.
+            continue
+        active_plugins.append(plugin)
+
+    @asynccontextmanager
+    async def lifespan(_application: Starlette) -> AsyncIterator[dict[str, dict[str, object]]]:
+        async with AsyncExitStack() as stack:
+            resources = {}
+            for plugin in active_plugins:
+                if plugin.lifespan is not None:
+                    resources[plugin.name] = await stack.enter_async_context(plugin.lifespan())
+            yield {"plugin_resources": resources}
+
+    routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
+    for plugin in active_plugins:
         for path, provider in plugin.routers.items():
             if ":path}" in path:
                 routes.append(Route(path, endpoint=feed_endpoint(plugin, provider, path_format=True)))
@@ -142,10 +155,10 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
     application = Starlette(
         debug=env_enabled("DEBUG"),
         exception_handlers={Exception: exception_handler, httpx.HTTPError: exception_handler},
-        on_startup=[startup],
+        lifespan=lifespan,
         routes=routes,
     )
-    application.state.plugins = plugins
+    application.state.plugins = active_plugins
     return application
 
 

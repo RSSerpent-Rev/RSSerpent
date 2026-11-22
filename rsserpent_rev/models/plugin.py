@@ -1,5 +1,6 @@
 import asyncio
 from collections.abc import Awaitable, Callable
+from contextlib import AbstractAsyncContextManager
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, field_validator, model_validator
@@ -46,6 +47,8 @@ class Plugin(BaseModel):
     repository: HttpUrl
     prefix: str
     routers: dict[str, ProviderFn]
+    enabled: Callable[[], bool] | None = None
+    lifespan: Callable[[], AbstractAsyncContextManager[object]] | None = None
 
     def __init__(self, **data: Any):
         super().__init__(**data)

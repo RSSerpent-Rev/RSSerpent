@@ -1,8 +1,11 @@
 import inspect
+from contextvars import ContextVar
 from inspect import Parameter
 from typing import Any
 
 from ..models import Feed, ProviderFn
+
+provider_resource = ContextVar[object | None]("provider_resource", default=None)
 
 
 class ProviderInputError(ValueError):

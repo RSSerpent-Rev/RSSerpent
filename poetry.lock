@@ -383,17 +383,6 @@ files = [
 testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
-name = "fake-useragent"
-version = "0.1.14"
-description = "Up-to-date simple useragent faker with real world database"
-optional = false
-python-versions = "*"
-files = [
-    {file = "fake-useragent-0.1.14.tar.gz", hash = "sha256:470c509fc645a4fb2799a6cdf35982c3d27e57af04f601b3f37ac0b5e46c0cc7"},
-    {file = "fake_useragent-0.1.14-py3-none-any.whl", hash = "sha256:f51e7c58e3733be152f69e2d0751d19274f0d36dd7a75e6706e503163bc61d46"},
-]
-
-[[package]]
 name = "feedgen"
 version = "1.0.0"
 description = "Feed Generator (ATOM, RSS, Podcasts)"
@@ -2053,4 +2042,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10.0"
-content-hash = "00afebe24795f69bfc9f6911516a75ad07b06c5d9519839b8b14128733daf5be"
+content-hash = "1861a8af7bfe966318ac9896b206d46469965c2c60ded236a75c34938ea7bbbd"
