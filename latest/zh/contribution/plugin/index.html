@@ -722,91 +722,7 @@
   <span class="md-ellipsis">
     
   
-    自建
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/deta/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    使用 Deta 部署
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/heroku/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    使用 Heroku 部署
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/vercel/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    使用 Vercel 部署
+    自建 RSSerpent
   
 
     
@@ -834,7 +750,7 @@
   <span class="md-ellipsis">
     
   
-    安装与启用插件
+    配置插件并部署
   
 
     
@@ -1224,7 +1140,7 @@
   <span class="md-ellipsis">
     
   
-    官方
+    插件目录
   
 
     
@@ -1342,11 +1258,11 @@
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>build<span class="w"> </span>--wheel
 uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.14
 uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>/path/to/rsserpent_rev-0.3.0-py3-none-any.whl<span class="w"> </span>dist/*.whl<span class="w"> </span>uvicorn
-<span class="nv">RSSERPENT_CONFIG</span><span class="o">=</span>rsserpent.toml<span class="w"> </span>.venv/bin/uvicorn<span class="w"> </span>rsserpent_rev:app
+.venv/bin/python<span class="w"> </span>-m<span class="w"> </span>rsserpent_rev<span class="w"> </span>--config<span class="w"> </span>rsserpent.toml
 </code></pre></div>
 <p>访问 <code>/my-feed</code>、<code>/my-feed.rss</code> 和 <code>/my-feed.atom</code> 验证输出。带 URL 参数的 provider 写法见<a href="../../usage/router/">路由文档</a>。</p>
 <h2 id="发布">发布<a class="headerlink" href="#发布" title="Permanent link">&para;</a></h2>
-<p>你可以发布 wheel 到 PyPI 等包索引、直接分发 wheel，或让用户从固定 Git 提交安装。发布时同时提供安装依赖和 Python 模块名。用户将包安装在 RSSerpent 环境中，然后把模块加入自己的配置。详见<a href="../../deployment/plugin/">安装与启用插件</a>。</p>
+<p>你可以发布 wheel 到 PyPI 等包索引、直接分发 wheel，或让用户从固定 Git 提交安装。发布时同时提供安装依赖和 Python 模块名。用户把这两个值写进自己的部署 TOML。发布前，用官方镜像验证插件依赖和订阅。详见<a href="../../deployment/plugin/">安装与启用插件</a>。</p>
 
 
 

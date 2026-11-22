@@ -722,91 +722,7 @@
   <span class="md-ellipsis">
     
   
-    自建
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/deta/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    使用 Deta 部署
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/heroku/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    使用 Heroku 部署
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/vercel/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    使用 Vercel 部署
+    自建 RSSerpent
   
 
     
@@ -834,7 +750,7 @@
   <span class="md-ellipsis">
     
   
-    安装与启用插件
+    配置插件并部署
   
 
     
@@ -1003,6 +919,17 @@
       目录
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#启动与应用组装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        启动与应用组装
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#复刻代码" class="md-nav__link">
@@ -1257,7 +1184,7 @@
   <span class="md-ellipsis">
     
   
-    官方
+    插件目录
   
 
     
@@ -1303,6 +1230,17 @@
       目录
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#启动与应用组装" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        启动与应用组装
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#复刻代码" class="md-nav__link">
@@ -1380,6 +1318,8 @@
 
 
 <h1 id="核心">核心<a class="headerlink" href="#核心" title="Permanent link">&para;</a></h1>
+<h2 id="启动与应用组装">启动与应用组装<a class="headerlink" href="#启动与应用组装" title="Permanent link">&para;</a></h2>
+<p>容器启动入口读取部署 TOML 并准备 Python 环境。模块加载器导入指定的插件。应用工厂接收已加载的插件对象，组装路由和生命周期。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>请确保你此前已阅读过<a href="../">环境</a>。</p>

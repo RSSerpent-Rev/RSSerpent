@@ -722,91 +722,7 @@
   <span class="md-ellipsis">
     
   
-    Self-Hosting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/deta/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy with Deta
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/heroku/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy with Heroku
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/vercel/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy with Vercel
+    Self-host RSSerpent
   
 
     
@@ -834,7 +750,7 @@
   <span class="md-ellipsis">
     
   
-    Install and enable plugins
+    Deploy with plugins
   
 
     
@@ -1003,6 +919,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#startup-and-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Startup and the application
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#fork" class="md-nav__link">
@@ -1257,7 +1184,7 @@
   <span class="md-ellipsis">
     
   
-    Official
+    Plugin catalog
   
 
     
@@ -1303,6 +1230,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#startup-and-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Startup and the application
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#fork" class="md-nav__link">
@@ -1380,6 +1318,8 @@
 
 
 <h1 id="core">Core<a class="headerlink" href="#core" title="Permanent link">&para;</a></h1>
+<h2 id="startup-and-the-application">Startup and the application<a class="headerlink" href="#startup-and-the-application" title="Permanent link">&para;</a></h2>
+<p>The container startup command reads deployment TOML and prepares the Python environment. The module loader imports the selected plugins. The application factory takes loaded plugin objects and builds routes and lifespan handlers.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure you have read <a href="../">Environment</a> before continuing.</p>

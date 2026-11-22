@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/plugin/">
       
       
-        <link rel="prev" href="../vercel/">
+        <link rel="prev" href="../">
       
       
         <link rel="next" href="../../contribution/">
@@ -29,7 +29,7 @@
     
     
       
-        <title>Install and enable plugins - RSSerpent Docs</title>
+        <title>Deploy with plugins - RSSerpent Docs</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#install-and-enable-plugins" class="md-skip">
+        <a href="#deploy-with-plugins" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Install and enable plugins
+              Deploy with plugins
             
           </span>
         </div>
@@ -725,91 +725,7 @@
   <span class="md-ellipsis">
     
   
-    Self-Hosting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../deta/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy with Deta
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../heroku/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy with Heroku
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vercel/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy with Vercel
+    Self-host RSSerpent
   
 
     
@@ -846,7 +762,7 @@
   <span class="md-ellipsis">
     
   
-    Install and enable plugins
+    Deploy with plugins
   
 
     
@@ -864,7 +780,7 @@
   <span class="md-ellipsis">
     
   
-    Install and enable plugins
+    Deploy with plugins
   
 
     
@@ -890,10 +806,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#build-a-docker-image" class="md-nav__link">
+  <a href="#install-from-git" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build a Docker image
+        Install from Git
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enable-an-official-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enable an official plugin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restart-and-diagnose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restart and diagnose
       
     </span>
   </a>
@@ -1213,7 +1151,7 @@
   <span class="md-ellipsis">
     
   
-    Official
+    Plugin catalog
   
 
     
@@ -1261,10 +1199,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#build-a-docker-image" class="md-nav__link">
+  <a href="#install-from-git" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build a Docker image
+        Install from Git
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enable-an-official-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enable an official plugin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restart-and-diagnose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restart and diagnose
       
     </span>
   </a>
@@ -1291,22 +1251,37 @@
   
 
 
-<h1 id="install-and-enable-plugins">Install and enable plugins<a class="headerlink" href="#install-and-enable-plugins" title="Permanent link">&para;</a></h1>
-<p>Install plugins in the same Python environment as RSSerpent 0.3. Use CPython 3.14 or 3.15. The <a href="https://github.com/RSSerpent-Rev/rsserpent-plugins">official plugin repository</a> builds one <code>rsserpent-plugins</code> wheel for all ten official modules. Third-party plugins can use their own wheels, Git repositories or PyPI packages.</p>
-<p>In <code>rsserpent.toml</code>, list the Python modules to enable. Each module must export a <code>plugin</code> object:</p>
-<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"rsserpent_plugins.bilibili"</span><span class="p">,</span><span class="w"> </span><span class="s2">"my_rss_plugin"</span><span class="p">]</span>
+<h1 id="deploy-with-plugins">Deploy with plugins<a class="headerlink" href="#deploy-with-plugins" title="Permanent link">&para;</a></h1>
+<p>The official image reads a TOML file at <code>/etc/rsserpent/rsserpent.toml</code>. Create <code>rsserpent.toml</code> with the packages to install and the Python modules to enable.</p>
+<div class="highlight"><pre><span></span><code><span class="n">plugin_requirements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"my-rss-plugin==0.1.0"</span><span class="p">]</span>
+<span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"my_rss_plugin"</span><span class="p">]</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nv">RSSERPENT_CONFIG</span><span class="o">=</span>rsserpent.toml<span class="w"> </span>.venv/bin/uvicorn<span class="w"> </span>rsserpent_rev:app
+<p>Use a requirement for each package you need. Each enabled module must export a <code>plugin</code> object. Use packages and Git repositories you trust.</p>
+<p>Run Docker from the directory that contains the TOML file.</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>rsserpent<span class="w"> </span>-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--mount<span class="w"> </span><span class="s2">"type=bind,source=</span><span class="nv">$PWD</span><span class="s2">/rsserpent.toml,target=/etc/rsserpent/rsserpent.toml,readonly"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/rsserpent-rev/rsserpent:main
 </code></pre></div>
-<p>Without <code>RSSERPENT_CONFIG</code> or with an empty list, the app starts with no plugin routes. Only list modules whose code you trust. To migrate an installed third-party plugin, use the module name before <code>:plugin</code> in its old entry point. For the official plugins, install the aggregate wheel and use the corresponding modules under <code>rsserpent_plugins</code>. Existing feed URLs work after you enable the corresponding module. For built-in examples, list <code>rsserpent_rev.plugins.builtin</code> in place of the old <code>RSSERPENT_ENABLE_EXAMPLES</code> switch.</p>
-<h2 id="build-a-docker-image">Build a Docker image<a class="headerlink" href="#build-a-docker-image" title="Permanent link">&para;</a></h2>
-<p>For the default Compose example, run this command from the core checkout:</p>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>--build
+<p>Open <a href="http://localhost:8000/all_routes">the route list</a>. If your plugin defines <code>/my-feed</code>, subscribe to <code>/my-feed.rss</code> or <code>/my-feed.atom</code>. When you use the Compose file from the repository, edit <code>docker/rsserpent.toml</code> and run <code>docker compose up -d</code>.</p>
+<h2 id="install-from-git">Install from Git<a class="headerlink" href="#install-from-git" title="Permanent link">&para;</a></h2>
+<p>Use a full commit SHA. For a package in a repository subdirectory, add <code>#subdirectory=</code> followed by the path to the directory that contains its <code>pyproject.toml</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">plugin_requirements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">"my-rss-plugin @ git+https://github.com/OWNER/my-rss-plugin.git@COMMIT_SHA#subdirectory=plugins/my-rss-plugin"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"my_rss_plugin"</span><span class="p">]</span>
 </code></pre></div>
-<p>Compose installs the official plugins from a fixed Git commit and mounts <code>docker/rsserpent.toml</code> read-only. The example enables Bilibili. For another setup, put the plugin package requirements in <code>docker/requirements/custom.txt</code> and the module names in a TOML file.</p>
-<div class="highlight"><pre><span></span><code><span class="nv">RSSERPENT_PLUGIN_REQUIREMENTS</span><span class="o">=</span>custom.txt<span class="w"> </span><span class="nv">RSSERPENT_CONFIG_FILE</span><span class="o">=</span>./my-config.toml<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>--build
+<h2 id="enable-an-official-plugin">Enable an official plugin<a class="headerlink" href="#enable-an-official-plugin" title="Permanent link">&para;</a></h2>
+<p>Add the official package requirement and list the modules you want to enable. Use the <a href="https://github.com/RSSerpent-Rev/rsserpent-plugins#official-modules">official module table</a> to find their names.</p>
+<div class="highlight"><pre><span></span><code><span class="n">plugin_requirements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">"rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"rsserpent_plugins.bilibili"</span><span class="p">]</span>
 </code></pre></div>
-<p>The image installs packages at build time and checks that they work with the locked core. The application loads the configured modules at startup. Run <code>docker build --target core .</code> for a core-only image. For plugins that require Chromium, use <code>--target browser</code> and the appropriate plugin requirements and runtime configuration. Outside Docker, install Chromium with <code>uv run --locked playwright install chromium</code>.</p>
+<p>For plugins that use Chromium, use <code>ghcr.io/rsserpent-rev/rsserpent-browser:main</code> in the same Docker command. When you publish a plugin, test that its Python packages and required system libraries work in the image.</p>
+<h2 id="restart-and-diagnose">Restart and diagnose<a class="headerlink" href="#restart-and-diagnose" title="Permanent link">&para;</a></h2>
+<p>The container installs the configured packages before it starts the web server. It uses the core image's package versions as constraints. A conflict stops startup. Read <code>docker logs rsserpent</code> to identify a requirement or module that failed.</p>
+<p>Package downloads require network access when the cache lacks the artifacts. A new container can need to download packages again. An empty configuration starts the core and skips all plugin installation.</p>
+<p>After editing the TOML, remove the old container with <code>docker rm -f rsserpent</code> and run the Docker command again. With Compose, run <code>docker compose up -d --force-recreate</code>.</p>
 
 
 

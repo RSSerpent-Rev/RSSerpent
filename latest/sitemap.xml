@@ -57,32 +57,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestzh/deployment/"/>
     </url>
     <url>
-        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/deta/</loc>
-        <lastmod>2026-11-22</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/deta/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestzh/deployment/deta/"/>
-    </url>
-    <url>
-        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/heroku/</loc>
-        <lastmod>2026-11-22</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/heroku/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestzh/deployment/heroku/"/>
-    </url>
-    <url>
         <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/plugin/</loc>
         <lastmod>2026-11-22</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/plugin/"/>
         <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestzh/deployment/plugin/"/>
-    </url>
-    <url>
-        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/vercel/</loc>
-        <lastmod>2026-11-22</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/deployment/vercel/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestzh/deployment/vercel/"/>
     </url>
     <url>
         <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/plugin/</loc>
@@ -162,32 +141,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestdeployment/"/>
     </url>
     <url>
-        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/deta/</loc>
-        <lastmod>2026-11-22</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/deta/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestdeployment/deta/"/>
-    </url>
-    <url>
-        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/heroku/</loc>
-        <lastmod>2026-11-22</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/heroku/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestdeployment/heroku/"/>
-    </url>
-    <url>
         <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/plugin/</loc>
         <lastmod>2026-11-22</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/plugin/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestdeployment/plugin/"/>
-    </url>
-    <url>
-        <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/vercel/</loc>
-        <lastmod>2026-11-22</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/deployment/vercel/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://rsserpent-rev.github.io/RSSerpent/latest/latestdeployment/vercel/"/>
     </url>
     <url>
         <loc>https://rsserpent-rev.github.io/RSSerpent/latest/latest/zh/plugin/</loc>
