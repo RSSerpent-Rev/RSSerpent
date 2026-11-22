@@ -193,6 +193,7 @@ warn_required_dynamic_aliases = true
 [tool.pytest.ini_options]
 addopts = "--cov"
 asyncio_mode = "auto"
+markers = ["live: needs a browser or a connection to an upstream fixture"]
 
 [build-system]
 requires = ["poetry-core>=1.6"]

@@ -1,9 +1,9 @@
 import re
+from ipaddress import ip_address
 
 import pytest
 from hypothesis import given, settings
 from hypothesis.strategies import integers
-from pydantic import IPvAnyAddress
 from starlette.testclient import TestClient
 
 from rsserpent_rev.main import ATOM_MIMETYPE, RSS_MIMETYPE
@@ -66,6 +66,7 @@ def test_example_cached(client: TestClient) -> None:
     assert "<title>Example 2</title>" in response3.text
 
 
+@pytest.mark.live
 def test_example_httpx(client: TestClient) -> None:
     """Test the `/_/example/httpx` route."""
     response = client.get("/_/example/httpx")
@@ -74,9 +75,10 @@ def test_example_httpx(client: TestClient) -> None:
 
     match = re.search("<title>(.*)</title>", response.text)
     assert match is not None
-    assert IPvAnyAddress._validate(match.group(1)) is not None
+    ip_address(match.group(1))
 
 
+@pytest.mark.live
 def test_example_playwright(client: TestClient) -> None:
     """Test the `/_/example/playwright` route."""
     response = client.get("/_/example/playwright")
@@ -85,6 +87,7 @@ def test_example_playwright(client: TestClient) -> None:
     assert "<title>Herman Melville - Moby-Dick</title>" in response.text
 
 
+@pytest.mark.live
 def test_example_pyquery(client: TestClient) -> None:
     """Test the `/_/example/pyquery` route."""
     response = client.get("/_/example/pyquery")

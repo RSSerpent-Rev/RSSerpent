@@ -1,6 +1,10 @@
+import httpx
+import pytest
+
 from rsserpent_rev.utils.http import Browser, HTTPClient
 
 
+@pytest.mark.live
 async def test_browser() -> None:
     """Test if the `Browser` context manager works properly."""
     async with Browser() as browser:
@@ -9,10 +13,11 @@ async def test_browser() -> None:
 
 
 async def test_http_client() -> None:
-    """Test if the `http_client` context manager works properly."""
-    url = "https://httpbin.org/get"
-    async with HTTPClient() as client:
-        response = await client.get(url)
-        data = response.json()
-    assert response.status_code == 200
-    assert url.startswith(data["headers"]["Referer"])
+    async def respond(request: httpx.Request) -> httpx.Response:
+        assert request.headers["Referer"] == "https://example.org"
+        assert request.headers["Host"] == "example.org"
+        return httpx.Response(200, json={"title": "Fixture"})
+
+    async with HTTPClient(transport=httpx.MockTransport(respond)) as client:
+        response = await client.get("https://example.org/feed")
+    assert response.json() == {"title": "Fixture"}
