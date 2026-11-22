@@ -44,7 +44,7 @@ Route parameters are required. However, sometimes routes need to access optional
 For example, assuming the `/bilibili/user/{id}/video` route accepts two query parameters, of which the `sort` parameter is used to specify the sorting criteria while the `order` parameter is used to indicate ascent/descent. Given that most users would probably subscribe to the latest videos, the route by default will sort the list of videos in chronologically descending order. However, if you need to subscribe to the most trending videos, the route should look like `/bilibili/user/{id}/video?sort=hot&order=desc`.
 # Request limits
 
-The built-in example routes require `RSSERPENT_ENABLE_EXAMPLES=true`. The numbered example accepts up to 1,000 items.
+To enable the built-in example routes, add `rsserpent_rev.plugins.builtin` to the `plugins` list in the [deployment configuration](../deployment/plugin.md). The numbered example accepts up to 1,000 items.
 Each regular expression filter accepts up to 512 characters. Filtering has a 50 ms time budget per request.
 Invalid filters and requests that exceed these limits return HTTP 400.
 

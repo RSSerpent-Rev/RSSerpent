@@ -1,31 +1,34 @@
-# Install plugins
+# Install and enable plugins
 
-Use uv with CPython 3.14 or 3.15. A plugin is a Python package with an `rsserpent.plugin` entry point. Install it in the same environment as the core before starting the service.
+Install plugins in the same Python environment as RSSerpent 0.3. Use CPython 3.14 or 3.15. The [official plugin repository](https://github.com/RSSerpent-Rev/rsserpent-plugins) builds one `rsserpent-plugins` wheel for all ten official modules. Third-party plugins can use their own wheels, Git repositories or PyPI packages.
 
-## Select an official plugin
+In `rsserpent.toml`, list the Python modules to enable. Each module must export a `plugin` object:
 
-The [official plugin repository](https://github.com/RSSerpent-Rev/rsserpent-plugins) is an independent uv workspace. A fixed Git commit and a subdirectory select one release:
-
-```text
-rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@<commit>#subdirectory=plugins/bilibili
+```toml
+plugins = ["rsserpent_plugins.bilibili", "my_rss_plugin"]
 ```
 
-Replace `<commit>` with the full published Git commit. Install the plugin with `uv pip install` in the service environment. For the compatible core, use the fixed Git requirement in the [official plugin installation example](https://github.com/RSSerpent-Rev/rsserpent-plugins#install-a-plugin). Third-party plugins that publish the same entry point work with their existing package names and repository URLs.
+```sh
+RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
+```
+
+Without `RSSERPENT_CONFIG` or with an empty list, the app starts with no plugin routes. Only list modules whose code you trust. To migrate an installed third-party plugin, use the module name before `:plugin` in its old entry point. For the official plugins, install the aggregate wheel and use the corresponding modules under `rsserpent_plugins`. Existing feed URLs work after you enable the corresponding module. For built-in examples, list `rsserpent_rev.plugins.builtin` in place of the old `RSSERPENT_ENABLE_EXAMPLES` switch.
 
 ## Build a Docker image
 
-Place the requirement in a file under `docker/requirements/`. Set `RSSERPENT_PLUGIN_REQUIREMENTS` to the filename at build time:
+For the default Compose example, check out the official plugin repository next to this repository. Run these commands from the core checkout:
 
 ```sh
-RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt docker compose up --build
+uv build --project ../rsserpent-plugins --wheel --out-dir "$PWD/docker/requirements"
+docker compose up --build
 ```
 
-For a build outside Compose:
+Compose installs the official wheel and mounts `docker/rsserpent.toml` read-only. The example enables Bilibili. For another setup, put the plugin package requirements in `docker/requirements/custom.txt` and the module names in a TOML file.
 
 ```sh
-docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
+RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt RSSERPENT_CONFIG_FILE=./my-config.toml docker compose up --build
 ```
 
-The core and its dependencies come from `uv.lock`. The image installs plugins and checks their dependencies during the build. The service starts without downloading packages. Remove the old `/app/rsserpent.txt` volume mount if your deployment still has it. The default Compose example installs Bilibili from a fixed commit of the official workspace.
+The image installs packages at build time and checks that they work with the locked core. The application loads the configured modules at startup. Run `docker build --target core .` for a core-only image. For plugins that require Chromium, use `--target browser` and the appropriate plugin requirements and runtime configuration. Outside Docker, install Chromium with `uv run --locked playwright install chromium`.
 
-For plugins that require Chromium, add `--target browser` to the build command. The published browser image is `ghcr.io/rsserpent-rev/rsserpent-browser`. For local use outside Docker, install Chromium with `uv run --locked playwright install chromium`.
+For a published aggregate package, the installation requirement can use the repository root at a full Git commit. Keep that commit fixed so image builds are reproducible.

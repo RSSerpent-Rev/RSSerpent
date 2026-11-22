@@ -1,142 +1,46 @@
-# Create Plugins
+# Create an independent plugin
 
-To develop an official plugin, use the [official workspace](https://github.com/RSSerpent-Rev/rsserpent-plugins). This page describes independent plugins.
-
-Learn to create a RSSerpent plugin project from scratch through this tutorial.
-
-## Scaffold
-
-You will need to install [cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html) for quickly scaffolding an RSSerpent plugin, by using the official plugin [template](https://github.com/RSSerpent/template).
-
-```bash
-pip install --user cookiecutter
-# or on macOS
-brew install cookiecutter
-# or on Debian/Ubuntu
-sudo apt install cookiecutter
-```
-
-Now it's time to scaffold you project! In your terminal, start a new session and run:
-
-```bash
-cookiecutter gh:rsserpent-rev/template
-```
-
-This will download the official RSSerpent plugin [template](https://github.com/RSSerpent/template) from GitHub. You will then be prompted to fill in some information:
-
-```
-plugin [rsserpent-plugin-xxx]:
-description [An rsserpent plugin for xxx.]:
-username [queensferryme]:
-link [https://github.com/queensferryme]:
-email [queensferryme@example.com]:
-```
-
-The message between the brackets `[...]` are default values for respective fields, you may press `Enter` to accept or type in your own choice. You personal information (*email* etc.) will only be used for rendering the template. You could always remain anonymous if you'd like to.
-
-The legacy template creates a project directory. For the current core, define the project with PEP 621 and install its dependencies with uv. Use a compatible `rsserpent-rev` 0.2.x build in the plugin environment.
-
-## Develop
-
-You will need a [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) to start developing. We recommend using [Visual Studio Code](https://code.visualstudio.com/), or VSCode for short. Use VSCode to open the directory you just created using `cookiecutter`. You may be prompted to install some recommended VSCode plugins.
-
-An RSSerpent plugin is mostly a collection of [routers](../../usage/router.md), and each router is a `path` string accompanied by a data `provider` function.
+Use `uv init --lib my-rss-plugin` to create a Python package. In its `pyproject.toml`, use `requires-python = ">=3.14,<3.16"` and add `rsserpent-rev>=0.3,<0.4` to the project dependencies. Add the following code to `src/my_rss_plugin/__init__.py`.
 
 ```python
-from typing import Any, Dict
+from rsserpent_rev.models import Feed, Plugin
 
 
-path = "/path/to/route"
-
-
-async def provider() -> Dict[str, Any]:
+async def provider() -> Feed:
     return {
         "title": "Example",
-        "link": "https://example.com",
-        "description": "An example rsserpent plugin.",
-        "items": [{"title": "Example Title", "description": "Example Description"}],
+        "link": "https://example.org/",
+        "description": "Example updates",
+        "items": [{"title": "First update"}],
     }
-```
-
-!!!note
-    See more example routers [here](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent_rev/plugins/builtin).
-
-!!!warning
-    The `provider` function must be **async** and can **not** have [position-only arguments](https://docs.python.org/3/faq/programming.html#faq-positional-only-arguments).
-
-The `path` variable defines an endpoint where users could access the RSS feed, and the `provider` function provides necessary data for rendering and serving the RSS feed to users. You will also need to register you routers in `rsserpent_plugin_xxx/__init__.py`:
-
-```python
-from . import route1, route2, route3
 
 
 plugin = Plugin(
-    # ...
-    routers={
-        route1.path: route1.provider,
-        route2.path: route2.provider,
-        route3.path: route3.provider,
-    },
+    name="rsserpent-plugin-example",
+    author={"name": "Your name", "email": "you@example.org", "link": "https://example.org/"},
+    repository="https://example.org/my-rss-plugin",
+    prefix="/my-feed",
+    routers={"/my-feed": provider},
 )
 ```
 
-Declare the plugin in the project's `pyproject.toml`:
+## Test with RSSerpent
+
+Save the module name in `rsserpent.toml`. Build the core wheel from the matching RSSerpent checkout if you need a local core artifact. Run the following from the plugin project.
 
 ```toml
-[project.entry-points."rsserpent.plugin"]
-example = "rsserpent_plugin_xxx:plugin"
+plugins = ["my_rss_plugin"]
 ```
 
-Use `uv sync` to install the project into its environment.
-
-Run `uv run uvicorn --reload rsserpent_rev:app` in your terminal to start an RSSerpent instance locally, so that you can see if you plugin works as expected.
-
-```
-uv run uvicorn --reload rsserpent_rev:app
-INFO:     Will watch for changes in these directories: ['/path/to/your/directory']
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [30920] using statreload
-INFO:     Started server process [30922]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+```sh
+uv build --wheel
+uv venv --python 3.14
+uv pip install /path/to/rsserpent_rev-0.3.0-py3-none-any.whl dist/*.whl uvicorn
+RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
 ```
 
-!!!note
-    We recommend plugin authors to write tests, so that the plugin can be more robust and have less bugs. Write your tests in the `tests/` directory and run `pytest` to run the tests.
+Check `/my-feed`, `/my-feed.rss` and `/my-feed.atom`. See the [route guide](../../usage/router.md) to implement providers with URL parameters.
 
 ## Publish
 
-After you made enough changes to the plugin locally, make sure to commit your changes and push to GitHub. In this way, you can make you latest work available to plugin users.
-
-```bash
-git add --all
-git commit -m "<type>: <description>"
-git push origin
-```
-
-!!!note
-    Commit messages should be in accordance with the [Conventional Commits](https://www.conventionalcommits.org/) specification.
-
-When you run `git commit`, a set of pre-commit hooks will be triggered. Make sure you pass the checks before actually pushing to GitHub. You could also run the checks manually:
-
-```
-➜ pre-commit run --all-files
-Nitpick Check............................................................Passed
-Fix End of Files.........................................................Passed
-Trim Trailing Whitespace.................................................Passed
-Check Blanket "#noqa"....................................................Passed
-Check Blanket "#type:ignore".............................................Passed
-Upgrade Python Syntax....................................................Passed
-Check Typos..............................................................Passed
-Format Source Code.......................................................Passed
-Sort Imports.............................................................Passed
-Type Check...............................................................Passed
-Lint.....................................................................Passed
-```
-
-!!!note
-    In pre-commit hooks we run [black](https://github.com/psf/black), [isort](https://github.com/pycqa/isort) for source code formatting, [mypy](https://github.com/python/mypy) for type checking, and [flake8](https://github.com/PyCQA/flake8) for linting.
-    We also run [**nitpick**](https://github.com/andreoliwa/nitpick), which contains a set of recommended [configurations](https://github.com/RSSerpent-Rev/RSSerpent/blob/main/styles/main.toml) for black/isort/mypy/flake8 etc from the upstream.
-
-!!!warning
-    If no pre-commit hooks are triggered (that's to say, you didn't see lines of checks marked with either *Passed* or *Failed*, as shown above) when you do `git commit`, you can manually install the pre-commit hooks with `pre-commit install -t pre-commit -t commit-msg`.
+Publish the wheel to an index such as PyPI, share the artifact or make the package installable from a fixed Git commit. Give users both the package installation requirement and the Python module name. They install the package in their RSSerpent environment and add that module to their own configuration. See [Install and enable plugins](../../deployment/plugin.md).

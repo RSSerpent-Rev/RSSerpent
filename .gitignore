@@ -21,3 +21,6 @@ coverage.xml
 __pycache__/
 dist/
 requirements.txt
+
+# Locally built plugin wheels
+/docker/requirements/*.whl

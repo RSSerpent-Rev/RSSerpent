@@ -1,146 +1,46 @@
-# 创建插件
+# 开发独立插件
 
-开发官方插件请使用 [官方 workspace](https://github.com/RSSerpent-Rev/rsserpent-plugins)。本页介绍独立插件。
-
-!!!note
-    请确保你此前已阅读过[环境](index.md)。
-
-通过阅读本教程，你将学会如何从头搭建一个 RSSerpent 插件项目。
-
-## 搭建项目
-
-首先，你需要安装 [cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html)，以便能使用官方插件[模板](https://github.com/RSSerpent/template)来快速搭建一个 RSSerpent 插件项目。
-
-```bash
-pip install --user cookiecutter
-# or on macOS
-brew install cookiecutter
-# or on Debian/Ubuntu
-sudo apt install cookiecutter
-```
-
-现在可以开始搭建项目了！在你的终端里，打开一个新的会话页面并执行：
-
-```bash
-cookiecutter gh:rsserpent-rev/template
-```
-
-这个命令首先会从 GitHub 下载 RSSerpent 官方插件模板，随后会提示你填写一些信息（从上往下依次是插件名、插件描述、作者名、作者主页链接、作者邮箱）：
-
-```
-plugin [rsserpent-plugin-xxx]:
-description [An rsserpent plugin for xxx.]:
-username [queensferryme]:
-link [https://github.com/queensferryme]:
-email [queensferryme@example.com]:
-```
-
-方括号 `[...]` 之间的文本时对应字段的默认值，你可以按下回车键接受默认值，也可以自己在冒号后输入内容。你的个人信息（*邮箱地址*等）只会被用来填充项目模板，你也可以选择不填写并保持匿名。
-
-旧模板会生成项目目录。适配当前核心时，使用 PEP 621 定义项目，并通过 uv 安装依赖。插件环境需要兼容的 `rsserpent-rev` 0.2.x。
-
-## 进行开发
-
-我们推荐你使用 [Visual Studio Code](https://code.visualstudio.com/)（简称 VSCode）这一集成开发环境（IDE）进行插件开发。使用 VSCode 打开你刚刚创建的文件夹，VSCode 可能会提示你安装一些推荐的 VSCode 插件。安装完成后，你就可以开始开发 RSSerpent 插件了。
-
-RSSerpent 插件的主要部分就是一系列[路由](../../usage/router.md)，每个路由都包含一个 `path` 字符串和一个数据提供函数 `provider`。
+用 `uv init --lib my-rss-plugin` 创建 Python 包。在项目的 `pyproject.toml` 中设置 `requires-python = ">=3.14,<3.16"`，将 `rsserpent-rev>=0.3,<0.4` 加入项目依赖。将以下代码写入 `src/my_rss_plugin/__init__.py`。
 
 ```python
-from typing import Any, Dict
+from rsserpent_rev.models import Feed, Plugin
 
 
-path = "/path/to/route"
-
-
-async def provider() -> Dict[str, Any]:
+async def provider() -> Feed:
     return {
         "title": "Example",
-        "link": "https://example.com",
-        "description": "An example rsserpent plugin.",
-        "items": [{"title": "Example Title", "description": "Example Description"}],
+        "link": "https://example.org/",
+        "description": "Example updates",
+        "items": [{"title": "First update"}],
     }
-```
-
-!!!note
-    你可以在[这里](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent_rev/plugins/builtin)找到更多路由范例。
-
-!!!warning
-    数据提供函数 `provider` 必须是 **async** 函数，并且不能包含 [position-only arguments](https://docs.python.org/3/faq/programming.html#faq-positional-only-arguments)。
-
-
-字符串 `path` 定义了一个路径，用户可以从这个路径来访问到 RSS 订阅链接；数据提供函数 `provider` 则负责提供相应的数据，这些数据会被用于创建可订阅的 RSS 内容并呈现给用户。作为插件开发者，你还需要将路由注册到 `rsserpent_plugin_xxx/__init__.py`：
-
-```python
-from . import route1, route2, route3
 
 
 plugin = Plugin(
-    # ...
-    routers={
-        route1.path: route1.provider,
-        route2.path: route2.provider,
-        route3.path: route3.provider,
-    },
+    name="rsserpent-plugin-example",
+    author={"name": "Your name", "email": "you@example.org", "link": "https://example.org/"},
+    repository="https://example.org/my-rss-plugin",
+    prefix="/my-feed",
+    routers={"/my-feed": provider},
 )
 ```
 
-在项目的 `pyproject.toml` 中声明入口。
+## 在 RSSerpent 中测试
+
+在 `rsserpent.toml` 中填写模块名。如果需要本地核心 wheel，先从对应的 RSSerpent 源码构建。以下命令在插件项目目录运行。
 
 ```toml
-[project.entry-points."rsserpent.plugin"]
-example = "rsserpent_plugin_xxx:plugin"
+plugins = ["my_rss_plugin"]
 ```
 
-使用 `uv sync` 将项目安装到其环境中。
-
-在终端里执行 `uv run uvicorn --reload rsserpent_rev:app`，你就能在本地启动一个 RSSerpent 实例。你可以在浏览器中打开这个实例，用以调试你的插件。
-
-```
-➜ uv run uvicorn --reload rsserpent_rev:app
-INFO:     Will watch for changes in these directories: ['/path/to/your/directory']
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [30920] using statreload
-INFO:     Started server process [30922]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+```sh
+uv build --wheel
+uv venv --python 3.14
+uv pip install /path/to/rsserpent_rev-0.3.0-py3-none-any.whl dist/*.whl uvicorn
+RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
 ```
 
-!!!note
-    强烈推荐插件作者编写测试，以确保你的插件能更鲁棒、没有错误。测试需要编写在 `tests/` 文件夹中，并使用 `pytest` 命令来运行。
+访问 `/my-feed`、`/my-feed.rss` 和 `/my-feed.atom` 验证输出。带 URL 参数的 provider 写法见[路由文档](../../usage/router.zh.md)。
 
-## 发布插件
+## 发布
 
-当你在本地对插件进行了足够多的改动后，请确保你讲这些改动提交（commit）并推送（push）到 GitHub。这样子，你插件的用户才能使用到你的最新工作成果。
-
-```bash
-git add --all
-git commit -m "<type>: <description>"
-git push origin
-```
-
-!!!note
-    提交信息（commit message）应该遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范。
-
-当你运行 `git commit` 提交时，你会自动触发一系列 pre-commit 钩子，这些钩子会对你的代码等进行检查。请确保你将改动推送到 GitHub 前已成功通过所有检查。你也可以执行如下命令来手动进行检查：
-
-```
-➜ pre-commit run --all-files
-Nitpick Check............................................................Passed
-Fix End of Files.........................................................Passed
-Trim Trailing Whitespace.................................................Passed
-Check Blanket "#noqa"....................................................Passed
-Check Blanket "#type:ignore".............................................Passed
-Upgrade Python Syntax....................................................Passed
-Check Typos..............................................................Passed
-Format Source Code.......................................................Passed
-Sort Imports.............................................................Passed
-Type Check...............................................................Passed
-Lint.....................................................................Passed
-```
-
-!!!note
-    我们在 pre-commit 钩子中运行了 [black](https://github.com/psf/black)/[isort](https://github.com/pycqa/isort) 代码格式化, [mypy](https://github.com/python/mypy) 类型检查，以及 [flake8](https://github.com/PyCQA/flake8) 代码风格检查。
-    我们还运行了 [**nitpick**](https://github.com/andreoliwa/nitpick) 这个钩子：它包含了一系列 RSSerpent 官方推荐的 black/isort/mypy/flake8 等开发工具的[配置](https://github.com/RSSerpent-Rev/RSSerpent/blob/main/styles/main.toml)，希望插件开发者能够遵守。
-
-!!!warning
-    如果你在执行 `git commit` 时，没有触发任何 pre-commit 钩子（也就是说，没有看到如上标记有 *Passed* 通过或 *Failed* 失败的若干行检查），你可以运行 `pre-commit install -t pre-commit -t commit-msg` 来手动安装 pre-commit 钩子。
+你可以发布 wheel 到 PyPI 等包索引、直接分发 wheel，或让用户从固定 Git 提交安装。发布时同时提供安装依赖和 Python 模块名。用户将包安装在 RSSerpent 环境中，然后把模块加入自己的配置。详见[安装与启用插件](../../deployment/plugin.zh.md)。

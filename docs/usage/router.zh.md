@@ -44,7 +44,7 @@ RSSerpent 的[官方实例](https://rsserpent.imciel.com)上装载了哔哩哔�
 举例来说，假设路由 `/bilibili/user/{id}/video` 接受 `sort` 与 `order` 两个查询参数：其中 `sort` 用于指定视频的排序标准，`order` 则用于指定视频的排序升/降序。考虑到绝大多数用户希望订阅某用户发布的最新视频，因此在默认情况下（即不传入任何查询参数），路由会按照时间降序对视频进行排序。但假设你需要订阅某用户最热门的视频，则路由应为 `/bilibili/user/{id}/video?sort=hot&order=desc`。
 # 请求限制
 
-设置 `RSSERPENT_ENABLE_EXAMPLES=true` 可启用内置示例路由。按数量生成条目的示例最多生成 1,000 条。
+将 `rsserpent_rev.plugins.builtin` 加入[部署配置](../deployment/plugin.zh.md)的 `plugins` 列表，即可启用内置示例路由。按数量生成条目的示例最多生成 1,000 条。
 每个正则过滤模式最多使用 512 个字符。每次请求最多用 50 毫秒过滤条目。
 过滤条件无效或超过限制时，服务返回 HTTP 400。
 

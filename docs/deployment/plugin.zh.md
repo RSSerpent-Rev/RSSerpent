@@ -1,31 +1,34 @@
-# 安装插件
+# 安装与启用插件
 
-使用 uv 和 CPython 3.14 或 3.15。插件是带有 `rsserpent.plugin` 入口的 Python 包。启动服务前，将插件安装在核心所在的环境中。
+使用 CPython 3.14 或 3.15，将插件安装在 RSSerpent 0.3 所在的 Python 环境中。[官方插件仓库](https://github.com/RSSerpent-Rev/rsserpent-plugins)将 10 个官方插件构建为一个 `rsserpent-plugins` wheel。第三方插件可以从各自的 wheel、Git 仓库或 PyPI 安装。
 
-## 选装官方插件
+在 `rsserpent.toml` 中列出要启用的 Python 模块。每个模块必须导出 `plugin` 对象。
 
-[官方插件仓库](https://github.com/RSSerpent-Rev/rsserpent-plugins)使用独立的 uv workspace。完整 Git 提交和子目录共同指定一个插件版本。
-
-```text
-rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@<commit>#subdirectory=plugins/bilibili
+```toml
+plugins = ["rsserpent_plugins.bilibili", "my_rss_plugin"]
 ```
 
-把 `<commit>` 替换为已发布的完整 Git 提交，再用 `uv pip install` 将插件安装到服务环境。兼容核心的固定 Git 依赖见[官方插件安装示例](https://github.com/RSSerpent-Rev/rsserpent-plugins#install-a-plugin)。声明同一入口的第三方插件可以继续使用原包名和仓库地址。
+```sh
+RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
+```
+
+未设置 `RSSERPENT_CONFIG` 或列表为空时，应用不注册插件路由。请只配置信任的模块。迁移已安装的第三方插件时，取原入口中 `:plugin` 前面的模块名即可。迁移官方插件时，安装聚合 wheel，再配置 `rsserpent_plugins` 下的对应模块。启用后仍可使用原有订阅 URL。内置示例通过 `rsserpent_rev.plugins.builtin` 启用，替代原来的 `RSSERPENT_ENABLE_EXAMPLES` 开关。
 
 ## 构建 Docker 镜像
 
-把插件依赖写到 `docker/requirements/` 下的文件，构建时用 `RSSERPENT_PLUGIN_REQUIREMENTS` 指定文件名。
+如需运行默认 Compose 示例，将官方插件仓库检出至核心仓库的同级目录，在核心目录运行：
 
 ```sh
-RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt docker compose up --build
+uv build --project ../rsserpent-plugins --wheel --out-dir "$PWD/docker/requirements"
+docker compose up --build
 ```
 
-也可以直接构建。
+Compose 安装官方 wheel 并只读挂载 `docker/rsserpent.toml`。示例配置启用 Bilibili。自定义部署时，将插件安装依赖写入 `docker/requirements/custom.txt`，在 TOML 文件中列出实际要加载的模块。
 
 ```sh
-docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
+RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt RSSERPENT_CONFIG_FILE=./my-config.toml docker compose up --build
 ```
 
-镜像从 `uv.lock` 安装核心及其依赖，并在构建时安装和检查插件。服务启动时无需下载依赖。旧部署如仍挂载 `/app/rsserpent.txt`，请移除该挂载。Compose 默认示例从官方 workspace 的固定提交安装 Bilibili。
+镜像在构建时安装依赖并检查它们与锁定的核心兼容。应用在启动时加载配置的模块。用 `docker build --target core .` 构建纯核心镜像。需要 Chromium 时，选择 `--target browser` 并提供相应的插件依赖和运行配置。在 Docker 之外用 `uv run --locked playwright install chromium` 安装 Chromium。
 
-需要 Chromium 的插件可在构建命令加上 `--target browser`。对应的发布镜像为 `ghcr.io/rsserpent-rev/rsserpent-browser`。本地直接运行时，用 `uv run --locked playwright install chromium` 安装 Chromium。
+聚合包发布后，安装依赖可以指向新插件仓库根目录的完整 Git 提交。固定该提交可复现镜像构建。
