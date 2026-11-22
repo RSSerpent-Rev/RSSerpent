@@ -20,8 +20,7 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .log import logger
 from .models import Plugin, ProviderFn, QueryString, RSSFeed
-from .plugins.builtin import plugin as builtin_plugin
-from .plugins.externals import PluginLoadError, load_plugins
+from .plugins.config import PluginLoadError, load_plugins
 from .utils import fetch_data, filter_fg, gen_ids_for
 from .utils.feed import FeedFilterError, compile_filters
 from .utils.provider import ProviderInputError, provider_resource
@@ -129,8 +128,6 @@ async def all_routes(request: Request) -> TemplateResponse:
 def create_app(plugins: list[Plugin] | None = None) -> Starlette:
     if plugins is None:
         candidates = load_plugins()
-        if env_enabled("RSSERPENT_ENABLE_EXAMPLES"):
-            candidates.insert(0, (builtin_plugin, "built-in examples"))
     else:
         candidates = [(plugin, f"configured plugin {index} ({plugin.name})") for index, plugin in enumerate(plugins, 1)]
 

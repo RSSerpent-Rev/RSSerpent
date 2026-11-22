@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 import regex
@@ -8,10 +9,13 @@ from rsserpent_rev.main import create_app
 from rsserpent_rev.utils import feed
 
 
-def test_examples_opt_in(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("RSSERPENT_ENABLE_EXAMPLES", raising=False)
-    assert TestClient(create_app()).get("/_/example").status_code == 404
+def test_examples_opt_in(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("RSSERPENT_CONFIG", raising=False)
     monkeypatch.setenv("RSSERPENT_ENABLE_EXAMPLES", "true")
+    assert TestClient(create_app()).get("/_/example").status_code == 404
+    config = tmp_path / "rsserpent.toml"
+    config.write_text('plugins = ["rsserpent_rev.plugins.builtin"]\n')
+    monkeypatch.setenv("RSSERPENT_CONFIG", str(config))
     enabled = TestClient(create_app())
     assert enabled.get("/_/example").status_code == 200
     assert enabled.get("/_/example/1001").status_code == 400

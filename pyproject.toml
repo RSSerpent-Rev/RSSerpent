@@ -1,6 +1,6 @@
 [project]
 name = "rsserpent-rev"
-version = "0.2.0"
+version = "0.3.0"
 description = "🐍 This snake helps you reconnect the Web, with RSS feeds!"
 requires-python = ">=3.14,<3.16"
 authors = [{ name = "Queensferry", email = "queensferry.me@gmail.com" }]

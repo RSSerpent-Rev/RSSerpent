@@ -14,7 +14,7 @@ __all__ = ("app",)
 
 
 def __getattr__(name: str) -> Starlette:
-    # Plugins can import the models before the application discovers entry points.
+    # Plugins can import the models before the app loads configured modules.
     if name == "app":
         from .main import app
 
