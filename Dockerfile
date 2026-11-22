@@ -38,6 +38,7 @@ CMD ["uvicorn", "rsserpent_rev:app", "--host", "0.0.0.0"]
 
 FROM runtime AS browser
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
-RUN playwright install --with-deps chromium && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends libatomic1 \
+    && playwright install --with-deps chromium && rm -rf /var/lib/apt/lists/*
 
 FROM runtime AS core

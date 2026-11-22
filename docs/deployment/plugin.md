@@ -1,55 +1,31 @@
-# Install Plugins
+# Install plugins
 
-## Deployment templates
+Use uv with CPython 3.14 or 3.15. A plugin is a Python package with an `rsserpent.plugin` entry point. Install it in the same environment as the core before starting the service.
 
-!!!warning
-    Be careful not to mistake **`rsserpent.txt`** for `requirements.txt`.
+## Select an official plugin
 
-The default template doesn't do much. In order to unleash the full power of RSSerpent, you will need to add RSSerpent plugins to the `rsserpent.txt` file.
+The [official plugin repository](https://github.com/RSSerpent-Rev/rsserpent-plugins) is an independent uv workspace. A fixed Git commit and a subdirectory select one release:
 
-You could clone the repository to edit `rsserpent.txt` locally, or you could just use the GitHub web interface if you are not familiar with [git](https://git-scm.com/).
+```text
+rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@<commit>#subdirectory=plugins/bilibili
+```
 
-Several things to note when writing `rsserpent.txt`:
+Replace `<commit>` with the full published Git commit. Install this requirement with `uv pip install` in the service environment. Use a compatible core 0.2.x release or install its wheel. Third-party plugins that publish the same entry point work with their existing package names and repository URLs.
 
-- It's the same as writing `requirements.txt` for any Python project;
-- Do not modify `requirements.txt`, only edit `rsserpent.txt`. GitHub Actions will be in charge of automatically updating `requirements.txt` and deploying your instance;
-- By *automatically* it means every week or every time you commit changes to the repository;
-- It's recommended to not specify versions so that [GitHub Actions](https://github.com/features/actions) could automatically updates them;
+## Build a Docker image
 
-    ```python
-    # PyPI
-    rsserpent
-    # Git
-    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git
-    ```
+Place the requirement in a file under `docker/requirements/`. Set `RSSERPENT_PLUGIN_REQUIREMENTS` to the filename at build time:
 
-- If you do need a specific version of some dependency, you could always pin its version with:
+```sh
+RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt docker compose up --build
+```
 
-    ```python
-    # PyPI
-    rsserpent==0.1.4
-    # Git
-    rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/RSSerpent-plugin-bilibili.git@0609c0bd466e5d19fbb13078d9b93e0134b8c5bd
-    ```
-
-## Docker
-
-The default image contains the core service. `docker compose up --build` builds
-the example with the pinned Bilibili plugin.
-
-For a custom image, put a plugin requirements file under `docker/requirements/`.
-Pin all extra runtime packages and use full commits for Git dependencies.
-Keep the core and its locked dependencies in `uv.lock`.
-Remove the old `/app/rsserpent.txt` volume mount from the service.
+For a build outside Compose:
 
 ```sh
 docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
 ```
 
-Use `--target browser` if a plugin needs Chromium. The browser and its system
-dependencies are installed during the build. The published browser image uses
-the name `ghcr.io/rsserpent-rev/rsserpent-browser`.
+The core and its dependencies come from `uv.lock`. The image installs plugins and checks their dependencies during the build. The service starts without downloading packages. Remove the old `/app/rsserpent.txt` volume mount if your deployment still has it. The default Compose example uses the reachable Bilibili commit in its original repository until the official workspace is published.
 
-For local development outside Docker, run `uv run --locked playwright install chromium`
-before using a browser plugin. Enable the optional integration tests with
-`uv run --locked pytest --live -m live`.
+For plugins that require Chromium, add `--target browser` to the build command. The published browser image is `ghcr.io/rsserpent-rev/rsserpent-browser`. For local use outside Docker, install Chromium with `uv run --locked playwright install chromium`.

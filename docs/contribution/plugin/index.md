@@ -1,7 +1,6 @@
 # Create Plugins
 
-!!!note
-    Make sure you have read [Environment](index.md) before continuing.
+To develop an official plugin, use the [official workspace](https://github.com/RSSerpent-Rev/rsserpent-plugins). This page describes independent plugins.
 
 Learn to create a RSSerpent plugin project from scratch through this tutorial.
 
@@ -35,13 +34,13 @@ email [queensferryme@example.com]:
 
 The message between the brackets `[...]` are default values for respective fields, you may press `Enter` to accept or type in your own choice. You personal information (*email* etc.) will only be used for rendering the template. You could always remain anonymous if you'd like to.
 
-After that, we'll automatically create a directory `rsserpent-plugin-xxx/` with all the necessary project configurations for you. We will also install project dependencies (through `poetry`) and [pre-commit](https://pre-commit.com/) hooks, which may take minutes depending on your network connection.
+The legacy template creates a project directory. For the current core, define the project with PEP 621 and install its dependencies with uv. Use a compatible `rsserpent-rev` 0.2.x build in the plugin environment.
 
 ## Develop
 
 You will need a [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) to start developing. We recommend using [Visual Studio Code](https://code.visualstudio.com/), or VSCode for short. Use VSCode to open the directory you just created using `cookiecutter`. You may be prompted to install some recommended VSCode plugins.
 
-An RSSerpent plugin is mostly a collection of [routers](/usage/router.md), and each router is a `path` string accompanied by a data `provider` function.
+An RSSerpent plugin is mostly a collection of [routers](../../usage/router.md), and each router is a `path` string accompanied by a data `provider` function.
 
 ```python
 from typing import Any, Dict
@@ -60,7 +59,7 @@ async def provider() -> Dict[str, Any]:
 ```
 
 !!!note
-    See more example routers [here](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent/plugins/builtin).
+    See more example routers [here](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent_rev/plugins/builtin).
 
 !!!warning
     The `provider` function must be **async** and can **not** have [position-only arguments](https://docs.python.org/3/faq/programming.html#faq-positional-only-arguments).
@@ -81,13 +80,19 @@ plugin = Plugin(
 )
 ```
 
-!!!note
-    Poetry install dependencies inside a [virtualenv](https://virtualenv.pypa.io/). Therefore, in order to use tools like `pre-commit`, `pytest` or `uvicorn`, you will need to run `poetry shell` or `source $(poetry env info -p)/bin/activate` to activate the virtual environment.
+Declare the plugin in the project's `pyproject.toml`:
 
-Run `uvicorn --reload rsserpent:app` in your terminal to start an RSSerpent instance locally, so that you can see if you plugin works as expected.
+```toml
+[project.entry-points."rsserpent.plugin"]
+example = "rsserpent_plugin_xxx:plugin"
+```
+
+Use `uv sync` to install the project into its environment.
+
+Run `uv run uvicorn --reload rsserpent_rev:app` in your terminal to start an RSSerpent instance locally, so that you can see if you plugin works as expected.
 
 ```
-➜ uvicorn --reload rsserpent:app
+uv run uvicorn --reload rsserpent_rev:app
 INFO:     Will watch for changes in these directories: ['/path/to/your/directory']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [30920] using statreload

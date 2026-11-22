@@ -1,5 +1,7 @@
 # 创建插件
 
+开发官方插件请使用 [官方 workspace](https://github.com/RSSerpent-Rev/rsserpent-plugins)。本页介绍独立插件。
+
 !!!note
     请确保你此前已阅读过[环境](index.md)。
 
@@ -35,13 +37,13 @@ email [queensferryme@example.com]:
 
 方括号 `[...]` 之间的文本时对应字段的默认值，你可以按下回车键接受默认值，也可以自己在冒号后输入内容。你的个人信息（*邮箱地址*等）只会被用来填充项目模板，你也可以选择不填写并保持匿名。
 
-填写完成后，我们会为你自动创建一个名为 `rsserpent-plugin-xxx/` 的文件夹，里面包含了所有基本项目配置。然后还会使用 `poetry` 安装项目依赖，并安装 [pre-commit](https://pre-commit.com/) 钩子 —— 取决于你的网络连接质量，这一步可能需要数分钟不等。
+旧模板会生成项目目录。适配当前核心时，使用 PEP 621 定义项目，并通过 uv 安装依赖。插件环境需要兼容的 `rsserpent-rev` 0.2.x。
 
 ## 进行开发
 
 我们推荐你使用 [Visual Studio Code](https://code.visualstudio.com/)（简称 VSCode）这一集成开发环境（IDE）进行插件开发。使用 VSCode 打开你刚刚创建的文件夹，VSCode 可能会提示你安装一些推荐的 VSCode 插件。安装完成后，你就可以开始开发 RSSerpent 插件了。
 
-RSSerpent 插件的主要部分就是一系列[路由](/usage/router.md)，每个路由都包含一个 `path` 字符串和一个数据提供函数 `provider`。
+RSSerpent 插件的主要部分就是一系列[路由](../../usage/router.md)，每个路由都包含一个 `path` 字符串和一个数据提供函数 `provider`。
 
 ```python
 from typing import Any, Dict
@@ -60,7 +62,7 @@ async def provider() -> Dict[str, Any]:
 ```
 
 !!!note
-    你可以在[这里](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent/plugins/builtin)找到更多路由范例。
+    你可以在[这里](https://github.com/RSSerpent-Rev/RSSerpent/tree/main/rsserpent_rev/plugins/builtin)找到更多路由范例。
 
 !!!warning
     数据提供函数 `provider` 必须是 **async** 函数，并且不能包含 [position-only arguments](https://docs.python.org/3/faq/programming.html#faq-positional-only-arguments)。
@@ -82,13 +84,19 @@ plugin = Plugin(
 )
 ```
 
-!!!note
-    Poetry 将你的项目依赖安装在一个隔离的[虚拟环境](https://virtualenv.pypa.io/)中。因此，你需要使用 `poetry shell` 或 `source $(poetry env info -p)/bin/activate` 命令来激活虚拟环境，才可以使用虚拟环境中的 `pre-commit`，`pytest`，`uvicorn` 等命令行工具。
+在项目的 `pyproject.toml` 中声明入口。
 
-在终端里执行 `uvicorn --reload rsserpent:app`，你就能在本地启动一个 RSSerpent 实例。你可以在浏览器中打开这个实例，用以调试你的插件。
+```toml
+[project.entry-points."rsserpent.plugin"]
+example = "rsserpent_plugin_xxx:plugin"
+```
+
+使用 `uv sync` 将项目安装到其环境中。
+
+在终端里执行 `uv run uvicorn --reload rsserpent_rev:app`，你就能在本地启动一个 RSSerpent 实例。你可以在浏览器中打开这个实例，用以调试你的插件。
 
 ```
-➜ uvicorn --reload rsserpent:app
+➜ uv run uvicorn --reload rsserpent_rev:app
 INFO:     Will watch for changes in these directories: ['/path/to/your/directory']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [30920] using statreload

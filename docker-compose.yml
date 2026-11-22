@@ -4,6 +4,6 @@ services:
     build:
       context: .
       args:
-        RSSERPENT_PLUGIN_REQUIREMENTS: bilibili.txt
+        RSSERPENT_PLUGIN_REQUIREMENTS: ${RSSERPENT_PLUGIN_REQUIREMENTS:-bilibili.txt}
     ports:
       - "8000:8000"
