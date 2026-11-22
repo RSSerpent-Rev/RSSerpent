@@ -1,5 +1,6 @@
 import copy
 import os
+import re
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
@@ -20,7 +21,7 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 from .log import logger
 from .models import Plugin, ProviderFn, QueryString, RSSFeed
 from .plugins.builtin import plugin as builtin_plugin
-from .plugins.externals import plugins as external_plugins
+from .plugins.externals import PluginLoadError, load_plugins
 from .utils import fetch_data, filter_fg, gen_ids_for
 from .utils.feed import FeedFilterError, compile_filters
 from .utils.provider import ProviderInputError, provider_resource
@@ -84,13 +85,11 @@ def feed_endpoint(
         except FeedFilterError as exception:
             raise HTTPException(400, str(exception)) from exception
         resources = getattr(request.state, "plugin_resources", {})
-        token = provider_resource.set(resources.get(plugin.name))
         try:
-            data = await fetch_data(provider, request.path_params, query_params)
+            with provider_resource.set(resources.get(plugin.name)):
+                data = await fetch_data(provider, request.path_params, query_params)
         except ProviderInputError as exception:
             raise HTTPException(400, str(exception)) from exception
-        finally:
-            provider_resource.reset(token)
         if isinstance(data, dict):
             feed = RSSFeed.model_validate(data)
             fg = feed.to_feedgen()
@@ -129,18 +128,25 @@ async def all_routes(request: Request) -> TemplateResponse:
 
 def create_app(plugins: list[Plugin] | None = None) -> Starlette:
     if plugins is None:
-        plugins = list(external_plugins)
+        candidates = load_plugins()
         if env_enabled("RSSERPENT_ENABLE_EXAMPLES"):
-            plugins.insert(0, builtin_plugin)
+            candidates.insert(0, (builtin_plugin, "built-in examples"))
+    else:
+        candidates = [(plugin, f"configured plugin {index} ({plugin.name})") for index, plugin in enumerate(plugins, 1)]
 
-    active_plugins = []
-    for plugin in plugins:
+    active_plugins: list[Plugin] = []
+    sources: dict[str, str] = {}
+    for plugin, source in candidates:
         if plugin.enabled is not None:
             if not plugin.enabled():
                 continue
         elif plugin.name == "rsserpent-plugin-rss-proxy":
             # Earlier proxy releases do not restrict upstream destinations.
             continue
+        if plugin.name in sources:
+            message = f"Duplicate plugin name {plugin.name!r}: {sources[plugin.name]} and {source}."
+            raise PluginLoadError(message)
+        sources[plugin.name] = source
         active_plugins.append(plugin)
 
     @asynccontextmanager
@@ -153,14 +159,31 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
             yield {"plugin_resources": resources}
 
     routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
+    route_sources = {route.path_regex.pattern: (route.path, "RSSerpent core") for route in routes}
     for plugin in active_plugins:
+        source = sources[plugin.name]
         for path, provider in plugin.routers.items():
             if ":path}" in path:
-                routes.append(Route(path, endpoint=feed_endpoint(plugin, provider, path_format=True)))
+                feed_routes = [Route(path, endpoint=feed_endpoint(plugin, provider, path_format=True))]
             else:
-                routes.append(Route(path + ".atom", endpoint=feed_endpoint(plugin, provider, atom=True)))
                 rss_endpoint = feed_endpoint(plugin, provider)
-                routes.extend(Route(path + suffix, endpoint=rss_endpoint) for suffix in (".rss", ""))
+                feed_routes = [
+                    Route(path + ".atom", endpoint=feed_endpoint(plugin, provider, atom=True)),
+                    Route(path + ".rss", endpoint=rss_endpoint),
+                    Route(path, endpoint=rss_endpoint),
+                ]
+            for route in feed_routes:
+                # Parameter names do not change the set of paths a route matches.
+                shape = re.sub(r"\(\?P<[^>]+>", "(?:", route.path_regex.pattern)
+                if shape in route_sources:
+                    previous_path, previous_source = route_sources[shape]
+                    message = (
+                        f"Route {route.path!r} from {source} conflicts with {previous_path!r} from {previous_source}."
+                    )
+                    raise PluginLoadError(message)
+                route_sources[shape] = (route.path, source)
+                routes.append(route)
+        logger.info("Loaded plugin %s from %s", plugin.name, source)
 
     application = Starlette(
         debug=env_enabled("DEBUG"),

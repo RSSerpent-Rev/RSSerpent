@@ -1,4 +1,5 @@
 import inspect
+from annotationlib import Format
 from contextvars import ContextVar
 from inspect import Parameter
 from typing import Any
@@ -42,7 +43,8 @@ async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_pa
         NotImplementedError: do not use positional-only arguments in `provider`.
     """
     kwds = {}
-    for parameter in inspect.signature(provider).parameters.values():
+    signature = inspect.signature(provider, eval_str=True, annotation_format=Format.VALUE)
+    for parameter in signature.parameters.values():
         # ignore `*args` & `**kwds` arguments
         if parameter.kind in (Parameter.VAR_POSITIONAL, Parameter.VAR_KEYWORD):
             continue
