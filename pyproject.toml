@@ -194,3 +194,4 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "rsserpent_rev"
 module-root = ""
+source-exclude = ["**/.DS_Store"]

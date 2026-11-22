@@ -45,10 +45,9 @@ After successful installation, you need to run `python -V` (or `python3 -V`) to 
 !!!note
     Make sure you have [git](https://git-scm.com/) installed too.
 
-## Poetry
+## uv
 
 Use [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.13.9 to manage the project. RSSerpent supports CPython 3.14 and 3.15.
-    ```
 
 ## Further Steps
 

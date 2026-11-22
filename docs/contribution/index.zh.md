@@ -45,7 +45,7 @@ RSSerpent 使用 [Python](https://www.python.org) 编程语言编写。因此，
 !!!note
     请确保你的系统上也安装了 [git](https://git-scm.com/)。
 
-## Poetry
+## uv
 
 使用 [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.13.9 管理项目。RSSerpent 支持 CPython 3.14 和 3.15。
 
