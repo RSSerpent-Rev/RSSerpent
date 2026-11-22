@@ -10,7 +10,7 @@ The [official plugin repository](https://github.com/RSSerpent-Rev/rsserpent-plug
 rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@<commit>#subdirectory=plugins/bilibili
 ```
 
-Replace `<commit>` with the full published Git commit. Install this requirement with `uv pip install` in the service environment. Use a compatible core 0.2.x release or install its wheel. Third-party plugins that publish the same entry point work with their existing package names and repository URLs.
+Replace `<commit>` with the full published Git commit. Install the plugin with `uv pip install` in the service environment. For the compatible core, use the fixed Git requirement in the [official plugin installation example](https://github.com/RSSerpent-Rev/rsserpent-plugins#install-a-plugin). Third-party plugins that publish the same entry point work with their existing package names and repository URLs.
 
 ## Build a Docker image
 
@@ -26,6 +26,6 @@ For a build outside Compose:
 docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
 ```
 
-The core and its dependencies come from `uv.lock`. The image installs plugins and checks their dependencies during the build. The service starts without downloading packages. Remove the old `/app/rsserpent.txt` volume mount if your deployment still has it. The default Compose example uses the reachable Bilibili commit in its original repository until the official workspace is published.
+The core and its dependencies come from `uv.lock`. The image installs plugins and checks their dependencies during the build. The service starts without downloading packages. Remove the old `/app/rsserpent.txt` volume mount if your deployment still has it. The default Compose example installs Bilibili from a fixed commit of the official workspace.
 
 For plugins that require Chromium, add `--target browser` to the build command. The published browser image is `ghcr.io/rsserpent-rev/rsserpent-browser`. For local use outside Docker, install Chromium with `uv run --locked playwright install chromium`.

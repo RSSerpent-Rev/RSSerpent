@@ -17,9 +17,12 @@ RUN uv sync --locked --no-default-groups --group deploy --no-editable
 
 ARG RSSERPENT_PLUGIN_REQUIREMENTS=core.txt
 COPY docker/requirements/ /tmp/rss-plugins/
+# Keep the core from this build while resolving workspace sources for plugins.
 RUN uv pip list --format freeze > /tmp/core-constraints.txt \
     && uv pip freeze > /tmp/core-installed.txt \
-    && uv pip install --strict --constraint /tmp/core-constraints.txt \
+    && sed -n '/^rsserpent-rev @ /p' /tmp/core-installed.txt > /tmp/core-source.txt \
+    && test -s /tmp/core-source.txt \
+    && uv pip install --strict --overrides /tmp/core-source.txt --constraint /tmp/core-constraints.txt \
         --find-links /tmp/rss-plugins -r "/tmp/rss-plugins/${RSSERPENT_PLUGIN_REQUIREMENTS}" \
     && uv pip freeze > /tmp/plugin-installed.txt \
     && sort -o /tmp/core-installed.txt /tmp/core-installed.txt \

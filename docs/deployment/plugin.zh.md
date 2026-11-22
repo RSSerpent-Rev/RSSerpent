@@ -10,7 +10,7 @@
 rsserpent-plugin-bilibili @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@<commit>#subdirectory=plugins/bilibili
 ```
 
-把 `<commit>` 替换为已发布的完整 Git 提交。用 `uv pip install` 将该依赖安装到服务环境。核心需使用兼容的 0.2.x 分发版或 wheel。声明同一入口的第三方插件可以继续使用原包名和仓库地址。
+把 `<commit>` 替换为已发布的完整 Git 提交，再用 `uv pip install` 将插件安装到服务环境。兼容核心的固定 Git 依赖见[官方插件安装示例](https://github.com/RSSerpent-Rev/rsserpent-plugins#install-a-plugin)。声明同一入口的第三方插件可以继续使用原包名和仓库地址。
 
 ## 构建 Docker 镜像
 
@@ -26,6 +26,6 @@ RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt docker compose up --build
 docker build --build-arg RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt -t rsserpent-local .
 ```
 
-镜像从 `uv.lock` 安装核心及其依赖，并在构建时安装和检查插件。服务启动时无需下载依赖。旧部署如仍挂载 `/app/rsserpent.txt`，请移除该挂载。官方 workspace 发布前，Compose 默认示例继续使用原 Bilibili 仓库中已能取得的固定提交。
+镜像从 `uv.lock` 安装核心及其依赖，并在构建时安装和检查插件。服务启动时无需下载依赖。旧部署如仍挂载 `/app/rsserpent.txt`，请移除该挂载。Compose 默认示例从官方 workspace 的固定提交安装 Bilibili。
 
 需要 Chromium 的插件可在构建命令加上 `--target browser`。对应的发布镜像为 `ghcr.io/rsserpent-rev/rsserpent-browser`。本地直接运行时，用 `uv run --locked playwright install chromium` 安装 Chromium。
