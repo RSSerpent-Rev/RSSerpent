@@ -16,19 +16,16 @@ RSSERPENT_CONFIG=rsserpent.toml .venv/bin/uvicorn rsserpent_rev:app
 
 ## 构建 Docker 镜像
 
-如需运行默认 Compose 示例，将官方插件仓库检出至核心仓库的同级目录，在核心目录运行：
+如需运行默认 Compose 示例，在核心目录运行：
 
 ```sh
-uv build --project ../rsserpent-plugins --wheel --out-dir "$PWD/docker/requirements"
 docker compose up --build
 ```
 
-Compose 安装官方 wheel 并只读挂载 `docker/rsserpent.toml`。示例配置启用 Bilibili。自定义部署时，将插件安装依赖写入 `docker/requirements/custom.txt`，在 TOML 文件中列出实际要加载的模块。
+Compose 从固定的 Git 提交安装官方插件，并只读挂载 `docker/rsserpent.toml`。示例配置启用 Bilibili。自定义部署时，将插件安装依赖写入 `docker/requirements/custom.txt`，在 TOML 文件中列出实际要加载的模块。
 
 ```sh
 RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt RSSERPENT_CONFIG_FILE=./my-config.toml docker compose up --build
 ```
 
 镜像在构建时安装依赖并检查它们与锁定的核心兼容。应用在启动时加载配置的模块。用 `docker build --target core .` 构建纯核心镜像。需要 Chromium 时，选择 `--target browser` 并提供相应的插件依赖和运行配置。在 Docker 之外用 `uv run --locked playwright install chromium` 安装 Chromium。
-
-聚合包发布后，安装依赖可以指向新插件仓库根目录的完整 Git 提交。固定该提交可复现镜像构建。

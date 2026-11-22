@@ -1,1 +1,1 @@
-rsserpent-plugins @ file:///tmp/rss-plugins/rsserpent_plugins-0.3.0-py3-none-any.whl
+rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1

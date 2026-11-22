@@ -16,19 +16,16 @@ Without `RSSERPENT_CONFIG` or with an empty list, the app starts with no plugin 
 
 ## Build a Docker image
 
-For the default Compose example, check out the official plugin repository next to this repository. Run these commands from the core checkout:
+For the default Compose example, run this command from the core checkout:
 
 ```sh
-uv build --project ../rsserpent-plugins --wheel --out-dir "$PWD/docker/requirements"
 docker compose up --build
 ```
 
-Compose installs the official wheel and mounts `docker/rsserpent.toml` read-only. The example enables Bilibili. For another setup, put the plugin package requirements in `docker/requirements/custom.txt` and the module names in a TOML file.
+Compose installs the official plugins from a fixed Git commit and mounts `docker/rsserpent.toml` read-only. The example enables Bilibili. For another setup, put the plugin package requirements in `docker/requirements/custom.txt` and the module names in a TOML file.
 
 ```sh
 RSSERPENT_PLUGIN_REQUIREMENTS=custom.txt RSSERPENT_CONFIG_FILE=./my-config.toml docker compose up --build
 ```
 
 The image installs packages at build time and checks that they work with the locked core. The application loads the configured modules at startup. Run `docker build --target core .` for a core-only image. For plugins that require Chromium, use `--target browser` and the appropriate plugin requirements and runtime configuration. Outside Docker, install Chromium with `uv run --locked playwright install chromium`.
-
-For a published aggregate package, the installation requirement can use the repository root at a full Git commit. Keep that commit fixed so image builds are reproducible.
