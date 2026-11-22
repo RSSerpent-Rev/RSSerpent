@@ -1,7 +1,6 @@
 import copy
-import os
 import re
-from collections.abc import AsyncIterator, Awaitable, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable, Sequence
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 from typing import cast
@@ -20,7 +19,7 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .log import logger
 from .models import Plugin, ProviderFn, QueryString, RSSFeed
-from .plugins.config import PluginLoadError, load_plugins
+from .plugins.config import PluginLoadError
 from .utils import fetch_data, filter_fg, gen_ids_for
 from .utils.feed import FeedFilterError, compile_filters
 from .utils.provider import ProviderInputError, provider_resource
@@ -56,10 +55,6 @@ async def http_exception_handler(_request: Request, exception: Exception) -> Res
     if error.status_code in {204, 304}:
         return Response(status_code=error.status_code, headers=error.headers)
     return PlainTextResponse(error.detail, status_code=error.status_code, headers=error.headers)
-
-
-def env_enabled(name: str) -> bool:
-    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 async def index(request: Request) -> TemplateResponse:
@@ -125,25 +120,22 @@ async def all_routes(request: Request) -> TemplateResponse:
     )
 
 
-def create_app(plugins: list[Plugin] | None = None) -> Starlette:
-    if plugins is None:
-        candidates = load_plugins()
-    else:
-        candidates = [(plugin, f"configured plugin {index} ({plugin.name})") for index, plugin in enumerate(plugins, 1)]
-
+def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None = None) -> Starlette:
+    if sources is None:
+        sources = [f"configured plugin {index} ({plugin.name})" for index, plugin in enumerate(plugins, 1)]
     active_plugins: list[Plugin] = []
-    sources: dict[str, str] = {}
-    for plugin, source in candidates:
+    active_sources: dict[str, str] = {}
+    for plugin, source in zip(plugins, sources, strict=True):
         if plugin.enabled is not None:
             if not plugin.enabled():
                 continue
         elif plugin.name == "rsserpent-plugin-rss-proxy":
             # Earlier proxy releases do not restrict upstream destinations.
             continue
-        if plugin.name in sources:
-            message = f"Duplicate plugin name {plugin.name!r}: {sources[plugin.name]} and {source}."
+        if plugin.name in active_sources:
+            message = f"Duplicate plugin name {plugin.name!r}: {active_sources[plugin.name]} and {source}."
             raise PluginLoadError(message)
-        sources[plugin.name] = source
+        active_sources[plugin.name] = source
         active_plugins.append(plugin)
 
     @asynccontextmanager
@@ -158,7 +150,7 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
     routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
     route_sources = {route.path_regex.pattern: (route.path, "RSSerpent core") for route in routes}
     for plugin in active_plugins:
-        source = sources[plugin.name]
+        source = active_sources[plugin.name]
         for path, provider in plugin.routers.items():
             if ":path}" in path:
                 feed_routes = [Route(path, endpoint=feed_endpoint(plugin, provider, path_format=True))]
@@ -183,7 +175,6 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
         logger.info("Loaded plugin %s from %s", plugin.name, source)
 
     application = Starlette(
-        debug=env_enabled("DEBUG"),
         exception_handlers={
             Exception: exception_handler,
             HTTPException: http_exception_handler,
@@ -194,6 +185,3 @@ def create_app(plugins: list[Plugin] | None = None) -> Starlette:
     )
     application.state.plugins = active_plugins
     return application
-
-
-app = create_app()

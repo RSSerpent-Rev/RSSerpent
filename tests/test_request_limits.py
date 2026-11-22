@@ -6,17 +6,15 @@ import regex
 from starlette.testclient import TestClient
 
 from rsserpent_rev.main import create_app
+from rsserpent_rev.plugins.config import load_plugins, read_config
 from rsserpent_rev.utils import feed
 
 
-def test_examples_opt_in(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.delenv("RSSERPENT_CONFIG", raising=False)
-    monkeypatch.setenv("RSSERPENT_ENABLE_EXAMPLES", "true")
+def test_examples_opt_in(tmp_path: Path) -> None:
     assert TestClient(create_app()).get("/_/example").status_code == 404
     config = tmp_path / "rsserpent.toml"
     config.write_text('plugins = ["rsserpent_rev.plugins.builtin"]\n')
-    monkeypatch.setenv("RSSERPENT_CONFIG", str(config))
-    enabled = TestClient(create_app())
+    enabled = TestClient(create_app(load_plugins(read_config(config).modules)))
     assert enabled.get("/_/example").status_code == 200
     assert enabled.get("/_/example/1001").status_code == 400
 

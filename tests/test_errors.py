@@ -79,9 +79,7 @@ def test_invalid_provider_output(error_client: TestClient, monkeypatch: pytest.M
     assert error_client.get("/_/example").status_code == 500
 
 
-@pytest.mark.parametrize("value", ["0", "false", ""])
-def test_disabled_debug(monkeypatch: pytest.MonkeyPatch, value: str) -> None:
-    monkeypatch.setenv("DEBUG", value)
+def test_disabled_debug() -> None:
     assert not main.create_app([]).debug
 
 

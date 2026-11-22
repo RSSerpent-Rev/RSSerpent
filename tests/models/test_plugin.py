@@ -72,7 +72,7 @@ class TestPlugin:
         author=builds(Persona),
         repository=urls(),
         prefix=just("/prefix"),
-        routers=dictionaries(text().map(lambda s: f"/prefix/{s}"), functions(), min_size=1),
+        routers=dictionaries(text().map(lambda s: f"/prefix/{s}/feed"), functions(), min_size=1),
     )
     def test_routers_validation(
         self,
