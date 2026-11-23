@@ -143,6 +143,16 @@ def document_feed(
         except TypeError, ValueError:
             diagnostics.append("Cannot read provider signature.")
             parameters = {}
+        for name, parameter in parameters.items():
+            if parameter.kind is Parameter.POSITIONAL_ONLY:
+                diagnostics.append(f"Positional-only provider parameter {name!r} cannot be bound.")
+            if (
+                uses_format_query
+                and name == "format"
+                and name not in route.param_convertors
+                and parameter.default is Parameter.empty
+            ):
+                diagnostics.append("Required provider parameter 'format' is reserved on this route.")
         path_parameters = tuple(
             ParameterDoc(name, True, _CONVERTOR_LABELS.get(type(convertor)), descriptions.get(name))
             for name, convertor in route.param_convertors.items()

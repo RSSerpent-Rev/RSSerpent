@@ -51,6 +51,13 @@ jobs:
           uv run --locked mypy rsserpent_rev tests
       - name: "Generate Coverage Report"
         run: uv run --locked pytest --cov --cov-report=term --cov-report=xml -n auto
+      - name: Check the installed wheel
+        run: |
+          uv build --wheel --out-dir "$RUNNER_TEMP/rsserpent-dist"
+          uv venv --python "${{ matrix.python-version }}" "$RUNNER_TEMP/rsserpent-wheel"
+          uv pip install --python "$RUNNER_TEMP/rsserpent-wheel/bin/python" "$RUNNER_TEMP"/rsserpent-dist/*.whl
+          printf 'plugins = ["rsserpent_rev.plugins.builtin"]\n' > "$RUNNER_TEMP/rsserpent.toml"
+          "$RUNNER_TEMP/rsserpent-wheel/bin/rsserpent" check --config "$RUNNER_TEMP/rsserpent.toml"
       - name: Run live checks
         if: github.event_name == 'workflow_dispatch' && inputs.live_tests && matrix.python-version == '3.14'
         run: |

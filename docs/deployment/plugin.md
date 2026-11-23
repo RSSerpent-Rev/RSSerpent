@@ -43,7 +43,21 @@ plugins = ["rsserpent_plugins.bilibili"]
 
 For plugins that use Chromium, use `ghcr.io/rsserpent-rev/rsserpent-browser:main` in the same Docker command. When you publish a plugin, test that its Python packages and required system libraries work in the image.
 
+## Configure plugin settings
+
+Use the enabled module name as the table key. `plugin_settings` sets fields defined by the plugin. `plugin_env` maps each field to a required environment variable and overrides the same TOML field. Pass the named variable to Docker with `--env MY_RSS_TOKEN` or add it to the Compose service environment. Keep access tokens in environment variables.
+
+```toml
+[plugin_settings.my_private_plugin]
+title = "Announcements"
+
+[plugin_env.my_private_plugin]
+token = "MY_RSS_TOKEN"
+```
+
 ## Restart and diagnose
+
+For a local configuration check, install the plugin packages in your development environment and run `rsserpent check --config rsserpent.toml`.
 
 The container installs the configured packages before it starts the web server. It uses the core image's package versions as constraints. A conflict stops startup. Read `docker logs rsserpent` to identify a requirement or module that failed.
 

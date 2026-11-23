@@ -31,6 +31,58 @@ plugin = Plugin(
 )
 ```
 
+## Declare parameters and settings
+
+Add the following to the same module to define typed parameters, settings and a shared HTTP client.
+
+```python
+from typing import Literal
+
+from pydantic import BaseModel, Field
+from rsserpent_rev.models import Feed, FeedRoute
+from rsserpent_rev.utils import get_plugin_context
+
+
+class Settings(BaseModel):
+    title: str = "Announcements"
+
+
+class Parameters(BaseModel):
+    topic: Literal["news", "release"]
+    count: int = Field(5, ge=1, le=20, json_schema_extra={"document_default": True})
+
+
+async def announcements(topic: str, count: int) -> Feed:
+    context = get_plugin_context()
+    assert isinstance(context.settings, Settings) and context.http is not None
+    entries = await context.http.get_json("https://example.org/api/posts", params={"topic": topic})
+    return {
+        "title": context.settings.title,
+        "link": "https://example.org/",
+        "description": "Recent posts",
+        "items": [{"title": entry["title"]} for entry in entries[:count]],
+    }
+
+
+plugin = Plugin(
+    name=plugin.name,
+    author=plugin.author,
+    repository=plugin.repository,
+    prefix=plugin.prefix,
+    routers={"/my-feed/{topic}": FeedRoute(announcements, parameters=Parameters)},
+    route_docs={
+        "/my-feed/{topic}": {
+            "summary": "Recent announcements",
+            "examples": [{"label": "Releases", "path": {"topic": "release"}}],
+        },
+    },
+    settings_model=Settings,
+    http_client=True,
+)
+```
+
+Model fields named in the path are path parameters. Other fields are query parameters. Providers receive the validated values as keyword arguments. Use field names, simple scalar values, `Literal` choices, defaults and Pydantic constraints. Mark a default with `document_default` only when it can appear in public documentation. Use `plugin_settings` and `plugin_env` in the deployment TOML to set instance values. A catch-all path uses `format` for the core output format. Standard feed filters remain available.
+
 ## Document a route
 
 To document a feed on the instance's `/all_routes` page, pass `route_docs` to `Plugin`. Use the same path key as in `routers`.
@@ -49,10 +101,44 @@ plugins = ["my_rss_plugin"]
 uv build --wheel
 uv venv --python 3.14
 uv pip install /path/to/rsserpent_rev-0.3.0-py3-none-any.whl dist/*.whl uvicorn
+.venv/bin/rsserpent check --config rsserpent.toml
 .venv/bin/python -m rsserpent_rev --config rsserpent.toml
 ```
 
 Check `/my-feed`, `/my-feed.rss` and `/my-feed.atom`. See the [route guide](../../usage/router.md) to implement providers with URL parameters.
+
+`rsserpent check` imports the installed plugins and checks settings, route conflicts, parameters and examples. It exits nonzero on failure. With the typed example, use `/my-feed/release.rss` and `/my-feed/release.atom` for a live request.
+
+## Test offline
+
+Install the `rsserpent-rev[test]` extra and pytest in your development environment. This test uses the application lifespan and calls the same RSS and Atom routes as a subscriber.
+
+```python
+from xml.etree import ElementTree
+
+import httpx
+from my_rss_plugin import plugin
+from rsserpent_rev.testing import plugin_test_client
+
+
+def upstream(request: httpx.Request) -> httpx.Response:
+    assert request.url.params["topic"] == "release"
+    return httpx.Response(200, json=[{"title": "Version 1"}])
+
+
+def test_feed() -> None:
+    with plugin_test_client(
+        plugin,
+        settings={"title": "Announcements"},
+        transport=httpx.MockTransport(upstream),
+    ) as client:
+        rss = ElementTree.fromstring(client.get("/my-feed/release.rss").content)
+        atom = ElementTree.fromstring(client.get("/my-feed/release.atom").content)
+        assert rss.findtext("./channel/item/title") == "Version 1"
+        assert atom.findtext("{*}entry/{*}title") == "Version 1"
+```
+
+The fixture transport supplies responses for the context client. For an independent downloader, supply fixtures in its client factory or lifespan. Use a normal Starlette test client if your test needs several plugins.
 
 ## Publish
 

@@ -43,7 +43,21 @@ plugins = ["rsserpent_plugins.bilibili"]
 
 插件需要 Chromium 时，把 Docker 命令中的镜像换成 `ghcr.io/rsserpent-rev/rsserpent-browser:main`。发布插件前，请用目标镜像验证 Python 依赖和所需系统库。
 
+## 填写插件设置
+
+配置表以启用的模块名为键。`plugin_settings` 填写插件声明的字段。`plugin_env` 把字段映射到必需的环境变量，优先于 TOML 中的同名字段。通过 `--env MY_RSS_TOKEN` 把变量传入 Docker，或将它加入 Compose 服务的环境配置。访问令牌适合通过环境变量传入。
+
+```toml
+[plugin_settings.my_private_plugin]
+title = "Announcements"
+
+[plugin_env.my_private_plugin]
+token = "MY_RSS_TOKEN"
+```
+
 ## 重启与排查
+
+在本地检查配置时，先在开发环境安装插件包，再运行 `rsserpent check --config rsserpent.toml`。
 
 容器在启动 Web 服务前安装配置中的包，并按镜像内的核心依赖版本检查冲突。遇到冲突时，容器退出。用 `docker logs rsserpent` 查看失败的依赖或模块。
 

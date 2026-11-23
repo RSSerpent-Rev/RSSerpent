@@ -1588,6 +1588,11 @@ dependencies = [
     { name = "starlette" },
 ]
 
+[package.optional-dependencies]
+test = [
+    { name = "httpx2" },
+]
+
 [package.dev-dependencies]
 deploy = [
     { name = "uvicorn" },
@@ -1624,6 +1629,7 @@ requires-dist = [
     { name = "feedgen", specifier = ">=1,<2" },
     { name = "feedparser", specifier = ">=6.0.14,<7" },
     { name = "httpx", specifier = ">=0.28,<1" },
+    { name = "httpx2", marker = "extra == 'test'", specifier = ">=2,<3" },
     { name = "jinja2", specifier = ">=3.1,<4" },
     { name = "lxml", specifier = ">=6,<7" },
     { name = "playwright", specifier = ">=1.65,<2" },
@@ -1632,6 +1638,7 @@ requires-dist = [
     { name = "regex", specifier = ">=2026.11.19" },
     { name = "starlette", specifier = ">=0.49,<2" },
 ]
+provides-extras = ["test"]
 
 [package.metadata.requires-dev]
 deploy = [{ name = "uvicorn", specifier = ">=0.29,<1" }]
