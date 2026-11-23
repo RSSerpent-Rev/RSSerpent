@@ -107,7 +107,7 @@ uv pip install /path/to/rsserpent_rev-0.3.0-py3-none-any.whl dist/*.whl uvicorn
 
 访问 `/my-feed`、`/my-feed.rss` 和 `/my-feed.atom` 验证输出。带 URL 参数的 provider 写法见[路由文档](../../usage/router.zh.md)。
 
-`rsserpent check` 在当前环境导入已安装的插件，检查配置、路由冲突、参数和文档示例。失败时以非零状态退出。需要实际发送请求时，以上述类型化插件的 `/my-feed/release.rss` 和 `/my-feed/release.atom` 为准。
+`rsserpent check` 在当前环境导入已安装的插件，检查配置、路由冲突、参数和文档示例。失败时以非零状态退出。类型化路由按参数模型校验示例值。普通函数路由检查路径、参数名称和必填项，检查过程不求值 provider 注解。需要实际发送请求时，以上述类型化插件的 `/my-feed/release.rss` 和 `/my-feed/release.atom` 为准。
 
 ## 离线测试
 

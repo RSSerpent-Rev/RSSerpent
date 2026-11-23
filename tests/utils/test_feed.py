@@ -87,3 +87,53 @@ def test_invalid_feed_from_provider() -> None:
     plugin = builtin_plugin.model_copy(update={"routers": {"/_/parsed": provider}})
     with TestClient(create_app([plugin])) as client:
         assert client.get("/_/parsed.rss").status_code == 502
+
+
+@pytest.mark.parametrize(
+    ("identifier", "links", "channel_link", "entry_link"),
+    [
+        ("urn:entry", "", BASE, None),
+        ("tag:example.net,2026:entry", '<link rel="self" href="self.xml"/>', BASE, None),
+        (
+            "https://example.net/entry-id",
+            '<link href="page"/>',
+            "https://example.net/news/page",
+            "https://example.net/news/page",
+        ),
+    ],
+)
+def test_atom_id_is_independent_of_alternate_links(
+    identifier: str, links: str, channel_link: str, entry_link: str | None
+) -> None:
+    body = f"""<feed xmlns="http://www.w3.org/2005/Atom">
+      <id>urn:feed</id><title>News</title><updated>2025-03-01T12:00:00Z</updated>
+      <author><name>Writer</name></author>{links}
+      <entry><id>{identifier}</id><title>First</title><summary>Item</summary>{links}</entry>
+    </feed>""".encode()
+
+    async def provider() -> Feed:
+        return parse_feed(body, base_url=BASE)
+
+    plugin = builtin_plugin.model_copy(update={"routers": {"/_/parsed": provider}})
+    with TestClient(create_app([plugin])) as client:
+        rss = ElementTree.fromstring(client.get("/_/parsed.rss").content)
+        assert rss.findtext("./channel/link") == channel_link
+        assert rss.findtext("./channel/item/link") == entry_link
+        guid = rss.find("./channel/item/guid")
+        assert guid is not None and guid.text == identifier and guid.get("isPermaLink") == "false"
+        atom = ElementTree.fromstring(client.get("/_/parsed.atom").content)
+        assert atom.findtext("a:id", namespaces=NS) == "urn:feed"
+        assert atom.findtext("a:entry/a:id", namespaces=NS) == identifier
+        links_in_entry = [link.get("href") for link in atom.findall("a:entry/a:link", NS)]
+        assert links_in_entry == ([entry_link] if entry_link else [])
+
+
+def test_parse_rss_permalink_guid() -> None:
+    body = b"""<rss version="2.0"><channel><title>News</title><link>./</link><description>Posts</description>
+      <item><title>Entry</title><guid isPermaLink="true">https://example.net/entry</guid></item>
+    </channel></rss>"""
+    rss = ElementTree.fromstring(parse_feed(body, base_url=BASE).rss_str())
+    assert rss.findtext("./channel/link") == "https://example.net/news/"
+    assert rss.findtext("./channel/item/link") == "https://example.net/entry"
+    guid = rss.find("./channel/item/guid")
+    assert guid is not None and guid.text == "https://example.net/entry" and guid.get("isPermaLink") == "true"

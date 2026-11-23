@@ -107,7 +107,7 @@ uv pip install /path/to/rsserpent_rev-0.3.0-py3-none-any.whl dist/*.whl uvicorn
 
 Check `/my-feed`, `/my-feed.rss` and `/my-feed.atom`. See the [route guide](../../usage/router.md) to implement providers with URL parameters.
 
-`rsserpent check` imports the installed plugins and checks settings, route conflicts, parameters and examples. It exits nonzero on failure. With the typed example, use `/my-feed/release.rss` and `/my-feed/release.atom` for a live request.
+`rsserpent check` imports the installed plugins and checks settings, route conflicts, parameters and examples. It exits nonzero on failure. For a typed route, the check validates example values against the parameter model. For a function route, it checks the path, parameter names and required fields without evaluating provider annotations. With the typed example, use `/my-feed/release.rss` and `/my-feed/release.atom` for a live request.
 
 ## Test offline
 

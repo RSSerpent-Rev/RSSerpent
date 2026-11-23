@@ -51,6 +51,17 @@ def _authors(source: FeedParserDict) -> list[dict[str, str]]:
     return authors
 
 
+def _primary_link(source: FeedParserDict, *, atom: bool) -> str | None:
+    if atom:
+        # feedparser also exposes an Atom ID as "link" when no alternate exists.
+        return next(
+            (link["href"] for link in source.get("links", []) if link.get("rel") == "alternate" and link.get("href")),
+            None,
+        )
+    link: str | None = source.get("link")
+    return link
+
+
 def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
     """Parse downloaded RSS or Atom bytes and resolve relative URLs against base_url.
 
@@ -66,14 +77,17 @@ def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
         sanitize_html=True,
     )
     source = parsed.feed
-    if not parsed.get("version", "").startswith(("rss", "atom")) or not source.get("title"):
+    version = parsed.get("version", "")
+    if not version.startswith(("rss", "atom")) or not source.get("title"):
         raise FeedParseError(FeedParseError.invalid_feed)
 
+    atom = version.startswith("atom")
+    channel_link = _primary_link(source, atom=atom) or base_url
     fg = FeedGenerator()
     fg.title(source.title)
     fg.description(source.get("subtitle") or source.title)
-    fg.id(source.get("id") or source.get("link") or base_url)
-    fg.link(href=source.get("link") or base_url, rel="alternate")
+    fg.id(source.get("id") or channel_link)
+    fg.link(href=channel_link, rel="alternate")
     if authors := _authors(source):
         fg.author(authors)
     feed_published = _date(source, "published_parsed")
@@ -100,10 +114,13 @@ def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
             )
             if not (item.get("title") or summary):
                 entry.description(content.value)
-        if link := item.get("link"):
+        if link := _primary_link(item, atom=atom):
             entry.link(href=link, rel="alternate")
+        elif not content:
+            # Atom requires content when an entry has no alternate link.
+            entry.content(summary or item.get("title"))
         if identifier := item.get("id"):
-            entry.guid(identifier, permalink=bool(item.get("guidislink")))
+            entry.guid(identifier, permalink=not atom and bool(item.get("guidislink")))
         if authors := _authors(item):
             entry.author(authors)
         for tag in item.get("tags", []):
