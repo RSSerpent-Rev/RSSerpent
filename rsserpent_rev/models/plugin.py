@@ -15,6 +15,7 @@ else:
 
 from feedgen.feed import FeedGenerator
 
+from ..http import HTTPClient
 from .rss import RSSFeed
 
 Feed = dict[str, Any] | FeedGenerator | RSSFeed
@@ -59,6 +60,8 @@ class Plugin(BaseModel):
     route_docs: dict[str, object] = Field(default_factory=dict)
     enabled: Callable[[], bool] | None = None
     lifespan: Callable[[], AbstractAsyncContextManager[object]] | None = None
+    settings_model: type[BaseModel] | None = None
+    http_client: bool | Callable[[], AbstractAsyncContextManager[HTTPClient]] = False
 
     def __init__(self, **data: Any):
         super().__init__(**data)

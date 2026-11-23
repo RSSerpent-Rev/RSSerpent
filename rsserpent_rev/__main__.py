@@ -1,9 +1,10 @@
 import argparse
 import os
 from pathlib import Path
+from tempfile import TemporaryFile
 
 from ._server import serve
-from .plugins.config import PluginConfig, PluginLoadError, read_config
+from .plugins.config import PluginConfig, PluginLoadError, parse_config, read_config_bytes
 from .plugins.install import prepare_plugin_environment
 
 CONTAINER_CONFIG = Path("/etc/rsserpent/rsserpent.toml")
@@ -22,13 +23,23 @@ def main() -> None:
         path = CONTAINER_CONFIG
 
     try:
-        config = read_config(path) if path is not None else PluginConfig()
-        if args.container and config.requirements:
+        body = read_config_bytes(path) if path is not None else b""
+        config = parse_config(body, path) if path is not None else PluginConfig()
+        if args.container and path is not None and config.requirements:
             python = prepare_plugin_environment(config.requirements)
             os.environ["PATH"] = os.pathsep.join((str(python.parent), os.environ.get("PATH", "")))
             os.environ["VIRTUAL_ENV"] = str(python.parent.parent)
-            os.execv(python, [str(python), "-m", "rsserpent_rev._server", args.host, str(args.port), *config.modules])
-        serve(config.modules, host=args.host, port=args.port)
+            # Pass the same bytes to the new interpreter without exposing values in argv.
+            with TemporaryFile() as snapshot:
+                snapshot.write(body)
+                snapshot.seek(0)
+                descriptor = snapshot.fileno()
+                os.set_inheritable(descriptor, True)
+                os.execv(
+                    python,
+                    [str(python), "-m", "rsserpent_rev._server", args.host, str(args.port), str(descriptor), str(path)],
+                )
+        serve(config, host=args.host, port=args.port)
     except PluginLoadError as exception:
         raise SystemExit(str(exception)) from None
 

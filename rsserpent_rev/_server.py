@@ -1,19 +1,28 @@
+import os
 import sys
-from collections.abc import Sequence
+from pathlib import Path
 
-import uvicorn
+from starlette.applications import Starlette
 
 from .main import create_app
-from .plugins.config import PluginLoadError, load_plugins
+from .plugins.config import PluginConfig, PluginLoadError, load_plugins, parse_config
 
 
-def serve(modules: Sequence[str], *, host: str, port: int) -> None:
-    uvicorn.run(create_app(load_plugins(modules), sources=modules), host=host, port=port)
+def configured_app(config: PluginConfig) -> Starlette:
+    return create_app(load_plugins(config.modules, config.path), config=config)
+
+
+def serve(config: PluginConfig, *, host: str, port: int) -> None:
+    import uvicorn
+
+    uvicorn.run(configured_app(config), host=host, port=port)
 
 
 if __name__ == "__main__":
-    host, port, *modules = sys.argv[1:]
+    host, port, descriptor, path = sys.argv[1:]
     try:
-        serve(modules, host=host, port=int(port))
+        with os.fdopen(int(descriptor), "rb") as snapshot:
+            config = parse_config(snapshot.read(), Path(path))
+        serve(config, host=host, port=int(port))
     except PluginLoadError as exception:
         raise SystemExit(str(exception)) from None

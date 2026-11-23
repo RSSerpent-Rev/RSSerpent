@@ -90,8 +90,12 @@ def test_import_has_no_application_instance() -> None:
     assert not hasattr(main, "app")
 
 
-def test_container_passes_modules_from_the_same_config(config: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    config.write_text('plugins = ["first"]\nplugin_requirements = ["first-dist==1.2.3"]\n')
+def test_container_passes_the_original_config_snapshot(config: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    original = (
+        'plugins = ["first"]\nplugin_requirements = ["first-dist==1.2.3"]\n'
+        '[plugin_settings.first]\nsecret = "private-config-value"\n'
+    )
+    config.write_text(original)
     interpreter = config.parent / "venv" / "bin" / "python"
 
     def prepare(requirements: tuple[str, ...]) -> Path:
@@ -101,7 +105,14 @@ def test_container_passes_modules_from_the_same_config(config: Path, monkeypatch
 
     def execv(program: Path, args: list[str]) -> None:
         assert program == interpreter
-        assert args == [str(interpreter), "-m", "rsserpent_rev._server", "127.0.0.1", "8000", "first"]
+        assert args[:5] == [str(interpreter), "-m", "rsserpent_rev._server", "127.0.0.1", "8000"]
+        assert args[-1] == str(config)
+        descriptor = int(args[5])
+        assert os.get_inheritable(descriptor)
+        with os.fdopen(os.dup(descriptor), "rb") as snapshot:
+            assert snapshot.read().decode() == original
+        assert "private-config-value" not in str(args)
+        assert "private-config-value" not in os.environ.values()
         raise SystemExit(0)
 
     monkeypatch.setattr(launcher, "prepare_plugin_environment", prepare)

@@ -2,6 +2,7 @@ import copy
 import re
 from collections.abc import AsyncIterator, Awaitable, Callable, Sequence
 from contextlib import AsyncExitStack, asynccontextmanager
+from dataclasses import replace
 from pathlib import Path
 from typing import cast
 
@@ -17,11 +18,13 @@ from starlette.routing import Route
 from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
 
+from .http import HTTPClient
 from .log import logger
 from .models import FeedRoute, Plugin, ProviderFn, QueryString, RSSFeed
-from .plugins.config import PluginLoadError
+from .plugins.config import PluginConfig, PluginLoadError
 from .plugins.documentation import FeedRouteGroup, document_feed
 from .utils import fetch_data, filter_fg, gen_ids_for
+from .utils.context import PluginContext, plugin_context
 from .utils.feed import FeedFilterError, FeedParseError, compile_filters
 from .utils.parameters import RouteParameters
 from .utils.provider import ProviderInputError, provider_resource
@@ -86,8 +89,9 @@ def feed_endpoint(
         except FeedFilterError as exception:
             raise HTTPException(400, str(exception)) from exception
         resources = getattr(request.state, "plugin_resources", {})
+        contexts = getattr(request.state, "plugin_contexts", request.app.state.plugin_contexts)
         try:
-            with provider_resource.set(resources.get(plugin.name)):
+            with provider_resource.set(resources.get(plugin.name)), plugin_context.set(contexts[plugin.name]):
                 if parameters is None:
                     data = await fetch_data(provider, request.path_params, query_params)
                 else:
@@ -130,11 +134,20 @@ async def all_routes(request: Request) -> TemplateResponse:
     )
 
 
-def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None = None) -> Starlette:
+def create_app(
+    plugins: Sequence[Plugin] = (),
+    *,
+    sources: Sequence[str] | None = None,
+    config: PluginConfig | None = None,
+) -> Starlette:
+    if config is not None:
+        sources = config.modules
     if sources is None:
         sources = [f"configured plugin {index} ({plugin.name})" for index, plugin in enumerate(plugins, 1)]
+    config = config or PluginConfig()
     active_plugins: list[Plugin] = []
     active_sources: dict[str, str] = {}
+    plugin_contexts: dict[str, PluginContext] = {}
     for plugin, source in zip(plugins, sources, strict=True):
         if plugin.enabled is not None:
             if not plugin.enabled():
@@ -146,16 +159,29 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
             message = f"Duplicate plugin name {plugin.name!r}: {active_sources[plugin.name]} and {source}."
             raise PluginLoadError(message)
         active_sources[plugin.name] = source
+        settings = config.settings_for(source, plugin.settings_model)
+        plugin_contexts[plugin.name] = PluginContext(logger.getChild(plugin.name), settings)
         active_plugins.append(plugin)
 
     @asynccontextmanager
-    async def lifespan(_application: Starlette) -> AsyncIterator[dict[str, dict[str, object]]]:
+    async def lifespan(_application: Starlette) -> AsyncIterator[dict[str, object]]:
         async with AsyncExitStack() as stack:
-            resources = {}
+            resources: dict[str, object] = {}
+            contexts = {}
             for plugin in active_plugins:
+                resource = None
                 if plugin.lifespan is not None:
-                    resources[plugin.name] = await stack.enter_async_context(plugin.lifespan())
-            yield {"plugin_resources": resources}
+                    resource = await stack.enter_async_context(plugin.lifespan())
+                    resources[plugin.name] = resource
+                client = None
+                if plugin.http_client is True:
+                    client = (
+                        resource if isinstance(resource, HTTPClient) else await stack.enter_async_context(HTTPClient())
+                    )
+                elif callable(plugin.http_client):
+                    client = await stack.enter_async_context(plugin.http_client())
+                contexts[plugin.name] = replace(plugin_contexts[plugin.name], http=client)
+            yield {"plugin_resources": resources, "plugin_contexts": contexts}
 
     routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
     route_sources = {route.path_regex.pattern: (route.path, "RSSerpent core") for route in routes}
@@ -221,6 +247,7 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
     for diagnostic in diagnostics:
         logger.warning("%s", diagnostic)
     application.state.diagnostics = diagnostics
+    application.state.plugin_contexts = plugin_contexts
     application.state.plugins = active_plugins
     application.state.feed_routes = feed_routes_by_plugin
     return application

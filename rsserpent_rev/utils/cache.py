@@ -13,6 +13,8 @@ from typing import (
     overload,
 )
 
+from .context import plugin_context
+
 __all__ = ("cached",)
 
 CACHE_EXPIRE = int(os.environ.get("CACHE_EXPIRE", 60 * 60))
@@ -172,7 +174,9 @@ def decorator[AsyncFn: Callable[..., Awaitable[Any]]](fn: AsyncFn, *, expire: in
         Returns:
             The (maybe cached) result of `fn(*args, **kwds)`.
         """
-        key = CacheKey.make(args, kwds)
+        context = plugin_context.get()
+        scope = () if context is None else (context._cache_scope,)
+        key = CacheKey.make((*scope, *args), kwds)
         pending_key = (asyncio.get_running_loop(), key)
 
         def discard(task: asyncio.Task[Any]) -> None:
