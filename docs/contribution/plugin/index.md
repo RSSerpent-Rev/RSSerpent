@@ -21,8 +21,21 @@ plugin = Plugin(
     repository="https://example.org/my-rss-plugin",
     prefix="/my-feed",
     routers={"/my-feed": provider},
+    route_docs={
+        "/my-feed": {
+            "summary": "Example updates",
+            "description": "Follow the latest announcements.",
+            "examples": [{"label": "Latest five entries", "query": {"limit": "5"}}],
+        },
+    },
 )
 ```
+
+## Document a route
+
+To document a feed on the instance's `/all_routes` page, pass `route_docs` to `Plugin`. Use the same path key as in `routers`.
+
+Each entry needs a `summary`. You can add a plain-text `description` and `parameters`, a mapping from parameter names to descriptions. For each example, provide a `label` and any `path` or `query` values as strings. For instance, use `"path": {"uid": "297786973"}` for a route with `{uid}`. List values that are safe to publish. The page derives parameter names and required fields from the registered route and the provider signature. It builds the RSS and Atom example links and skips examples with invalid path values or missing required parameters. View startup logs for skipped entries. Without `route_docs`, the page shows the registered paths, detectable parameters and any provider docstring.
 
 ## Test with RSSerpent
 

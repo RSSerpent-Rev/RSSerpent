@@ -7,6 +7,8 @@ Under normal circumstances, every RSS feed has a subscription link. For example,
 
 ## Instances and Routes
 
+Open `/all_routes` on your instance to see its enabled feeds, parameter descriptions and example links.
+
 If you wish to subscribe to news sources without RSS through RSSerpent, you will need to find the subscription link, as usual. RSSerpent's subscription links, similarly, consist of a domain and a route:
 
 - Every domain corresponds to an RSSerpent instance. For example, the official domain [rsserpent.imciel.com](https://rsserpent.imciel.com) corresponds to the official instance. You can find more official instances to use on the [[Deploy]](../deployment/index.md) page, but we recommend self-hosting to accommodate your growing and varied requirements.
@@ -18,7 +20,7 @@ If you wish to subscribe to news sources without RSS through RSSerpent, you will
 !!!note
     Every RSSerpent plugin contains one or more routes.
 
-RSSerpent's official [instance](https://rsserpent.imciel.com) comes with the <abbr title="A Chinese video sharing platform akin to Youtube">Bilibili</abbr> [plugin](https://github.com/RSSerpent-Rev/rsserpent-plugins/tree/main/rsserpent_plugins/bilibili). Therefore, you can access the `/bilibili/user/{id}/video` route on the official instance to subscribe to some users' published videos. For example, if you wish to subscribe to [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg)'s official Chinese translation [channel](https://space.bilibili.com/297786973) on Bilibili, you could concatenate the official domain `rsserpent.imciel.com` and the route `/bilibili/user/297786973/video` to generate the subscription link as follows:
+RSSerpent's official [instance](https://rsserpent.imciel.com) comes with the <abbr title="A Chinese video sharing platform akin to Youtube">Bilibili</abbr> [plugin](https://github.com/RSSerpent-Rev/rsserpent-plugins/tree/main/rsserpent_plugins/bilibili). Therefore, you can access the `/bilibili/user/{uid}/video` route on the official instance to subscribe to some users' published videos. For example, if you wish to subscribe to [Chubbyemu](https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg)'s official Chinese translation [channel](https://space.bilibili.com/297786973) on Bilibili, you could concatenate the official domain `rsserpent.imciel.com` and the route `/bilibili/user/297786973/video` to generate the subscription link as follows:
 
 ![RSSerpent Bilibili Chubbyemu](https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/rsserpent-bilibili-chubbyemu.png)
 
@@ -31,7 +33,7 @@ From the example given above, we note that some routes are not complete, and req
 
 Route parameters are usually surrounded by brackets `{}`. When filling the route parameters, you should remove the bracket pair. Different routes are provided by different plugins, and you should refer to the documentation of the respective plugin to understand the implication of each route parameter and how you can find and fill in these route parameters.
 
-Again, taking the `/bilibili/user/{id}/video` route for example: the route accepts one route parameter *id*. Every Bilibili user is endowed with a unique ID, which you usually can find in the user profile's address. Only with this unique identifier, the route will then be able to retrieve the user's list of published videos, and output the list in the RSS feed subscription link.
+Again, taking the `/bilibili/user/{uid}/video` route for example: the route accepts one route parameter *id*. Every Bilibili user is endowed with a unique ID, which you usually can find in the user profile's address. Only with this unique identifier, the route will then be able to retrieve the user's list of published videos, and output the list in the RSS feed subscription link.
 
 ## Query Parameters
 
@@ -41,7 +43,7 @@ Route parameters are required. However, sometimes routes need to access optional
 - There can be arbitrary amount of query parameters, each looking like `{name}={value}`;
 - Multiple query parameters are separated with an ampersand `&`.
 
-For example, assuming the `/bilibili/user/{id}/video` route accepts two query parameters, of which the `sort` parameter is used to specify the sorting criteria while the `order` parameter is used to indicate ascent/descent. Given that most users would probably subscribe to the latest videos, the route by default will sort the list of videos in chronologically descending order. However, if you need to subscribe to the most trending videos, the route should look like `/bilibili/user/{id}/video?sort=hot&order=desc`.
+For example, `/bilibili/user/297786973/video?limit=5` returns at most five entries. See `/all_routes` on your instance for each feed's own parameters.
 # Request limits
 
 To enable the built-in example routes, add `rsserpent_rev.plugins.builtin` to the `plugins` list in the [deployment configuration](../deployment/plugin.md). The numbered example accepts up to 1,000 items.

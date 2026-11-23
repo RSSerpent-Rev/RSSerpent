@@ -1,117 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed routes | RSSerpent</title>
     <style>
-        * {
-            box-sizing: border-box;
+        body {
+            color: #202620;
+            font-family: system-ui, sans-serif;
+            line-height: 1.6;
             margin: 0;
-            padding: 0;
         }
         main {
-            align-items: center;
-            display: flex;
-            flex-direction: column;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            height: 100vh;
-            justify-content: flex-start;
-            padding: 20vh 0;
-            /* text-align: center; */
+            max-width: 54rem;
+            margin: 0 auto;
+            padding: 2rem clamp(1rem, 4vw, 2.5rem);
         }
-        main a {
-            color: green!important;
+        a { color: #17643c; }
+        h1, h2 { line-height: 1.25; }
+        h2 { overflow-wrap: anywhere; }
+        section {
+            border-top: 1px solid #d6dfd6;
+            margin-top: 2rem;
         }
-        main h1 {
-            padding-bottom: 1em;
+        ul { padding-inline-start: 1.25rem; }
+        li + li { margin-top: .2rem; }
+        .feeds {
+            list-style: none;
+            padding: 0;
         }
-        main img {
-            max-width: 12em;
+        .feeds > li {
+            background: #f4f7f4;
+            border-radius: .4rem;
+            margin-bottom: .75rem;
+            padding: .75rem 1rem;
         }
-        main p {
-            padding: .3em 0;
-        }
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 20px;
-}
-
-h1 {
-    text-align: center;
-}
-
-pre {
-    white-space: pre-wrap;
-}
-
-.plugin-list {
-    display: flex;
-    flex-wrap: wrap;
-    /* justify-content: center; */
-}
-
-.plugin-info {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 10px;
-    max-width: 400px;
-}
-
-.author-info a {
-    text-decoration: none;
-    color: #007BFF;
-}
-
-.routes {
-    margin-top: 10px;
-}
-
-.routes ul {
-    padding-left: 0;
-}
-
-.routes li {
-    list-style: none;
-}
+        .feeds p { margin: .35rem 0 0; }
+        .feeds h3, .feeds h4 { margin: .6rem 0 .2rem; }
+        .feeds dl { margin: 0; }
+        .feeds dd { margin-inline-start: 1rem; }
+        .description { white-space: pre-line; }
+        code { overflow-wrap: anywhere; }
     </style>
-    <title>RSSerpent</title>
 </head>
 <body>
     <main>
-        <img alt="RSSerpent" src="https://ghproxy.imciel.com/https://raw.githubusercontent.com/RSSerpent-Rev/RSSerpent/master/docs/__asset__/logo-200.png" />
-        <h1>Welcome to <a href="https://github.com/RSSerpent-Rev/RSSerpent">RSSerpent</a>!</h1>
-        <p>🎉 RSSerpent is up & running at <a href="{{request.base_url}}">{{request.base_url}}</a></p>
-        <p><h2>Plugins Information</h2>
-            <div class="plugin-list">
-                {% for plugin in plugins %}
-                <div class="plugin-info">
-                    <h2>{{ plugin.name }}</h2>
-                    <div class="author-info">
-                        <a href="{{ plugin.author.link }}">{{ plugin.author.name }}</a><br>
-                        <a href="mailto:{{ plugin.author.email }}">{{ plugin.author.email }}</a>
-                    </div>
-                    <div><strong>Repository:</strong> <a href="{{ plugin.repository }}">{{ plugin.repository }}</a></div>
-                    <div class="routes">
-                        <strong>Routers:</strong>
-                        <ul>
-                            {% for path, provider in plugin.routers.items() %}
-                            <li><strong>{{ path }}</strong>: <pre>{{ provider.__doc__ }}</pre></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+        <nav aria-label="Main navigation"><a href="{{ url_for('index') }}">RSSerpent</a></nav>
+        <h1>Feed routes</h1>
+        {% if plugins %}
+        <p>Replace placeholders in braces with values before using a subscription URL.</p>
+        <p><a href="https://rsserpent-rev.github.io/RSSerpent/latest/usage/router/#request-limits">Feed filters and request limits</a></p>
+        {% for plugin in plugins %}
+        <section>
+            <h2>{{ plugin.name }}</h2>
+            <p><a href="{{ plugin.repository }}">Plugin repository</a> &middot; <a href="{{ plugin.author.link }}">{{ plugin.author.name }}</a></p>
+            <ul class="feeds">
+                {% for group in feed_routes[plugin.name] %}
+                <li>
+                    {% if group.summary %}<h3>{{ group.summary }}</h3>{% endif %}
+                    {% if group.description %}<p class="description">{{ group.description }}</p>{% endif %}
+                    <ul>
+                        {% for route in group.routes %}
+                        <li>
+                            {% if group.path_parameters or group.query_parameters | selectattr('required') | first %}
+                            <code>{{ route.path }}</code>
+                            {% else %}
+                            <a href="{{ request.base_url }}{{ route.path[1:] | urlencode }}"><code>{{ route.path }}</code></a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if group.uses_format_query %}
+                    <p>Returns RSS by default. Add <code>?format=atom</code> for Atom.</p>
+                    {% endif %}
+                    {% for heading, parameters in [('Path parameters', group.path_parameters), ('Query parameters', group.query_parameters)] %}
+                    {% if parameters %}
+                    <h4>{{ heading }}</h4>
+                    <dl>
+                        {% for parameter in parameters %}
+                        <dt><code>{{ parameter.name }}</code> &middot; {{ 'required' if parameter.required else 'optional' }}{% if parameter.type_label %} &middot; {{ parameter.type_label }}{% endif %}</dt>
+                        {% if parameter.description %}<dd>{{ parameter.description }}</dd>{% endif %}
+                        {% endfor %}
+                    </dl>
+                    {% endif %}
+                    {% endfor %}
+                    {% if group.examples %}
+                    <h4>Examples</h4>
+                    <ul>
+                        {% for example in group.examples %}
+                        <li>{{ example.label }} &middot; <a href="{{ request.base_url }}{{ example.rss }}">RSS</a> &middot; <a href="{{ request.base_url }}{{ example.atom }}">Atom</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
                 {% endfor %}
-            </div>
-        <p>
-            <a href="https://rsserpent-rev.github.io/RSSerpent/latest/">Document</a> |
-            <a href="https://github.com/RSSerpent-Rev/RSSerpent/">Source Code</a> |
-            <a href="https://github.com/RSSerpent-Rev/RSSerpent/issues">Issue</a> |
-            <a href="https://t.me/rsserpent_rev">Telegram</a>
-        </p>
+            </ul>
+        </section>
+        {% endfor %}
+        {% else %}
+        <p>No feed routes are enabled on this instance.</p>
+        {% endif %}
     </main>
 </body>
 </html>

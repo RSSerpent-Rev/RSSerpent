@@ -1,6 +1,6 @@
 from starlette.testclient import TestClient
 
-from rsserpent_rev.main import ATOM_MIMETYPE, RSS_MIMETYPE
+from rsserpent_rev.main import ATOM_MIMETYPE, RSS_MIMETYPE, create_app
 
 
 def test_index(client: TestClient) -> None:
@@ -8,13 +8,23 @@ def test_index(client: TestClient) -> None:
     response = client.get("/")
     assert response.status_code == 200
     assert "RSSerpent is up & running" in response.text
+    assert 'href="http://testserver/all_routes"' in response.text
 
 
 def test_all_routes(client: TestClient) -> None:
-    """Test if the all_routes routes works properly."""
     response = client.get("/all_routes")
     assert response.status_code == 200
-    assert "Plugins Information" in response.text
+    assert "Feed routes" in response.text
+    assert 'href="http://testserver/_/example.rss"' in response.text
+    assert 'href="http://testserver/_/example.atom"' in response.text
+    assert "<code>/_/example/{n:int}.atom</code>" in response.text
+    assert 'href="http://testserver/_/example/{n:int}.atom"' not in response.text
+
+
+def test_all_routes_empty() -> None:
+    response = TestClient(create_app()).get("/all_routes")
+    assert response.status_code == 200
+    assert "No feed routes are enabled on this instance." in response.text
 
 
 def test_title_include(client: TestClient) -> None:

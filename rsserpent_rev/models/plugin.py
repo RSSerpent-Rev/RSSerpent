@@ -3,7 +3,7 @@ from collections.abc import Awaitable, Callable
 from contextlib import AbstractAsyncContextManager
 from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 if TYPE_CHECKING:
     EmailStr = str
@@ -47,6 +47,7 @@ class Plugin(BaseModel):
     repository: HttpUrl
     prefix: str
     routers: dict[str, ProviderFn]
+    route_docs: dict[str, object] = Field(default_factory=dict)
     enabled: Callable[[], bool] | None = None
     lifespan: Callable[[], AbstractAsyncContextManager[object]] | None = None
 

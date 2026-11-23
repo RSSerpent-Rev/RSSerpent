@@ -21,8 +21,21 @@ plugin = Plugin(
     repository="https://example.org/my-rss-plugin",
     prefix="/my-feed",
     routers={"/my-feed": provider},
+    route_docs={
+        "/my-feed": {
+            "summary": "示例更新",
+            "description": "订阅最新公告。",
+            "examples": [{"label": "最近五条", "query": {"limit": "5"}}],
+        },
+    },
 )
 ```
+
+## 编写路由文档
+
+要在实例的 `/all_routes` 页面说明某个订阅，把 `route_docs` 传给 `Plugin`。键使用 `routers` 中对应的路径。
+
+每条文档要填写 `summary`。还可以添加纯文本 `description` 和从参数名到说明的 `parameters` 映射。示例要填写 `label`，用字符串填写需要的 `path` 和 `query` 值。比如路由含有 `{uid}` 时，可以写 `"path": {"uid": "297786973"}`。示例只填可公开的值。页面从已注册的路由和 provider 签名读取参数名及必填状态，再生成 RSS 和 Atom 链接。缺少必填值或路径不匹配的示例会跳过，可查看启动日志。不提供 `route_docs` 时，页面显示实际路径、可推断的参数和已有的 provider 文档字符串。
 
 ## 在 RSSerpent 中测试
 

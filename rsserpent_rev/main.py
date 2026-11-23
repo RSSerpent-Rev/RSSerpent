@@ -20,6 +20,7 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 from .log import logger
 from .models import Plugin, ProviderFn, QueryString, RSSFeed
 from .plugins.config import PluginLoadError
+from .plugins.documentation import FeedRouteGroup, document_feed
 from .utils import fetch_data, filter_fg, gen_ids_for
 from .utils.feed import FeedFilterError, compile_filters
 from .utils.provider import ProviderInputError, provider_resource
@@ -116,7 +117,7 @@ async def all_routes(request: Request) -> TemplateResponse:
     return templates.TemplateResponse(
         request,
         "all_routes.html.jinja",
-        {"plugins": request.app.state.plugins},
+        {"plugins": request.app.state.plugins, "feed_routes": request.app.state.feed_routes},
     )
 
 
@@ -149,10 +150,15 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
 
     routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
     route_sources = {route.path_regex.pattern: (route.path, "RSSerpent core") for route in routes}
+    feed_routes_by_plugin: dict[str, list[FeedRouteGroup]] = {}
     for plugin in active_plugins:
         source = active_sources[plugin.name]
+        groups: list[FeedRouteGroup] = []
+        for path in plugin.route_docs.keys() - plugin.routers.keys():
+            logger.warning("Ignoring route documentation for unknown path %s in %s", path, plugin.name)
         for path, provider in plugin.routers.items():
-            if ":path}" in path:
+            uses_format_query = ":path}" in path
+            if uses_format_query:
                 feed_routes = [Route(path, endpoint=feed_endpoint(plugin, provider, path_format=True))]
             else:
                 rss_endpoint = feed_endpoint(plugin, provider)
@@ -172,6 +178,8 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
                     raise PluginLoadError(message)
                 route_sources[shape] = (route.path, source)
                 routes.append(route)
+            groups.append(document_feed(feed_routes, provider, plugin.route_docs.get(path), uses_format_query))
+        feed_routes_by_plugin[plugin.name] = groups
         logger.info("Loaded plugin %s from %s", plugin.name, source)
 
     application = Starlette(
@@ -184,4 +192,5 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
         routes=routes,
     )
     application.state.plugins = active_plugins
+    application.state.feed_routes = feed_routes_by_plugin
     return application
