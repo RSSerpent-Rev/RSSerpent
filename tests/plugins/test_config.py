@@ -18,7 +18,7 @@ from rsserpent_rev.plugins.config import PluginConfig, PluginLoadError, load_plu
 
 
 async def provider() -> Feed:
-    return {"title": "Example", "link": "https://example.org", "description": "Test feed"}
+    return Feed(title="Example", link="https://example.org", description="Test feed")
 
 
 def make_plugin(name: str, path: str) -> Plugin:

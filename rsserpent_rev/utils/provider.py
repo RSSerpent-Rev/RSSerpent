@@ -7,7 +7,7 @@ from inspect import Parameter, Signature, getattr_static, signature, unwrap
 from types import FunctionType, MethodType
 from typing import Any
 
-from ..models import Feed, ProviderFn
+from ..models import FeedResult, ProviderFn
 
 provider_resource = ContextVar[object | None]("provider_resource", default=None)
 
@@ -26,7 +26,7 @@ def convert(value: str, type_: type) -> Any:
     return type_(value)
 
 
-async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> Feed:
+async def fetch_data(provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> FeedResult:
     """Fetch data by using the data provider function.
 
     We first inspect the signature of the `provider` function to determine what

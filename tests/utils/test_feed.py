@@ -6,7 +6,7 @@ import pytest
 from starlette.testclient import TestClient
 
 from rsserpent_rev.main import create_app
-from rsserpent_rev.models import Feed
+from rsserpent_rev.models import FeedResult
 from rsserpent_rev.plugins.builtin import plugin as builtin_plugin
 from rsserpent_rev.utils import FeedParseError, parse_feed
 
@@ -43,7 +43,7 @@ def test_parse_atom() -> None:
 
 
 def test_undated_feed_routes() -> None:
-    async def provider() -> Feed:
+    async def provider() -> FeedResult:
         return parse_feed(RSS, base_url=BASE)
 
     plugin = builtin_plugin.model_copy(update={"routers": {"/_/parsed": provider}})
@@ -81,7 +81,7 @@ def test_parse_empty_feed_with_no_network(monkeypatch: pytest.MonkeyPatch) -> No
 
 
 def test_invalid_feed_from_provider() -> None:
-    async def provider() -> Feed:
+    async def provider() -> FeedResult:
         return parse_feed(b"<html>Not feed data</html>", base_url=BASE)
 
     plugin = builtin_plugin.model_copy(update={"routers": {"/_/parsed": provider}})
@@ -111,7 +111,7 @@ def test_atom_id_is_independent_of_alternate_links(
       <entry><id>{identifier}</id><title>First</title><summary>Item</summary>{links}</entry>
     </feed>""".encode()
 
-    async def provider() -> Feed:
+    async def provider() -> FeedResult:
         return parse_feed(body, base_url=BASE)
 
     plugin = builtin_plugin.model_copy(update={"routers": {"/_/parsed": provider}})

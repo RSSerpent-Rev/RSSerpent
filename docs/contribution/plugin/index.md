@@ -3,16 +3,15 @@
 Use `uv init --lib my-rss-plugin` to create a Python package. In its `pyproject.toml`, use `requires-python = ">=3.14,<3.16"` and add `rsserpent-rev>=0.3,<0.4` to the project dependencies. Add the following code to `src/my_rss_plugin/__init__.py`.
 
 ```python
-from rsserpent_rev.models import Feed, Plugin
+from rsserpent_rev.models import Entry, Feed, Plugin
 
 
 async def provider() -> Feed:
-    return {
-        "title": "Example",
-        "link": "https://example.org/",
-        "description": "Example updates",
-        "items": [{"title": "First update"}],
-    }
+    return Feed(
+        title="Example",
+        link="https://example.org/",
+        entries=[Entry(title="First update")],
+    )
 
 
 plugin = Plugin(
@@ -31,6 +30,10 @@ plugin = Plugin(
 )
 ```
 
+A provider uses `Feed(title=..., link=..., entries=[...])`. Each `Entry` needs a title, summary, or body. Leave `entries` empty when there are no items. Set `content_type="html"` for an HTML body. The default body type is plain text. Use a time-zone-aware `datetime` for `published_at` or `updated_at`. The core omits missing publication dates and supplies the update time required by Atom.
+
+Use `Entry.id` for a stable source identifier, especially if updates share the same URL. An absolute identifier such as a URL or URN is used as given. The core converts a local ID into a stable URN. Without an explicit ID, the core uses the article link and falls back to a deterministic ID based on the content. For upstream feeds and special format extensions, a provider can return a `FeedGenerator` directly. See [Retrieve data](data.md).
+
 ## Declare parameters and settings
 
 Add the following to the same module to define typed parameters, settings and a shared HTTP client.
@@ -39,7 +42,7 @@ Add the following to the same module to define typed parameters, settings and a 
 from typing import Literal
 
 from pydantic import BaseModel, Field
-from rsserpent_rev.models import Feed, FeedRoute
+from rsserpent_rev.models import Entry, Feed, FeedRoute
 from rsserpent_rev.utils import get_plugin_context
 
 
@@ -56,12 +59,12 @@ async def announcements(topic: str, count: int) -> Feed:
     context = get_plugin_context()
     assert isinstance(context.settings, Settings) and context.http is not None
     entries = await context.http.get_json("https://example.org/api/posts", params={"topic": topic})
-    return {
-        "title": context.settings.title,
-        "link": "https://example.org/",
-        "description": "Recent posts",
-        "items": [{"title": entry["title"]} for entry in entries[:count]],
-    }
+    return Feed(
+        title=context.settings.title,
+        link="https://example.org/",
+        description="Recent posts",
+        entries=[Entry(title=entry["title"]) for entry in entries[:count]],
+    )
 
 
 plugin = Plugin(

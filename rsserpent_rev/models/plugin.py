@@ -16,11 +16,11 @@ else:
 from feedgen.feed import FeedGenerator
 
 from ..http import HTTPClient
-from .rss import RSSFeed
+from .feed import Feed
 
-Feed = dict[str, Any] | FeedGenerator | RSSFeed
+FeedResult = Feed | FeedGenerator
 
-ProviderFn = Callable[..., Awaitable[Feed]]  # type: ignore[valid-type]
+ProviderFn = Callable[..., Awaitable[FeedResult]]  # type: ignore[valid-type]
 
 
 @dataclass(frozen=True, slots=True)

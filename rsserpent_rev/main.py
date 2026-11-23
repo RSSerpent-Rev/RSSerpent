@@ -20,7 +20,7 @@ from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .http import HTTPClient
 from .log import logger
-from .models import FeedRoute, Plugin, ProviderFn, QueryString, RSSFeed
+from .models import Feed, FeedRoute, Plugin, ProviderFn, QueryString
 from .plugins.config import PluginConfig, PluginLoadError
 from .plugins.documentation import FeedRouteGroup, document_feed
 from .utils import fetch_data, filter_fg, gen_ids_for
@@ -98,12 +98,8 @@ def feed_endpoint(
                     data = await provider(**parameters.bind(request.path_params, query_params))
         except ProviderInputError as exception:
             raise HTTPException(400, str(exception)) from exception
-        if isinstance(data, dict):
-            feed = RSSFeed.model_validate(data)
-            fg = feed.to_feedgen()
-        elif isinstance(data, RSSFeed):
-            feed = copy.copy(data)
-            fg = feed.to_feedgen()
+        if isinstance(data, Feed):
+            fg = data.to_feedgen()
         elif isinstance(data, FeedGenerator):
             fg = copy.copy(data)
         else:
@@ -119,6 +115,8 @@ def feed_endpoint(
             fg.webMaster(f"{plugin.author.email} ({plugin.author.name})")
         gen_ids_for(fg, atom=output_format == "atom")
         if output_format == "atom":
+            if isinstance(data, Feed) and not fg.author():
+                fg.author(name=plugin.author.name)
             return Response(content=fg.atom_str(pretty=True), media_type=ATOM_MIMETYPE)
         return Response(content=fg.rss_str(pretty=True), media_type=RSS_MIMETYPE)
 

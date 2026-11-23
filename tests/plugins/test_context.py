@@ -37,7 +37,7 @@ def test_plugin_settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
         assert isinstance(settings, Settings)
         assert settings.limit == 3
         assert context.logger.name.endswith(example.name)
-        return {"title": settings.title, "link": "https://example.net", "description": "Fixture"}
+        return Feed(title=settings.title, link="https://example.net", description="Fixture")
 
     plugin = example.model_copy(update={"routers": {"/_/context": provider}, "settings_model": Settings})
     path = tmp_path / "rsserpent.toml"
@@ -90,7 +90,7 @@ def test_reuses_existing_lifespan_client() -> None:
 
     async def provider() -> Feed:
         assert get_plugin_context().http is provider_resource.get() is clients[0]
-        return {"title": "Fixture", "link": "https://example.net", "description": "Fixture"}
+        return Feed(title="Fixture", link="https://example.net", description="Fixture")
 
     plugin = example.model_copy(
         update={"routers": {"/_/context": provider}, "http_client": True, "lifespan": resources}
@@ -141,7 +141,7 @@ async def test_cache_isolates_concurrent_calls_by_app_and_plugin() -> None:
         http = get_plugin_context().http
         assert http is not None
         data = await http.get_json("https://example.net/")
-        return {"title": data["title"], "link": "https://example.net", "description": "Fixture"}
+        return Feed(title=data["title"], link="https://example.net", description="Fixture")
 
     def plugin(tag: str, path: str) -> Plugin:
         async def respond(request: httpx.Request) -> httpx.Response:

@@ -9,7 +9,7 @@ import pytest
 from pydantic import BaseModel, Field
 
 from rsserpent_rev import cli
-from rsserpent_rev.models import Feed, FeedRoute, Plugin
+from rsserpent_rev.models import Entry, Feed, FeedRoute, Plugin
 from rsserpent_rev.testing import plugin_test_client
 from rsserpent_rev.utils import get_plugin_context
 
@@ -27,12 +27,12 @@ def sample_plugin() -> Plugin:
         context = get_plugin_context()
         assert isinstance(context.settings, Settings) and context.http is not None
         response = await context.http.get_json("https://example.org/items", params={"board": board}, timeout=2)
-        return {
-            "title": context.settings.title,
-            "description": "Entries",
-            "link": "https://example.org/",
-            "items": [{"title": item} for item in response],
-        }
+        return Feed(
+            title=context.settings.title,
+            description="Entries",
+            link="https://example.org/",
+            entries=[Entry(title=item) for item in response],
+        )
 
     return Plugin.model_validate(
         {

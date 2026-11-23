@@ -1,14 +1,12 @@
 from feedgen.feed import FeedGenerator
 
-from rsserpent_rev.models.plugin import Feed
-
 from ...utils import cached
 
 path = "/_/example/feedgen"
 
 
 @cached
-async def provider() -> Feed:
+async def provider() -> FeedGenerator:
     """Define a basic example data provider function."""
     fg = FeedGenerator()
     fg.id("http://lernfunk.de/media/654321")

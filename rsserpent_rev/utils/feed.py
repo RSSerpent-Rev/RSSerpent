@@ -1,9 +1,10 @@
 import copy
-import hashlib
 import time
 from calendar import timegm
 from datetime import UTC, datetime
+from html import escape
 from io import BytesIO
+from uuid import NAMESPACE_URL, uuid5
 
 import feedgen
 import feedparser
@@ -189,7 +190,7 @@ def filter_fg(
             elif field == "title":
                 values = [entry.title()]
             else:
-                values = [entry.description()]
+                values = [entry.description() or (entry.content() or {}).get("content")]
             found = any(value is not None and pattern.search(value, timeout=remaining()) for value in values)
             if found != (condition == "include"):
                 return False
@@ -207,23 +208,41 @@ def filter_fg(
     fg.entry(entries, replace=True)
 
 
+def _alternate_href(links: list[dict[str, str]] | None) -> str | None:
+    return next((link["href"] for link in links or () if link.get("rel") == "alternate" and link.get("href")), None)
+
+
 def gen_ids_for(fg: feedgen.feed.FeedGenerator, *, atom: bool = False) -> None:
     if not fg.id():
-        fg.id(hashlib.md5(fg.title().encode()).hexdigest())
+        fg.id(_alternate_href(fg.link()) or uuid5(NAMESPACE_URL, fg.title()).urn)
     entries = []
     for entry in fg.entry():
+        link = _alternate_href(entry.link())
+        content = entry.content() or {}
+        body = content.get("content")
         missing_atom_title = atom and not entry.title()
-        missing_atom_content = (
-            atom and not entry.content() and not any(link.get("rel") == "alternate" for link in (entry.link() or ()))
-        )
-        if not entry.id() or missing_atom_title or missing_atom_content:
+        missing_atom_content = atom and not content and not link
+        rss_text = body if not atom and content.get("type") == "text" and isinstance(body, str) else None
+        summary = entry.summary() or {}
+        rss_summary = summary.get("summary") if not atom and summary.get("type") == "text" else None
+        if (
+            not entry.id()
+            or missing_atom_title
+            or missing_atom_content
+            or rss_text is not None
+            or rss_summary is not None
+        ):
             entry = copy.copy(entry)
         if not entry.id():
-            hash_content = (entry.title() or "") + (entry.description() or "")
-            entry.id(hashlib.md5(hash_content.encode()).hexdigest())
+            identity = (fg.id(), entry.title(), entry.description(), body or content.get("src"))
+            entry.id(link or uuid5(NAMESPACE_URL, repr(identity)).urn)
         if missing_atom_title:
             entry.title(entry.description() or "Untitled")
         if missing_atom_content:
             entry.content(entry.description() or entry.title())
+        if rss_text is not None:
+            entry.content(escape(rss_text, quote=False), type="text")
+        if rss_summary is not None:
+            entry.description(escape(rss_summary, quote=False), isSummary=True)
         entries.append(entry)
     fg.entry(entries, replace=True)

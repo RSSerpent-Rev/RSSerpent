@@ -3,16 +3,15 @@
 用 `uv init --lib my-rss-plugin` 创建 Python 包。在项目的 `pyproject.toml` 中设置 `requires-python = ">=3.14,<3.16"`，将 `rsserpent-rev>=0.3,<0.4` 加入项目依赖。将以下代码写入 `src/my_rss_plugin/__init__.py`。
 
 ```python
-from rsserpent_rev.models import Feed, Plugin
+from rsserpent_rev.models import Entry, Feed, Plugin
 
 
 async def provider() -> Feed:
-    return {
-        "title": "Example",
-        "link": "https://example.org/",
-        "description": "Example updates",
-        "items": [{"title": "First update"}],
-    }
+    return Feed(
+        title="Example",
+        link="https://example.org/",
+        entries=[Entry(title="First update")],
+    )
 
 
 plugin = Plugin(
@@ -31,6 +30,10 @@ plugin = Plugin(
 )
 ```
 
+provider 返回 `Feed(title=..., link=..., entries=[...])`。每个 `Entry` 至少有标题、摘要或正文之一，没有内容时留空 `entries`。正文默认是纯文本，HTML 正文用 `content_type="html"`。时间字段 `published_at` 和 `updated_at` 接受带时区的 `datetime`。核心会省略缺失的发布时间，并为 Atom 补齐必需的更新时间。
+
+多条内容共用同一个 URL 时，通过 `Entry.id` 提供来源中稳定的标识符，URL 或 URN 会原样使用，普通的来源 ID 会转换成稳定的 URN。省略 ID 时，核心优先用文章链接，再按内容派生 ID。需要透传上游订阅或使用格式扩展时，provider 可以直接返回 `FeedGenerator`。见[获取数据](data.zh.md)。
+
 ## 声明参数和设置
 
 在同一模块中追加以下代码，声明类型化参数、插件设置和可复用的 HTTP 客户端。
@@ -39,7 +42,7 @@ plugin = Plugin(
 from typing import Literal
 
 from pydantic import BaseModel, Field
-from rsserpent_rev.models import Feed, FeedRoute
+from rsserpent_rev.models import Entry, Feed, FeedRoute
 from rsserpent_rev.utils import get_plugin_context
 
 
@@ -56,12 +59,12 @@ async def announcements(topic: str, count: int) -> Feed:
     context = get_plugin_context()
     assert isinstance(context.settings, Settings) and context.http is not None
     entries = await context.http.get_json("https://example.org/api/posts", params={"topic": topic})
-    return {
-        "title": context.settings.title,
-        "link": "https://example.org/",
-        "description": "Recent posts",
-        "items": [{"title": entry["title"]} for entry in entries[:count]],
-    }
+    return Feed(
+        title=context.settings.title,
+        link="https://example.org/",
+        description="Recent posts",
+        entries=[Entry(title=entry["title"]) for entry in entries[:count]],
+    )
 
 
 plugin = Plugin(

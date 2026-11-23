@@ -1,5 +1,14 @@
-from .plugin import Feed, FeedRoute, Persona, Plugin, ProviderFn
+from .feed import Entry, Feed
+from .plugin import FeedResult, FeedRoute, Persona, Plugin, ProviderFn
 from .qs import QueryString
-from .rss import Item, RSSFeed
 
-__all__ = ("RSSFeed", "Item", "Persona", "Plugin", "ProviderFn", "QueryString", "Feed", "FeedRoute")
+__all__ = (
+    "Persona",
+    "Plugin",
+    "ProviderFn",
+    "QueryString",
+    "Entry",
+    "Feed",
+    "FeedResult",
+    "FeedRoute",
+)

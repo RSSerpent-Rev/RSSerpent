@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 from xml.etree import ElementTree
 
 import httpx
@@ -7,7 +7,7 @@ from starlette.exceptions import HTTPException
 from starlette.testclient import TestClient
 
 from rsserpent_rev import main
-from rsserpent_rev.models import Feed, ProviderFn
+from rsserpent_rev.models import FeedResult, ProviderFn
 from rsserpent_rev.plugins.builtin import plugin as builtin_plugin
 from rsserpent_rev.utils import fetch_data
 
@@ -34,7 +34,7 @@ def test_provider_bad_input(error_client: TestClient, monkeypatch: pytest.Monkey
     async def provider(amount: int) -> dict[str, int]:
         pytest.fail(f"provider called with {amount}")
 
-    async def dispatch(_provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> Feed:
+    async def dispatch(_provider: ProviderFn, path_params: dict[str, Any], query_params: dict[str, str]) -> FeedResult:
         return await fetch_data(provider, path_params, query_params)
 
     monkeypatch.setattr(main, "fetch_data", dispatch)
@@ -57,7 +57,7 @@ def test_provider_error(
     error: Exception,
     status: int,
 ) -> None:
-    async def fail(*_args: Any) -> Feed:
+    async def fail(*_args: Any) -> FeedResult:
         raise error
 
     monkeypatch.setattr(main, "fetch_data", fail)
@@ -72,8 +72,8 @@ def test_provider_error(
 
 
 def test_invalid_provider_output(error_client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    async def fetch(*_args: Any) -> Feed:
-        return {"title": "Invalid"}
+    async def fetch(*_args: Any) -> FeedResult:
+        return cast(FeedResult, {"title": "Invalid"})
 
     monkeypatch.setattr(main, "fetch_data", fetch)
     assert error_client.get("/_/example").status_code == 500
@@ -86,7 +86,7 @@ def test_disabled_debug() -> None:
 def test_wrapped_upstream_error_is_logged(
     error_client: TestClient, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
-    async def fail(*_args: Any) -> Feed:
+    async def fail(*_args: Any) -> FeedResult:
         raise HTTPException(504, "Gateway Timeout", headers={"Retry-After": "60"}) from TimeoutError(
             "internal upstream timeout"
         )

@@ -1,12 +1,14 @@
+from datetime import UTC, datetime
 from xml.etree import ElementTree
 
 import arrow
 import pytest
 from feedgen.feed import FeedGenerator
+from pydantic import ValidationError
 from starlette.testclient import TestClient
 
 from rsserpent_rev.main import ATOM_MIMETYPE, RSS_MIMETYPE, create_app
-from rsserpent_rev.models import Feed, ProviderFn, RSSFeed
+from rsserpent_rev.models import Entry, Feed, ProviderFn
 from rsserpent_rev.plugins.builtin import plugin
 from rsserpent_rev.utils import cached
 
@@ -20,7 +22,7 @@ def test_catchall_keeps_source_url() -> None:
 
     async def provider(url: str) -> Feed:
         seen.append(url)
-        return {"title": "Example", "link": "https://example.org", "description": "Example feed"}
+        return Feed(title="Example", link="https://example.org", description="Example feed")
 
     client = client_for("/_/proxy/{url:path}", provider)
     rss = client.get("/_/proxy/https://example.org/news.rss%3Fpage=1")
@@ -34,12 +36,12 @@ def test_catchall_keeps_source_url() -> None:
 
 def test_optional_model_fields() -> None:
     async def provider() -> Feed:
-        return {
-            "title": "Example",
-            "link": "https://example.org",
-            "description": "Example feed",
-            "items": [{"title": "Title only"}, {"description": "Description only"}],
-        }
+        return Feed(
+            title="Example",
+            link="https://example.org",
+            description="Example feed",
+            entries=[Entry(title="Title only"), Entry(summary="Description only")],
+        )
 
     client = client_for("/_/optional", provider)
     response = client.get("/_/optional.rss", params={"description_exclude": "Description"})
@@ -53,12 +55,11 @@ def test_optional_model_fields() -> None:
 
 def test_item_author_name_in_rss_and_atom() -> None:
     async def provider() -> Feed:
-        return {
-            "title": "Example",
-            "link": "https://example.org",
-            "description": "Example feed",
-            "items": [{"title": "One", "author": "Creator"}],
-        }
+        return Feed(
+            title="Example",
+            link="https://example.org",
+            entries=[Entry(title="One", author="Creator")],
+        )
 
     client = client_for("/_/authors", provider)
     rss = ElementTree.fromstring(client.get("/_/authors.rss").content)
@@ -92,20 +93,18 @@ def test_filter_preserves_cached_source() -> None:
     assert all(item.id() is None for item in feed.entry())
 
 
-@pytest.mark.parametrize("use_model", [False, True])
-def test_date_filter_requires_a_publication_date(use_model: bool) -> None:
+def test_date_filter_requires_a_publication_date() -> None:
     async def provider() -> Feed:
-        data = {
-            "title": "Example",
-            "link": "https://example.org",
-            "description": "Example feed",
-            "items": [
-                {"title": "No date"},
-                {"title": "Null date", "pub_date": None},
-                {"title": "Dated", "pub_date": arrow.get("2020-01-01T00:00:00Z")},
+        return Feed(
+            title="Example",
+            link="https://example.org",
+            description="Example feed",
+            entries=[
+                Entry(title="No date"),
+                Entry(title="Null date", published_at=None),
+                Entry(title="Dated", published_at=datetime(2020, 1, 1, tzinfo=UTC)),
             ],
-        }
-        return RSSFeed.model_validate(data) if use_model else data
+        )
 
     client = client_for("/_/dates", provider)
     default = client.get("/_/dates.rss")
@@ -119,3 +118,103 @@ def test_date_filter_requires_a_publication_date(use_model: bool) -> None:
         assert response.status_code == 200
         titles = ElementTree.fromstring(response.content).findall("./channel/item/title")
         assert [title.text for title in titles] == ["Dated"]
+
+
+def test_explicit_guid_and_optional_channel_publication() -> None:
+    async def provider() -> FeedGenerator:
+        feed = FeedGenerator()
+        feed.title("Example feed")
+        feed.link(href="https://example.org/")
+        feed.description("Example feed")
+        entry = feed.add_entry()
+        entry.title("One")
+        entry.guid("post-1", permalink=False)
+        return feed
+
+    with client_for("/_/guid", provider) as client:
+        response = client.get("/_/guid.rss")
+        assert response.status_code == 200
+        root = ElementTree.fromstring(response.content)
+        assert root.find("./channel/pubDate") is None
+        guid = root.find("./channel/item/guid")
+        assert guid is not None and guid.text == "post-1" and guid.get("isPermaLink") == "false"
+
+
+def test_default_id_uses_article_link() -> None:
+    async def provider() -> Feed:
+        return Feed(
+            title="Example",
+            link="https://example.org/",
+            entries=[
+                Entry(title="Announcement", link="https://example.org/1"),
+                Entry(title="Announcement", link="https://example.org/2"),
+            ],
+        )
+
+    with client_for("/_/default-id", provider) as client:
+        root = ElementTree.fromstring(client.get("/_/default-id.rss").content)
+        assert [guid.text for guid in root.findall("./channel/item/guid")] == [
+            "https://example.org/1",
+            "https://example.org/2",
+        ]
+
+
+def test_typed_feed_keeps_identity_and_content_type() -> None:
+    title = "First title"
+    publication = datetime(2024, 1, 1, tzinfo=UTC)
+    update = datetime(2024, 1, 2, tzinfo=UTC)
+
+    async def provider() -> Feed:
+        return Feed(
+            title="Typed feed",
+            link="https://example.org/news",
+            updated_at=update,
+            entries=[
+                Entry(title=title, link="https://example.org/one", published_at=publication, summary="An update"),
+                Entry(
+                    id="urn:example:two",
+                    link="https://example.org/two",
+                    summary="A summary",
+                    content="<p>Full text</p>",
+                    content_type="html",
+                ),
+                Entry(content="<b>literal text</b>"),
+                Entry(id="upstream-123", title="Opaque source ID", link="https://example.org/opaque"),
+            ],
+        )
+
+    with client_for("/_/typed", provider) as client:
+        rss = ElementTree.fromstring(client.get("/_/typed.rss").content)
+        items = rss.findall("./channel/item")
+        ids = [item.findtext("guid") for item in items]
+        assert ids[:2] == ["https://example.org/one", "urn:example:two"]
+        assert ids[2] is not None and ids[2].startswith("urn:uuid:")
+        assert ids[3] is not None and ids[3].startswith("urn:uuid:") and ids[3] != ids[2]
+        assert items[1].findtext("description") == "A summary"
+        assert items[1].findtext("{http://purl.org/rss/1.0/modules/content/}encoded") == "<p>Full text</p>"
+        assert items[2].findtext("description") == "&lt;b&gt;literal text&lt;/b&gt;"
+        assert rss.find("./channel/pubDate") is None
+
+        title = "Corrected title"
+        atom = ElementTree.fromstring(client.get("/_/typed.atom").content)
+        entries = atom.findall("{*}entry")
+        assert [entry.findtext("{*}id") for entry in entries] == ids
+        assert entries[0].findtext("{*}title") == title
+        assert entries[0].findtext("{*}published") == publication.isoformat()
+        assert entries[0].findtext("{*}updated") == publication.isoformat()
+        assert entries[1].find("{*}published") is None
+        assert entries[1].findtext("{*}updated") == update.isoformat()
+        html = entries[1].find("{*}content")
+        text = entries[2].find("{*}content")
+        assert html is not None and html.get("type") == "html" and html.text == "<p>Full text</p>"
+        assert text is not None and text.get("type") == "text" and text.text == "<b>literal text</b>"
+
+        filtered = client.get("/_/typed.rss", params={"description_include": "literal text"})
+        assert len(ElementTree.fromstring(filtered.content).findall("./channel/item")) == 1
+
+
+def test_entry_validation() -> None:
+    with pytest.raises(ValidationError, match="title, summary, or content"):
+        Entry()
+    with pytest.raises(ValidationError, match="timezone"):
+        Entry(title="No timezone", published_at=datetime.fromisoformat("2024-01-01T00:00:00"))

@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from starlette.testclient import TestClient
 
 from rsserpent_rev.main import create_app
-from rsserpent_rev.models import Feed, FeedRoute
+from rsserpent_rev.models import Entry, Feed, FeedRoute
 from rsserpent_rev.plugins.builtin import plugin as builtin_plugin
 from rsserpent_rev.plugins.config import PluginLoadError
 from rsserpent_rev.utils import cached
@@ -25,12 +25,12 @@ def test_typed_route() -> None:
     @cached
     async def provider(article: int, view: str, count: int, rating: float | None, omitted: str) -> Feed:
         calls.append((article, view, count, rating, omitted))
-        return {
-            "title": f"Article {article}",
-            "description": "Fixture",
-            "link": "https://example.net/",
-            "items": [{"title": "Entry"}],
-        }
+        return Feed(
+            title=f"Article {article}",
+            description="Fixture",
+            link="https://example.net/",
+            entries=[Entry(title="Entry")],
+        )
 
     path = "/_/article/{article:int}"
     plugin = builtin_plugin.model_copy(
@@ -83,7 +83,7 @@ def test_typed_catch_all_without_annotation_evaluation() -> None:
         pytest.fail("provider annotation was evaluated")
 
     async def provider(url: annotation()) -> Feed:  # type: ignore[valid-type]
-        return {"title": url, "description": "Fixture", "link": "https://example.net/"}
+        return Feed(title=url, description="Fixture", link="https://example.net/")
 
     plugin = builtin_plugin.model_copy(update={"routers": {"/_/path/{url:path}": FeedRoute(provider, CatchAll)}})
     with TestClient(create_app([plugin])) as client:
