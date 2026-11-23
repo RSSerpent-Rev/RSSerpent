@@ -36,7 +36,7 @@ plugins = ["my_rss_plugin"]
 
 ```toml
 plugin_requirements = [
-  "rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1",
+  "rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@1b75719020baf2ef71801df4029a736f452a287e",
 ]
 plugins = ["rsserpent_plugins.bilibili"]
 ```
