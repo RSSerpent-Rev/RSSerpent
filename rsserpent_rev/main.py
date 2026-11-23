@@ -22,7 +22,7 @@ from .models import Plugin, ProviderFn, QueryString, RSSFeed
 from .plugins.config import PluginLoadError
 from .plugins.documentation import FeedRouteGroup, document_feed
 from .utils import fetch_data, filter_fg, gen_ids_for
-from .utils.feed import FeedFilterError, compile_filters
+from .utils.feed import FeedFilterError, FeedParseError, compile_filters
 from .utils.provider import ProviderInputError, provider_resource
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
@@ -44,7 +44,7 @@ async def exception_handler(_request: Request, exception: Exception) -> Response
     logger.error("Feed request failed", exc_info=exception)
     if isinstance(exception, httpx.TimeoutException):
         return PlainTextResponse("Gateway Timeout", status_code=504)
-    if isinstance(exception, httpx.HTTPError):
+    if isinstance(exception, (httpx.HTTPError, FeedParseError)):
         return PlainTextResponse("Bad Gateway", status_code=502)
     return PlainTextResponse("Internal Server Error", status_code=500)
 
@@ -187,6 +187,7 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
             Exception: exception_handler,
             HTTPException: http_exception_handler,
             httpx.HTTPError: exception_handler,
+            FeedParseError: exception_handler,
         },
         lifespan=lifespan,
         routes=routes,

@@ -8,8 +8,8 @@ path = "/_/example/httpx"
 async def provider() -> dict[str, Any]:
     """Define a basic example data provider function."""
     async with HTTPClient() as client:
-        response = await client.get("https://httpbin.org/ip")
-        ip = response.json()["origin"]
+        data = await client.get_json("https://httpbin.org/ip")
+        ip = data["origin"]
     return {
         "title": f"{ip}",
         "link": "https://example.com",

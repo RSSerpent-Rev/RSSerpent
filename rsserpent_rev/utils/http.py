@@ -1,8 +1,11 @@
+from json import JSONDecodeError
 from typing import Any
 
 import httpx
+from lxml.etree import ParserError
 from playwright.async_api import async_playwright
 from playwright.async_api._generated import Page
+from pyquery import PyQuery
 
 
 class Browser:
@@ -30,3 +33,26 @@ class HTTPClient(httpx.AsyncClient):
         request.headers.setdefault("Host", url.host)
         request.headers.setdefault("Referer", f"{url.scheme}://{url.host}")
         return request
+
+    async def get_json(self, url: str | httpx.URL, **options: Any) -> Any:
+        """Make a GET request and decode a successful response as JSON."""
+        response = (await self.get(url, **options)).raise_for_status()
+        try:
+            return response.json()
+        except JSONDecodeError, UnicodeDecodeError:
+            raise UpstreamDecodeError(UpstreamDecodeError.invalid_json) from None
+
+    async def get_html(self, url: str | httpx.URL, **options: Any) -> PyQuery:
+        """Make a GET request and parse a successful response for CSS queries."""
+        response = (await self.get(url, **options)).raise_for_status()
+        try:
+            return PyQuery(response.text, parser="html")
+        except ParserError, ValueError:
+            raise UpstreamDecodeError(UpstreamDecodeError.invalid_html) from None
+
+
+class UpstreamDecodeError(httpx.HTTPError):
+    """A successful upstream response could not be decoded."""
+
+    invalid_json = "Upstream returned invalid JSON."
+    invalid_html = "Upstream returned invalid HTML."

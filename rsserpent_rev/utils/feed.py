@@ -1,9 +1,15 @@
 import copy
 import hashlib
 import time
+from calendar import timegm
+from datetime import UTC, datetime
+from io import BytesIO
 
 import feedgen
+import feedparser
 import regex
+from feedgen.feed import FeedGenerator
+from feedparser import FeedParserDict
 
 from ..models import QueryString
 
@@ -18,6 +24,100 @@ class FeedFilterError(ValueError):
     too_long = f"Regular expression exceeds {MAX_PATTERN_LENGTH} characters"
     invalid_pattern = "Invalid regular expression"
     timeout = "Feed filtering exceeded its time budget"
+
+
+class FeedParseError(ValueError):
+    """Downloaded bytes do not contain a usable RSS or Atom feed."""
+
+    invalid_feed = "Upstream returned an invalid RSS or Atom feed."
+
+
+def _date(source: FeedParserDict, field: str) -> datetime | None:
+    value = source.get(field)
+    return datetime.fromtimestamp(timegm(value), UTC) if value is not None else None
+
+
+def _authors(source: FeedParserDict) -> list[dict[str, str]]:
+    authors = []
+    for author in source.get("authors", []):
+        name = author.get("name") or author.get("email")
+        if name:
+            details = {"name": name}
+            if email := author.get("email"):
+                details["email"] = email
+            if uri := author.get("href"):
+                details["uri"] = uri
+            authors.append(details)
+    return authors
+
+
+def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
+    """Parse downloaded RSS or Atom bytes and resolve relative URLs against base_url.
+
+    The parser reads only the provided bytes. Use the download's final URL as
+    the base for relative links and as a fallback channel link.
+    """
+    if not isinstance(body, bytes):
+        raise FeedParseError(FeedParseError.invalid_feed)
+    parsed = feedparser.parse(
+        BytesIO(body),
+        response_headers={"content-location": base_url},
+        resolve_relative_uris=True,
+        sanitize_html=True,
+    )
+    source = parsed.feed
+    if not parsed.get("version", "").startswith(("rss", "atom")) or not source.get("title"):
+        raise FeedParseError(FeedParseError.invalid_feed)
+
+    fg = FeedGenerator()
+    fg.title(source.title)
+    fg.description(source.get("subtitle") or source.title)
+    fg.id(source.get("id") or source.get("link") or base_url)
+    fg.link(href=source.get("link") or base_url, rel="alternate")
+    if authors := _authors(source):
+        fg.author(authors)
+    feed_published = _date(source, "published_parsed")
+    feed_updated = _date(source, "updated_parsed") or feed_published
+    parsed_at = datetime.now(UTC)
+    fg.updated(feed_updated or parsed_at)
+    if feed_published is not None:
+        fg.pubDate(feed_published)
+
+    for item in parsed.entries:
+        content = next((part for part in item.get("content", []) if part.get("value")), None)
+        summary = item.get("summary")
+        if not (item.get("title") or summary or content):
+            raise FeedParseError(FeedParseError.invalid_feed)
+        entry = fg.add_entry(order="append")
+        if title := item.get("title"):
+            entry.title(title)
+        if summary:
+            entry.description(summary, isSummary=True)
+        if content:
+            content_type = content.get("type", "text/plain")
+            entry.content(
+                content.value, type={"text/html": "html", "text/plain": "text"}.get(content_type, content_type)
+            )
+            if not (item.get("title") or summary):
+                entry.description(content.value)
+        if link := item.get("link"):
+            entry.link(href=link, rel="alternate")
+        if identifier := item.get("id"):
+            entry.guid(identifier, permalink=bool(item.get("guidislink")))
+        if authors := _authors(item):
+            entry.author(authors)
+        for tag in item.get("tags", []):
+            if term := tag.get("term"):
+                entry.category(term=term, scheme=tag.get("scheme"), label=tag.get("label"))
+        if enclosure := next((value for value in item.get("enclosures", []) if value.get("href")), None):
+            entry.enclosure(
+                enclosure.href, enclosure.get("length", 0), enclosure.get("type", "application/octet-stream")
+            )
+        published = _date(item, "published_parsed")
+        if published is not None:
+            entry.published(published)
+        entry.updated(_date(item, "updated_parsed") or published or feed_updated or parsed_at)
+    return fg
 
 
 def compile_filters(qs: QueryString) -> dict[str, regex.Pattern[str]]:

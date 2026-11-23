@@ -1,7 +1,5 @@
 from typing import Any
 
-from pyquery import PyQuery
-
 from ...utils import HTTPClient
 
 path = "/_/example/pyquery"
@@ -10,8 +8,7 @@ path = "/_/example/pyquery"
 async def provider() -> dict[str, Any]:
     """Define a basic example data provider function."""
     async with HTTPClient() as client:
-        response = await client.get("https://httpbin.org/html")
-    dom = PyQuery(response.text)
+        dom = await client.get_html("https://httpbin.org/html")
     return {
         "title": "Example",
         "link": "https://example.com",
