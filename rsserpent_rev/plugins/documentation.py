@@ -1,6 +1,8 @@
-from annotationlib import Format
+from collections.abc import Callable
 from dataclasses import dataclass
-from inspect import Parameter, getdoc, signature
+from functools import partial
+from inspect import Parameter, getdoc, signature, unwrap
+from types import FunctionType, MethodType
 from urllib.parse import quote, urlencode
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -10,7 +12,6 @@ from starlette.routing import NoMatchFound, Route
 from ..log import logger
 from ..models import ProviderFn, QueryString
 
-_TYPE_LABELS = {"bool": "boolean", "float": "number", "int": "integer", "str": "string"}
 _CONVERTOR_LABELS = {
     FloatConvertor: "number",
     IntegerConvertor: "integer",
@@ -62,10 +63,20 @@ class FeedRouteGroup:
     examples: list[ExampleLinks]
 
 
-def _type_label(parameter: Parameter | None) -> str | None:
-    if parameter is not None and isinstance(parameter.annotation, str):
-        return _TYPE_LABELS.get(parameter.annotation.strip("\"'"))
-    return None
+def _without_annotations(provider: Callable[..., object]) -> Callable[..., object]:
+    target = unwrap(provider, stop=lambda value: isinstance(value, (partial, MethodType)))
+    if isinstance(target, partial):
+        return partial(_without_annotations(target.func), *target.args, **target.keywords)
+    if isinstance(target, MethodType):
+        return MethodType(_without_annotations(target.__func__), target.__self__)
+    if not isinstance(target, FunctionType):
+        message = "Provider has no Python function signature."
+        raise TypeError(message)
+
+    # Even inspect.signature's string format can execute a delayed annotation.
+    function = FunctionType(target.__code__, target.__globals__, None, target.__defaults__, target.__closure__)
+    function.__kwdefaults__ = target.__kwdefaults__
+    return function
 
 
 def _example_path(route: Route, path: dict[str, str]) -> str:
@@ -129,7 +140,7 @@ def document_feed(
     try:
         parameters = {
             name: parameter
-            for name, parameter in signature(provider, annotation_format=Format.STRING).parameters.items()
+            for name, parameter in signature(_without_annotations(provider)).parameters.items()
             if parameter.kind in (Parameter.POSITIONAL_OR_KEYWORD, Parameter.KEYWORD_ONLY)
         }
     except TypeError, ValueError:
@@ -141,13 +152,13 @@ def document_feed(
         ParameterDoc(
             name,
             True,
-            _CONVERTOR_LABELS.get(type(convertor)) or _type_label(parameters.get(name)),
+            _CONVERTOR_LABELS.get(type(convertor)),
             descriptions.get(name),
         )
         for name, convertor in route.param_convertors.items()
     )
     query_parameters = tuple(
-        ParameterDoc(name, parameter.default is Parameter.empty, _type_label(parameter), descriptions.get(name))
+        ParameterDoc(name, parameter.default is Parameter.empty, None, descriptions.get(name))
         for name, parameter in parameters.items()
         if name not in route.param_convertors and not (uses_format_query and name == "format")
     )

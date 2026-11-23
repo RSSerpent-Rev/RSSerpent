@@ -1,5 +1,6 @@
 import os
 import sys
+from functools import partial, wraps
 from pathlib import Path
 from types import ModuleType
 from urllib.parse import urlencode
@@ -231,3 +232,27 @@ def test_example_must_match_the_registered_route() -> None:
     page = TestClient(create_app([plugin])).get("/all_routes").text
     assert "Document updates" in page
     assert "Invalid UUID" not in page
+
+
+@pytest.mark.parametrize("wrapped", [False, True])
+def test_route_documentation_does_not_evaluate_annotations(wrapped: bool) -> None:
+    calls = []
+
+    def annotation() -> type[str]:
+        calls.append("evaluated")
+        return str
+
+    async def deferred(prefix: annotation(), query: annotation(), optional: int = 1) -> annotation():  # type: ignore[valid-type]
+        pytest.fail("The route catalog invoked the provider")
+
+    @wraps(deferred)
+    async def decorated(*args: str, **kwargs: int) -> Feed:
+        pytest.fail("The route catalog invoked the provider wrapper")
+
+    plugin = example.model_copy(update={"routers": {"/deferred": partial(decorated if wrapped else deferred, "bound")}})
+    page = TestClient(create_app([plugin])).get("/all_routes")
+    assert page.status_code == 200
+    assert "<code>query</code> &middot; required" in page.text
+    assert "<code>optional</code> &middot; optional" in page.text
+    assert "<code>prefix</code>" not in page.text
+    assert calls == []

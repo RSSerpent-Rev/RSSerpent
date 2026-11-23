@@ -33,7 +33,7 @@ From the example given above, we note that some routes are not complete, and req
 
 Route parameters are usually surrounded by brackets `{}`. When filling the route parameters, you should remove the bracket pair. Different routes are provided by different plugins, and you should refer to the documentation of the respective plugin to understand the implication of each route parameter and how you can find and fill in these route parameters.
 
-Again, taking the `/bilibili/user/{uid}/video` route for example: the route accepts one route parameter *id*. Every Bilibili user is endowed with a unique ID, which you usually can find in the user profile's address. Only with this unique identifier, the route will then be able to retrieve the user's list of published videos, and output the list in the RSS feed subscription link.
+For `/bilibili/user/{uid}/video`, set `uid` to the numeric ID in the Bilibili profile URL. The route uses that ID to fetch the user's published videos.
 
 ## Query Parameters
 
