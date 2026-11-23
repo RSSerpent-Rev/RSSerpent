@@ -1001,6 +1001,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#document-a-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Document a route
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#test-with-rsserpent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1188,6 +1199,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#document-a-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Document a route
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#test-with-rsserpent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1249,8 +1271,18 @@
     <span class="n">repository</span><span class="o">=</span><span class="s2">"https://example.org/my-rss-plugin"</span><span class="p">,</span>
     <span class="n">prefix</span><span class="o">=</span><span class="s2">"/my-feed"</span><span class="p">,</span>
     <span class="n">routers</span><span class="o">=</span><span class="p">{</span><span class="s2">"/my-feed"</span><span class="p">:</span> <span class="n">provider</span><span class="p">},</span>
+    <span class="n">route_docs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"/my-feed"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"summary"</span><span class="p">:</span> <span class="s2">"Example updates"</span><span class="p">,</span>
+            <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Follow the latest announcements."</span><span class="p">,</span>
+            <span class="s2">"examples"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Latest five entries"</span><span class="p">,</span> <span class="s2">"query"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"limit"</span><span class="p">:</span> <span class="s2">"5"</span><span class="p">}}],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div>
+<h2 id="document-a-route">Document a route<a class="headerlink" href="#document-a-route" title="Permanent link">&para;</a></h2>
+<p>To document a feed on the instance's <code>/all_routes</code> page, pass <code>route_docs</code> to <code>Plugin</code>. Use the same path key as in <code>routers</code>.</p>
+<p>Each entry needs a <code>summary</code>. You can add a plain-text <code>description</code> and <code>parameters</code>, a mapping from parameter names to descriptions. For each example, provide a <code>label</code> and any <code>path</code> or <code>query</code> values as strings. For instance, use <code>"path": {"uid": "297786973"}</code> for a route with <code>{uid}</code>. List values that are safe to publish. The page derives parameter names and required fields from the registered route and the provider signature. It builds the RSS and Atom example links and skips examples with invalid path values or missing required parameters. View startup logs for skipped entries. Without <code>route_docs</code>, the page shows the registered paths, detectable parameters and any provider docstring.</p>
 <h2 id="test-with-rsserpent">Test with RSSerpent<a class="headerlink" href="#test-with-rsserpent" title="Permanent link">&para;</a></h2>
 <p>Save the module name in <code>rsserpent.toml</code>. Build the core wheel from the matching RSSerpent checkout if you need a local core artifact. Run the following from the plugin project.</p>
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"my_rss_plugin"</span><span class="p">]</span>
@@ -1283,7 +1315,7 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    2026-11-22
+    2026-11-23
   </span>
 
     

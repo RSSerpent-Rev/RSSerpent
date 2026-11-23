@@ -1258,6 +1258,7 @@
 <p>The definition of a subscription link here does not necessarily comply with the <a href="https://en.wikipedia.org/wiki/URL">URL</a> standard. There are simplifications so that readers from a non-tech background can understand more easily.</p>
 </div>
 <h2 id="instances-and-routes">Instances and Routes<a class="headerlink" href="#instances-and-routes" title="Permanent link">&para;</a></h2>
+<p>Open <code>/all_routes</code> on your instance to see its enabled feeds, parameter descriptions and example links.</p>
 <p>If you wish to subscribe to news sources without RSS through RSSerpent, you will need to find the subscription link, as usual. RSSerpent's subscription links, similarly, consist of a domain and a route:</p>
 <ul>
 <li>Every domain corresponds to an RSSerpent instance. For example, the official domain <a href="https://rsserpent.imciel.com">rsserpent.imciel.com</a> corresponds to the official instance. You can find more official instances to use on the <a href="../../deployment/">[Deploy]</a> page, but we recommend self-hosting to accommodate your growing and varied requirements.</li>
@@ -1271,7 +1272,7 @@
 <p class="admonition-title">Note</p>
 <p>Every RSSerpent plugin contains one or more routes.</p>
 </div>
-<p>RSSerpent's official <a href="https://rsserpent.imciel.com">instance</a> comes with the <abbr title="A Chinese video sharing platform akin to Youtube">Bilibili</abbr> <a href="https://github.com/RSSerpent-Rev/rsserpent-plugins/tree/main/rsserpent_plugins/bilibili">plugin</a>. Therefore, you can access the <code>/bilibili/user/{id}/video</code> route on the official instance to subscribe to some users' published videos. For example, if you wish to subscribe to <a href="https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg">Chubbyemu</a>'s official Chinese translation <a href="https://space.bilibili.com/297786973">channel</a> on Bilibili, you could concatenate the official domain <code>rsserpent.imciel.com</code> and the route <code>/bilibili/user/297786973/video</code> to generate the subscription link as follows:</p>
+<p>RSSerpent's official <a href="https://rsserpent.imciel.com">instance</a> comes with the <abbr title="A Chinese video sharing platform akin to Youtube">Bilibili</abbr> <a href="https://github.com/RSSerpent-Rev/rsserpent-plugins/tree/main/rsserpent_plugins/bilibili">plugin</a>. Therefore, you can access the <code>/bilibili/user/{uid}/video</code> route on the official instance to subscribe to some users' published videos. For example, if you wish to subscribe to <a href="https://www.youtube.com/channel/UCKOvOaJv4GK-oDqx-sj7VVg">Chubbyemu</a>'s official Chinese translation <a href="https://space.bilibili.com/297786973">channel</a> on Bilibili, you could concatenate the official domain <code>rsserpent.imciel.com</code> and the route <code>/bilibili/user/297786973/video</code> to generate the subscription link as follows:</p>
 <p><img alt="RSSerpent Bilibili Chubbyemu" src="https://cdn.jsdelivr.net/gh/rsserpent/asset@latest/rsserpent-bilibili-chubbyemu.png" /></p>
 <h2 id="route-parameters">Route Parameters<a class="headerlink" href="#route-parameters" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
@@ -1280,7 +1281,7 @@
 </div>
 <p>From the example given above, we note that some routes are not complete, and require your information input. Assuming this route can help you subscribe to some users' published videos, the route will need to know <em>which</em> users you'd like to subscribe to to work as expected. These information inputs are called <em>route parameters</em>.</p>
 <p>Route parameters are usually surrounded by brackets <code>{}</code>. When filling the route parameters, you should remove the bracket pair. Different routes are provided by different plugins, and you should refer to the documentation of the respective plugin to understand the implication of each route parameter and how you can find and fill in these route parameters.</p>
-<p>Again, taking the <code>/bilibili/user/{id}/video</code> route for example: the route accepts one route parameter <em>id</em>. Every Bilibili user is endowed with a unique ID, which you usually can find in the user profile's address. Only with this unique identifier, the route will then be able to retrieve the user's list of published videos, and output the list in the RSS feed subscription link.</p>
+<p>For <code>/bilibili/user/{uid}/video</code>, set <code>uid</code> to the numeric ID in the Bilibili profile URL. The route uses that ID to fetch the user's published videos.</p>
 <h2 id="query-parameters">Query Parameters<a class="headerlink" href="#query-parameters" title="Permanent link">&para;</a></h2>
 <p>Route parameters are required. However, sometimes routes need to access optional or conditional parameters -- we call such parameters <em>query parameters</em>:</p>
 <ul>
@@ -1288,7 +1289,7 @@
 <li>There can be arbitrary amount of query parameters, each looking like <code>{name}={value}</code>;</li>
 <li>Multiple query parameters are separated with an ampersand <code>&amp;</code>.</li>
 </ul>
-<p>For example, assuming the <code>/bilibili/user/{id}/video</code> route accepts two query parameters, of which the <code>sort</code> parameter is used to specify the sorting criteria while the <code>order</code> parameter is used to indicate ascent/descent. Given that most users would probably subscribe to the latest videos, the route by default will sort the list of videos in chronologically descending order. However, if you need to subscribe to the most trending videos, the route should look like <code>/bilibili/user/{id}/video?sort=hot&amp;order=desc</code>.</p>
+<p>For example, <code>/bilibili/user/297786973/video?limit=5</code> returns at most five entries. See <code>/all_routes</code> on your instance for each feed's own parameters.</p>
 <h1 id="request-limits">Request limits<a class="headerlink" href="#request-limits" title="Permanent link">&para;</a></h1>
 <p>To enable the built-in example routes, add <code>rsserpent_rev.plugins.builtin</code> to the <code>plugins</code> list in the <a href="../../deployment/plugin/">deployment configuration</a>. The numbered example accepts up to 1,000 items.
 Each regular expression filter accepts up to 512 characters. Filtering has a 50 ms time budget per request.
@@ -1318,7 +1319,7 @@ Date filters skip entries with no date. Use <code>limit=0</code> for feed metada
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    2026-11-22
+    2026-11-23
   </span>
 
     
