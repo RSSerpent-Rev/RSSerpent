@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 from functools import partial
-from inspect import Parameter, getdoc, signature, unwrap
+from inspect import Parameter, Signature, getattr_static, getdoc, signature, unwrap
 from types import FunctionType, MethodType
 from urllib.parse import quote, urlencode
 
@@ -18,6 +18,7 @@ _CONVERTOR_LABELS = {
     PathConvertor: "path",
     UUIDConvertor: "UUID",
 }
+_NO_SIGNATURE = object()
 
 
 class RouteDoc(BaseModel):
@@ -64,11 +65,31 @@ class FeedRouteGroup:
 
 
 def _without_annotations(provider: Callable[..., object]) -> Callable[..., object]:
-    target = unwrap(provider, stop=lambda value: isinstance(value, (partial, MethodType)))
-    if isinstance(target, partial):
-        return partial(_without_annotations(target.func), *target.args, **target.keywords)
+    target = unwrap(
+        provider,
+        stop=lambda value: (
+            isinstance(value, MethodType) or getattr_static(value, "__signature__", _NO_SIGNATURE) is not _NO_SIGNATURE
+        ),
+    )
     if isinstance(target, MethodType):
         return MethodType(_without_annotations(target.__func__), target.__self__)
+
+    declared = getattr_static(target, "__signature__", _NO_SIGNATURE)
+    if isinstance(declared, Signature):
+
+        def placeholder() -> None:
+            pass
+
+        placeholder.__dict__["__signature__"] = declared.replace(
+            parameters=[parameter.replace(annotation=Parameter.empty) for parameter in declared.parameters.values()],
+            return_annotation=Signature.empty,
+        )
+        return placeholder
+    if declared is not _NO_SIGNATURE and declared is not None:
+        message = "Provider has no static signature."
+        raise TypeError(message)
+    if isinstance(target, partial):
+        return partial(_without_annotations(target.func), *target.args, **target.keywords)
     if not isinstance(target, FunctionType):
         message = "Provider has no Python function signature."
         raise TypeError(message)

@@ -1,6 +1,7 @@
 import os
 import sys
-from functools import partial, wraps
+from functools import partial, update_wrapper, wraps
+from inspect import Parameter, Signature
 from pathlib import Path
 from types import ModuleType
 from urllib.parse import urlencode
@@ -11,7 +12,7 @@ from starlette.testclient import TestClient
 from rsserpent_rev import __main__ as launcher
 from rsserpent_rev import main
 from rsserpent_rev.main import ATOM_MIMETYPE, RSS_MIMETYPE, create_app
-from rsserpent_rev.models import Feed, Plugin
+from rsserpent_rev.models import Feed, Plugin, ProviderFn
 from rsserpent_rev.plugins.builtin import plugin as example
 from rsserpent_rev.plugins.config import PluginConfig, PluginLoadError, load_plugins, read_config
 
@@ -256,3 +257,46 @@ def test_route_documentation_does_not_evaluate_annotations(wrapped: bool) -> Non
     assert "<code>optional</code> &middot; optional" in page.text
     assert "<code>prefix</code>" not in page.text
     assert calls == []
+
+
+@pytest.mark.parametrize("kind", ["declared", "wrapped_partial"])
+def test_documentation_uses_the_runtime_signature(kind: str) -> None:
+    async def keyword_provider(**fields: str) -> Feed:
+        assert fields["query"] == "example"
+        return await provider()
+
+    async def explicit_provider(query: str) -> Feed:
+        assert query == "example"
+        return await provider()
+
+    target: ProviderFn
+    if kind == "declared":
+        keyword_provider.__dict__["__signature__"] = Signature(
+            [Parameter("query", Parameter.KEYWORD_ONLY, annotation=str)]
+        )
+        target = partial(keyword_provider)
+    else:
+        target = update_wrapper(partial(explicit_provider, query="bound"), explicit_provider)
+
+    path = "/signature"
+    plugin = example.model_copy(
+        update={
+            "routers": {path: target},
+            "route_docs": {
+                path: {
+                    "summary": "Signature sample",
+                    "examples": [
+                        {"label": "Complete example", "query": {"query": "example"}},
+                        {"label": "Missing required field"},
+                    ],
+                },
+            },
+        },
+    )
+    with TestClient(create_app([plugin])) as client:
+        page = client.get("/all_routes").text
+        assert "<code>query</code> &middot; required" in page
+        assert "Missing required field" not in page
+        assert 'href="http://testserver/signature.rss?query=example"' in page
+        assert client.get("/signature.rss?query=example").status_code == 200
+        assert client.get("/signature.rss").status_code == 400
