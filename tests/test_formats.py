@@ -140,6 +140,40 @@ def test_explicit_guid_and_optional_channel_publication() -> None:
         assert guid is not None and guid.text == "post-1" and guid.get("isPermaLink") == "false"
 
 
+def test_atom_adds_author_for_low_level_feed_generator() -> None:
+    async def provider() -> FeedGenerator:
+        feed = FeedGenerator()
+        feed.id("urn:feed")
+        feed.title("Example feed")
+        feed.link(href="https://example.org/")
+        feed.description("Example feed")
+        entry = feed.add_entry()
+        entry.id("urn:entry")
+        entry.title("Entry")
+        entry.link(href="https://example.org/entry")
+        return feed
+
+    with client_for("/_/author", provider) as client:
+        atom = ElementTree.fromstring(client.get("/_/author.atom").content)
+        author = atom.find("./{*}author")
+        assert author is not None
+        assert author.findtext("{*}name") == "queensferryme"
+        assert author.findtext("{*}email") == "queensferry.me@gmail.com"
+
+
+def test_rss_text_is_escaped_once() -> None:
+    async def provider() -> Feed:
+        return Feed(
+            title="Example",
+            link="https://example.org/",
+            entries=[Entry(title="Special", summary="A & B < C")],
+        )
+
+    with client_for("/_/escaping", provider) as client:
+        rss = ElementTree.fromstring(client.get("/_/escaping.rss").content)
+        assert rss.findtext("./channel/item/description") == "A & B < C"
+
+
 def test_default_id_uses_article_link() -> None:
     async def provider() -> Feed:
         return Feed(
@@ -192,7 +226,7 @@ def test_typed_feed_keeps_identity_and_content_type() -> None:
         assert ids[3] is not None and ids[3].startswith("urn:uuid:") and ids[3] != ids[2]
         assert items[1].findtext("description") == "A summary"
         assert items[1].findtext("{http://purl.org/rss/1.0/modules/content/}encoded") == "<p>Full text</p>"
-        assert items[2].findtext("description") == "&lt;b&gt;literal text&lt;/b&gt;"
+        assert items[2].findtext("description") == "<b>literal text</b>"
         assert rss.find("./channel/pubDate") is None
 
         title = "Corrected title"

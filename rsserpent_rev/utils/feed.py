@@ -2,9 +2,9 @@ import copy
 import time
 from calendar import timegm
 from datetime import UTC, datetime
-from html import escape
 from io import BytesIO
 from uuid import NAMESPACE_URL, uuid5
+from xml.etree import ElementTree
 
 import feedgen
 import feedparser
@@ -63,6 +63,29 @@ def _primary_link(source: FeedParserDict, *, atom: bool) -> str | None:
     return link
 
 
+def _rss_guid_permalinks(body: bytes) -> list[bool | None]:
+    """Read RSS guid attributes that feedparser does not preserve."""
+    try:
+        root = ElementTree.fromstring(body)
+    except ElementTree.ParseError:
+        return []
+
+    permalinks: list[bool | None] = []
+    for item in root.iter():
+        if item.tag.rsplit("}", 1)[-1] != "item":
+            continue
+        guid = next(
+            (child for child in item if child.tag.rsplit("}", 1)[-1] == "guid"),
+            None,
+        )
+        if guid is None:
+            permalinks.append(None)
+            continue
+        value = guid.attrib.get("isPermaLink", guid.attrib.get("ispermalink", "true"))
+        permalinks.append(value.lower() == "true")
+    return permalinks
+
+
 def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
     """Parse downloaded RSS or Atom bytes and resolve relative URLs against base_url.
 
@@ -83,6 +106,7 @@ def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
         raise FeedParseError(FeedParseError.invalid_feed)
 
     atom = version.startswith("atom")
+    rss_guid_permalinks = [] if atom else _rss_guid_permalinks(body)
     channel_link = _primary_link(source, atom=atom) or base_url
     fg = FeedGenerator()
     fg.title(source.title)
@@ -98,7 +122,7 @@ def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
     if feed_published is not None:
         fg.pubDate(feed_published)
 
-    for item in parsed.entries:
+    for index, item in enumerate(parsed.entries):
         content = next((part for part in item.get("content", []) if part.get("value")), None)
         summary = item.get("summary")
         if not (item.get("title") or summary or content):
@@ -121,7 +145,12 @@ def parse_feed(body: bytes, *, base_url: str) -> FeedGenerator:
             # Atom requires content when an entry has no alternate link.
             entry.content(summary or item.get("title"))
         if identifier := item.get("id"):
-            entry.guid(identifier, permalink=not atom and bool(item.get("guidislink")))
+            permalink = (
+                rss_guid_permalinks[index]
+                if index < len(rss_guid_permalinks) and rss_guid_permalinks[index] is not None
+                else not atom and bool(item.get("guidislink"))
+            )
+            entry.guid(identifier, permalink=bool(permalink))
         if authors := _authors(item):
             entry.author(authors)
         for tag in item.get("tags", []):
@@ -222,16 +251,7 @@ def gen_ids_for(fg: feedgen.feed.FeedGenerator, *, atom: bool = False) -> None:
         body = content.get("content")
         missing_atom_title = atom and not entry.title()
         missing_atom_content = atom and not content and not link
-        rss_text = body if not atom and content.get("type") == "text" and isinstance(body, str) else None
-        summary = entry.summary() or {}
-        rss_summary = summary.get("summary") if not atom and summary.get("type") == "text" else None
-        if (
-            not entry.id()
-            or missing_atom_title
-            or missing_atom_content
-            or rss_text is not None
-            or rss_summary is not None
-        ):
+        if not entry.id() or missing_atom_title or missing_atom_content:
             entry = copy.copy(entry)
         if not entry.id():
             identity = (fg.id(), entry.title(), entry.description(), body or content.get("src"))
@@ -240,9 +260,5 @@ def gen_ids_for(fg: feedgen.feed.FeedGenerator, *, atom: bool = False) -> None:
             entry.title(entry.description() or "Untitled")
         if missing_atom_content:
             entry.content(entry.description() or entry.title())
-        if rss_text is not None:
-            entry.content(escape(rss_text, quote=False), type="text")
-        if rss_summary is not None:
-            entry.description(escape(rss_summary, quote=False), isSummary=True)
         entries.append(entry)
     fg.entry(entries, replace=True)

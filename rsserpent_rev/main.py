@@ -115,8 +115,12 @@ def feed_endpoint(
             fg.webMaster(f"{plugin.author.email} ({plugin.author.name})")
         gen_ids_for(fg, atom=output_format == "atom")
         if output_format == "atom":
-            if isinstance(data, Feed) and not fg.author():
-                fg.author(name=plugin.author.name)
+            if not fg.author():
+                fg.author(
+                    name=plugin.author.name,
+                    email=plugin.author.email,
+                    uri=str(plugin.author.link),
+                )
             return Response(content=fg.atom_str(pretty=True), media_type=ATOM_MIMETYPE)
         return Response(content=fg.rss_str(pretty=True), media_type=RSS_MIMETYPE)
 

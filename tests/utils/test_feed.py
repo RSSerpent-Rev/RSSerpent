@@ -130,10 +130,16 @@ def test_atom_id_is_independent_of_alternate_links(
 
 def test_parse_rss_permalink_guid() -> None:
     body = b"""<rss version="2.0"><channel><title>News</title><link>./</link><description>Posts</description>
+      <item><title>Opaque</title><link>https://example.net/opaque</link>
+        <guid isPermaLink="false">https://example.net/opaque</guid></item>
       <item><title>Entry</title><guid isPermaLink="true">https://example.net/entry</guid></item>
     </channel></rss>"""
     rss = ElementTree.fromstring(parse_feed(body, base_url=BASE).rss_str())
     assert rss.findtext("./channel/link") == "https://example.net/news/"
-    assert rss.findtext("./channel/item/link") == "https://example.net/entry"
-    guid = rss.find("./channel/item/guid")
+    assert rss.findtext("./channel/item[1]/link") == "https://example.net/opaque"
+    first_guid = rss.find("./channel/item[1]/guid")
+    assert first_guid is not None and first_guid.text == "https://example.net/opaque"
+    assert first_guid.get("isPermaLink") == "false"
+    assert rss.findtext("./channel/item[2]/link") == "https://example.net/entry"
+    guid = rss.find("./channel/item[2]/guid")
     assert guid is not None and guid.text == "https://example.net/entry" and guid.get("isPermaLink") == "true"
