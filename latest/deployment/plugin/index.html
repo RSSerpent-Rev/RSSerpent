@@ -828,6 +828,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configure-plugin-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure plugin settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#restart-and-diagnose" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1056,7 +1067,7 @@
   <span class="md-ellipsis">
     
   
-    Retrieve Data
+    Retrieve data
   
 
     
@@ -1221,6 +1232,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configure-plugin-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure plugin settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#restart-and-diagnose" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1273,12 +1295,21 @@
 <h2 id="enable-an-official-plugin">Enable an official plugin<a class="headerlink" href="#enable-an-official-plugin" title="Permanent link">&para;</a></h2>
 <p>Add the official package requirement and list the modules you want to enable. Use the <a href="https://github.com/RSSerpent-Rev/rsserpent-plugins#official-modules">official module table</a> to find their names.</p>
 <div class="highlight"><pre><span></span><code><span class="n">plugin_requirements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s2">"rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1"</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">"rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5eedb59797ccf84f121e69fd5db3337dea31aadc"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"rsserpent_plugins.bilibili"</span><span class="p">]</span>
 </code></pre></div>
 <p>For plugins that use Chromium, use <code>ghcr.io/rsserpent-rev/rsserpent-browser:main</code> in the same Docker command. When you publish a plugin, test that its Python packages and required system libraries work in the image.</p>
+<h2 id="configure-plugin-settings">Configure plugin settings<a class="headerlink" href="#configure-plugin-settings" title="Permanent link">&para;</a></h2>
+<p>Use the enabled module name as the table key. <code>plugin_settings</code> sets fields defined by the plugin. <code>plugin_env</code> maps each field to a required environment variable and overrides the same TOML field. Pass the named variable to Docker with <code>--env MY_RSS_TOKEN</code> or add it to the Compose service environment. Keep access tokens in environment variables.</p>
+<div class="highlight"><pre><span></span><code><span class="k">[plugin_settings.my_private_plugin]</span>
+<span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Announcements"</span>
+
+<span class="k">[plugin_env.my_private_plugin]</span>
+<span class="n">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MY_RSS_TOKEN"</span>
+</code></pre></div>
 <h2 id="restart-and-diagnose">Restart and diagnose<a class="headerlink" href="#restart-and-diagnose" title="Permanent link">&para;</a></h2>
+<p>For a local configuration check, install the plugin packages in your development environment and run <code>rsserpent check --config rsserpent.toml</code>.</p>
 <p>The container installs the configured packages before it starts the web server. It uses the core image's package versions as constraints. A conflict stops startup. Read <code>docker logs rsserpent</code> to identify a requirement or module that failed.</p>
 <p>Package downloads require network access when the cache lacks the artifacts. A new container can need to download packages again. An empty configuration starts the core and skips all plugin installation.</p>
 <p>After editing the TOML, remove the old container with <code>docker rm -f rsserpent</code> and run the Docker command again. With Compose, run <code>docker compose up -d --force-recreate</code>.</p>

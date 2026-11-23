@@ -1001,6 +1001,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#declare-parameters-and-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declare parameters and settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#document-a-route" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1016,6 +1027,17 @@
     <span class="md-ellipsis">
       
         Test with RSSerpent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-offline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test offline
       
     </span>
   </a>
@@ -1056,7 +1078,7 @@
   <span class="md-ellipsis">
     
   
-    Retrieve Data
+    Retrieve data
   
 
     
@@ -1199,6 +1221,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#declare-parameters-and-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declare parameters and settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#document-a-route" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1214,6 +1247,17 @@
     <span class="md-ellipsis">
       
         Test with RSSerpent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-offline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test offline
       
     </span>
   </a>
@@ -1253,16 +1297,15 @@
 
 <h1 id="create-an-independent-plugin">Create an independent plugin<a class="headerlink" href="#create-an-independent-plugin" title="Permanent link">&para;</a></h1>
 <p>Use <code>uv init --lib my-rss-plugin</code> to create a Python package. In its <code>pyproject.toml</code>, use <code>requires-python = "&gt;=3.14,&lt;3.16"</code> and add <code>rsserpent-rev&gt;=0.3,&lt;0.4</code> to the project dependencies. Add the following code to <code>src/my_rss_plugin/__init__.py</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">Plugin</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entry</span><span class="p">,</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">Plugin</span>
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">provider</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Feed</span><span class="p">:</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Example"</span><span class="p">,</span>
-        <span class="s2">"link"</span><span class="p">:</span> <span class="s2">"https://example.org/"</span><span class="p">,</span>
-        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Example updates"</span><span class="p">,</span>
-        <span class="s2">"items"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"First update"</span><span class="p">}],</span>
-    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">Feed</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"Example"</span><span class="p">,</span>
+        <span class="n">link</span><span class="o">=</span><span class="s2">"https://example.org/"</span><span class="p">,</span>
+        <span class="n">entries</span><span class="o">=</span><span class="p">[</span><span class="n">Entry</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"First update"</span><span class="p">)],</span>
+    <span class="p">)</span>
 
 
 <span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">(</span>
@@ -1280,6 +1323,55 @@
     <span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div>
+<p>A provider uses <code>Feed(title=..., link=..., entries=[...])</code>. Each <code>Entry</code> needs a title, summary, or body. Leave <code>entries</code> empty when there are no items. Set <code>content_type="html"</code> for an HTML body. The default body type is plain text. Use a time-zone-aware <code>datetime</code> for <code>published_at</code> or <code>updated_at</code>. The core omits missing publication dates and supplies the update time required by Atom.</p>
+<p>Use <code>Entry.id</code> for a stable source identifier, especially if updates share the same URL. An absolute identifier such as a URL or URN is used as given. The core converts a local ID into a stable URN. Without an explicit ID, the core uses the article link and falls back to a deterministic ID based on the content. For upstream feeds and special format extensions, a provider can return a <code>FeedGenerator</code> directly. See <a href="data/">Retrieve data</a>.</p>
+<h2 id="declare-parameters-and-settings">Declare parameters and settings<a class="headerlink" href="#declare-parameters-and-settings" title="Permanent link">&para;</a></h2>
+<p>Add the following to the same module to define typed parameters, settings and a shared HTTP client.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entry</span><span class="p">,</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">FeedRoute</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_plugin_context</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Announcements"</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Parameters</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"news"</span><span class="p">,</span> <span class="s2">"release"</span><span class="p">]</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"document_default"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">announcements</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Feed</span><span class="p">:</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">get_plugin_context</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">Settings</span><span class="p">)</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">http</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">entries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="s2">"https://example.org/api/posts"</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"topic"</span><span class="p">:</span> <span class="n">topic</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">Feed</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">link</span><span class="o">=</span><span class="s2">"https://example.org/"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Recent posts"</span><span class="p">,</span>
+        <span class="n">entries</span><span class="o">=</span><span class="p">[</span><span class="n">Entry</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">[:</span><span class="n">count</span><span class="p">]],</span>
+    <span class="p">)</span>
+
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+    <span class="n">repository</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">repository</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span>
+    <span class="n">routers</span><span class="o">=</span><span class="p">{</span><span class="s2">"/my-feed/</span><span class="si">{topic}</span><span class="s2">"</span><span class="p">:</span> <span class="n">FeedRoute</span><span class="p">(</span><span class="n">announcements</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">Parameters</span><span class="p">)},</span>
+    <span class="n">route_docs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"/my-feed/</span><span class="si">{topic}</span><span class="s2">"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"summary"</span><span class="p">:</span> <span class="s2">"Recent announcements"</span><span class="p">,</span>
+            <span class="s2">"examples"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Releases"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"topic"</span><span class="p">:</span> <span class="s2">"release"</span><span class="p">}}],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="n">settings_model</span><span class="o">=</span><span class="n">Settings</span><span class="p">,</span>
+    <span class="n">http_client</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Model fields named in the path are path parameters. Other fields are query parameters. Providers receive the validated values as keyword arguments. Use field names, simple scalar values, <code>Literal</code> choices, defaults and Pydantic constraints. Mark a default with <code>document_default</code> only when it can appear in public documentation. Use <code>plugin_settings</code> and <code>plugin_env</code> in the deployment TOML to set instance values. A catch-all path uses <code>format</code> for the core output format. Standard feed filters remain available.</p>
 <h2 id="document-a-route">Document a route<a class="headerlink" href="#document-a-route" title="Permanent link">&para;</a></h2>
 <p>To document a feed on the instance's <code>/all_routes</code> page, pass <code>route_docs</code> to <code>Plugin</code>. Use the same path key as in <code>routers</code>.</p>
 <p>Each entry needs a <code>summary</code>. You can add a plain-text <code>description</code> and <code>parameters</code>, a mapping from parameter names to descriptions. For each example, provide a <code>label</code> and any <code>path</code> or <code>query</code> values as strings. For instance, use <code>"path": {"uid": "297786973"}</code> for a route with <code>{uid}</code>. List values that are safe to publish. The page derives parameter names and required fields from the registered route and the provider signature. It builds the RSS and Atom example links and skips examples with invalid path values or missing required parameters. View startup logs for skipped entries. Without <code>route_docs</code>, the page shows the registered paths, detectable parameters and any provider docstring.</p>
@@ -1290,9 +1382,37 @@
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>build<span class="w"> </span>--wheel
 uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.14
 uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>/path/to/rsserpent_rev-0.3.0-py3-none-any.whl<span class="w"> </span>dist/*.whl<span class="w"> </span>uvicorn
+.venv/bin/rsserpent<span class="w"> </span>check<span class="w"> </span>--config<span class="w"> </span>rsserpent.toml
 .venv/bin/python<span class="w"> </span>-m<span class="w"> </span>rsserpent_rev<span class="w"> </span>--config<span class="w"> </span>rsserpent.toml
 </code></pre></div>
 <p>Check <code>/my-feed</code>, <code>/my-feed.rss</code> and <code>/my-feed.atom</code>. See the <a href="../../usage/router/">route guide</a> to implement providers with URL parameters.</p>
+<p><code>rsserpent check</code> imports the installed plugins and checks settings, route conflicts, parameters and examples. It exits nonzero on failure. For a typed route, the check validates example values against the parameter model. For a function route, it checks the path, parameter names and required fields without evaluating provider annotations. With the typed example, use <code>/my-feed/release.rss</code> and <code>/my-feed/release.atom</code> for a live request.</p>
+<h2 id="test-offline">Test offline<a class="headerlink" href="#test-offline" title="Permanent link">&para;</a></h2>
+<p>Install the <code>rsserpent-rev[test]</code> extra and pytest in your development environment. This test uses the application lifespan and calls the same RSS and Atom routes as a subscriber.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">xml.etree</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElementTree</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">my_rss_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.testing</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_test_client</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">upstream</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">"topic"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"release"</span>
+    <span class="k">return</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">[{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Version 1"</span><span class="p">}])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_feed</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">plugin_test_client</span><span class="p">(</span>
+        <span class="n">plugin</span><span class="p">,</span>
+        <span class="n">settings</span><span class="o">=</span><span class="p">{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Announcements"</span><span class="p">},</span>
+        <span class="n">transport</span><span class="o">=</span><span class="n">httpx</span><span class="o">.</span><span class="n">MockTransport</span><span class="p">(</span><span class="n">upstream</span><span class="p">),</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">rss</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/my-feed/release.rss"</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/my-feed/release.atom"</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">rss</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">"./channel/item/title"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"Version 1"</span>
+        <span class="k">assert</span> <span class="n">atom</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">"{*}entry/{*}title"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"Version 1"</span>
+</code></pre></div>
+<p>The fixture transport supplies responses for the context client. For an independent downloader, supply fixtures in its client factory or lifespan. Use a normal Starlette test client if your test needs several plugins.</p>
 <h2 id="publish">Publish<a class="headerlink" href="#publish" title="Permanent link">&para;</a></h2>
 <p>Publish the wheel to an index such as PyPI, share the artifact or make the package installable from a fixed Git commit. Give users both the package installation requirement and the Python module name. Users enter both values in their deployment TOML. Test your package in the official container before you publish it. See <a href="../../deployment/plugin/">Install and enable plugins</a>.</p>
 

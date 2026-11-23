@@ -1001,6 +1001,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#声明参数和设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        声明参数和设置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#编写路由文档" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1016,6 +1027,17 @@
     <span class="md-ellipsis">
       
         在 RSSerpent 中测试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#离线测试" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        离线测试
       
     </span>
   </a>
@@ -1199,6 +1221,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#声明参数和设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        声明参数和设置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#编写路由文档" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1214,6 +1247,17 @@
     <span class="md-ellipsis">
       
         在 RSSerpent 中测试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#离线测试" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        离线测试
       
     </span>
   </a>
@@ -1253,16 +1297,15 @@
 
 <h1 id="开发独立插件">开发独立插件<a class="headerlink" href="#开发独立插件" title="Permanent link">&para;</a></h1>
 <p>用 <code>uv init --lib my-rss-plugin</code> 创建 Python 包。在项目的 <code>pyproject.toml</code> 中设置 <code>requires-python = "&gt;=3.14,&lt;3.16"</code>，将 <code>rsserpent-rev&gt;=0.3,&lt;0.4</code> 加入项目依赖。将以下代码写入 <code>src/my_rss_plugin/__init__.py</code>。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">Plugin</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entry</span><span class="p">,</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">Plugin</span>
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">provider</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Feed</span><span class="p">:</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Example"</span><span class="p">,</span>
-        <span class="s2">"link"</span><span class="p">:</span> <span class="s2">"https://example.org/"</span><span class="p">,</span>
-        <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"Example updates"</span><span class="p">,</span>
-        <span class="s2">"items"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"First update"</span><span class="p">}],</span>
-    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">Feed</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"Example"</span><span class="p">,</span>
+        <span class="n">link</span><span class="o">=</span><span class="s2">"https://example.org/"</span><span class="p">,</span>
+        <span class="n">entries</span><span class="o">=</span><span class="p">[</span><span class="n">Entry</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"First update"</span><span class="p">)],</span>
+    <span class="p">)</span>
 
 
 <span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">(</span>
@@ -1280,6 +1323,55 @@
     <span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div>
+<p>provider 返回 <code>Feed(title=..., link=..., entries=[...])</code>。每个 <code>Entry</code> 至少有标题、摘要或正文之一，没有内容时留空 <code>entries</code>。正文默认是纯文本，HTML 正文用 <code>content_type="html"</code>。时间字段 <code>published_at</code> 和 <code>updated_at</code> 接受带时区的 <code>datetime</code>。核心会省略缺失的发布时间，并为 Atom 补齐必需的更新时间。</p>
+<p>多条内容共用同一个 URL 时，通过 <code>Entry.id</code> 提供来源中稳定的标识符，URL 或 URN 会原样使用，普通的来源 ID 会转换成稳定的 URN。省略 ID 时，核心优先用文章链接，再按内容派生 ID。需要透传上游订阅或使用格式扩展时，provider 可以直接返回 <code>FeedGenerator</code>。见<a href="data/">获取数据</a>。</p>
+<h2 id="声明参数和设置">声明参数和设置<a class="headerlink" href="#声明参数和设置" title="Permanent link">&para;</a></h2>
+<p>在同一模块中追加以下代码，声明类型化参数、插件设置和可复用的 HTTP 客户端。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entry</span><span class="p">,</span> <span class="n">Feed</span><span class="p">,</span> <span class="n">FeedRoute</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_plugin_context</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Announcements"</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Parameters</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"news"</span><span class="p">,</span> <span class="s2">"release"</span><span class="p">]</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"document_default"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">announcements</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Feed</span><span class="p">:</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">get_plugin_context</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">Settings</span><span class="p">)</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">http</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">entries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="s2">"https://example.org/api/posts"</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"topic"</span><span class="p">:</span> <span class="n">topic</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">Feed</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">link</span><span class="o">=</span><span class="s2">"https://example.org/"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Recent posts"</span><span class="p">,</span>
+        <span class="n">entries</span><span class="o">=</span><span class="p">[</span><span class="n">Entry</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"title"</span><span class="p">])</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">[:</span><span class="n">count</span><span class="p">]],</span>
+    <span class="p">)</span>
+
+
+<span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+    <span class="n">repository</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">repository</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span>
+    <span class="n">routers</span><span class="o">=</span><span class="p">{</span><span class="s2">"/my-feed/</span><span class="si">{topic}</span><span class="s2">"</span><span class="p">:</span> <span class="n">FeedRoute</span><span class="p">(</span><span class="n">announcements</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">Parameters</span><span class="p">)},</span>
+    <span class="n">route_docs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"/my-feed/</span><span class="si">{topic}</span><span class="s2">"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"summary"</span><span class="p">:</span> <span class="s2">"Recent announcements"</span><span class="p">,</span>
+            <span class="s2">"examples"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Releases"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"topic"</span><span class="p">:</span> <span class="s2">"release"</span><span class="p">}}],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="n">settings_model</span><span class="o">=</span><span class="n">Settings</span><span class="p">,</span>
+    <span class="n">http_client</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>模型中与路径变量同名的字段取自路径，其余字段取自查询字符串。provider 以关键字参数接收校验后的值。可声明标量类型、<code>Literal</code> 枚举、默认值和 Pydantic 约束。仅对可公开的默认值标记 <code>document_default</code>。在部署 TOML 中用 <code>plugin_settings</code> 和 <code>plugin_env</code> 提供实例设置。捕获整段路径的路由由核心使用 <code>format</code> 控制输出格式，通用过滤参数照常可用。</p>
 <h2 id="编写路由文档">编写路由文档<a class="headerlink" href="#编写路由文档" title="Permanent link">&para;</a></h2>
 <p>要在实例的 <code>/all_routes</code> 页面说明某个订阅，把 <code>route_docs</code> 传给 <code>Plugin</code>。键使用 <code>routers</code> 中对应的路径。</p>
 <p>每条文档要填写 <code>summary</code>。还可以添加纯文本 <code>description</code> 和从参数名到说明的 <code>parameters</code> 映射。示例要填写 <code>label</code>，用字符串填写需要的 <code>path</code> 和 <code>query</code> 值。比如路由含有 <code>{uid}</code> 时，可以写 <code>"path": {"uid": "297786973"}</code>。示例只填可公开的值。页面从已注册的路由和 provider 签名读取参数名及必填状态，再生成 RSS 和 Atom 链接。缺少必填值或路径不匹配的示例会跳过，可查看启动日志。不提供 <code>route_docs</code> 时，页面显示实际路径、可推断的参数和已有的 provider 文档字符串。</p>
@@ -1290,9 +1382,37 @@
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>build<span class="w"> </span>--wheel
 uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.14
 uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>/path/to/rsserpent_rev-0.3.0-py3-none-any.whl<span class="w"> </span>dist/*.whl<span class="w"> </span>uvicorn
+.venv/bin/rsserpent<span class="w"> </span>check<span class="w"> </span>--config<span class="w"> </span>rsserpent.toml
 .venv/bin/python<span class="w"> </span>-m<span class="w"> </span>rsserpent_rev<span class="w"> </span>--config<span class="w"> </span>rsserpent.toml
 </code></pre></div>
 <p>访问 <code>/my-feed</code>、<code>/my-feed.rss</code> 和 <code>/my-feed.atom</code> 验证输出。带 URL 参数的 provider 写法见<a href="../../usage/router/">路由文档</a>。</p>
+<p><code>rsserpent check</code> 在当前环境导入已安装的插件，检查配置、路由冲突、参数和文档示例。失败时以非零状态退出。类型化路由按参数模型校验示例值。普通函数路由检查路径、参数名称和必填项，检查过程不求值 provider 注解。需要实际发送请求时，以上述类型化插件的 <code>/my-feed/release.rss</code> 和 <code>/my-feed/release.atom</code> 为准。</p>
+<h2 id="离线测试">离线测试<a class="headerlink" href="#离线测试" title="Permanent link">&para;</a></h2>
+<p>在开发环境中安装 <code>rsserpent-rev[test]</code> 扩展和 pytest。以下测试会执行应用的 lifespan，并调用订阅者使用的 RSS 和 Atom 路由。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">xml.etree</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElementTree</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">my_rss_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.testing</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_test_client</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">upstream</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">"topic"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"release"</span>
+    <span class="k">return</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">[{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Version 1"</span><span class="p">}])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_feed</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">plugin_test_client</span><span class="p">(</span>
+        <span class="n">plugin</span><span class="p">,</span>
+        <span class="n">settings</span><span class="o">=</span><span class="p">{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Announcements"</span><span class="p">},</span>
+        <span class="n">transport</span><span class="o">=</span><span class="n">httpx</span><span class="o">.</span><span class="n">MockTransport</span><span class="p">(</span><span class="n">upstream</span><span class="p">),</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">rss</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/my-feed/release.rss"</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/my-feed/release.atom"</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">rss</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">"./channel/item/title"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"Version 1"</span>
+        <span class="k">assert</span> <span class="n">atom</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">"{*}entry/{*}title"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"Version 1"</span>
+</code></pre></div>
+<p>固定响应由传输层提供给上下文客户端。使用独立下载器时，可在客户端工厂或 lifespan 中注入响应。需要同时测试多个插件时，可以直接使用 Starlette 的 TestClient。</p>
 <h2 id="发布">发布<a class="headerlink" href="#发布" title="Permanent link">&para;</a></h2>
 <p>你可以发布 wheel 到 PyPI 等包索引、直接分发 wheel，或让用户从固定 Git 提交安装。发布时同时提供安装依赖和 Python 模块名。用户把这两个值写进自己的部署 TOML。发布前，用官方镜像验证插件依赖和订阅。详见<a href="../../deployment/plugin/">安装与启用插件</a>。</p>
 

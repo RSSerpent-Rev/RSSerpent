@@ -828,6 +828,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#填写插件设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        填写插件设置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#重启与排查" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1221,6 +1232,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#填写插件设置" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        填写插件设置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#重启与排查" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1273,12 +1295,21 @@
 <h2 id="启用官方插件">启用官方插件<a class="headerlink" href="#启用官方插件" title="Permanent link">&para;</a></h2>
 <p>加上官方聚合包的依赖，并列出要启用的模块。模块名称见<a href="https://github.com/RSSerpent-Rev/rsserpent-plugins#official-modules">官方插件模块表</a>。</p>
 <div class="highlight"><pre><span></span><code><span class="n">plugin_requirements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s2">"rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5f13e7549843a13baa37dc3a3b09bf437b6305d1"</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">"rsserpent-plugins @ git+https://github.com/RSSerpent-Rev/rsserpent-plugins.git@5eedb59797ccf84f121e69fd5db3337dea31aadc"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"rsserpent_plugins.bilibili"</span><span class="p">]</span>
 </code></pre></div>
 <p>插件需要 Chromium 时，把 Docker 命令中的镜像换成 <code>ghcr.io/rsserpent-rev/rsserpent-browser:main</code>。发布插件前，请用目标镜像验证 Python 依赖和所需系统库。</p>
+<h2 id="填写插件设置">填写插件设置<a class="headerlink" href="#填写插件设置" title="Permanent link">&para;</a></h2>
+<p>配置表以启用的模块名为键。<code>plugin_settings</code> 填写插件声明的字段。<code>plugin_env</code> 把字段映射到必需的环境变量，优先于 TOML 中的同名字段。通过 <code>--env MY_RSS_TOKEN</code> 把变量传入 Docker，或将它加入 Compose 服务的环境配置。访问令牌适合通过环境变量传入。</p>
+<div class="highlight"><pre><span></span><code><span class="k">[plugin_settings.my_private_plugin]</span>
+<span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Announcements"</span>
+
+<span class="k">[plugin_env.my_private_plugin]</span>
+<span class="n">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MY_RSS_TOKEN"</span>
+</code></pre></div>
 <h2 id="重启与排查">重启与排查<a class="headerlink" href="#重启与排查" title="Permanent link">&para;</a></h2>
+<p>在本地检查配置时，先在开发环境安装插件包，再运行 <code>rsserpent check --config rsserpent.toml</code>。</p>
 <p>容器在启动 Web 服务前安装配置中的包，并按镜像内的核心依赖版本检查冲突。遇到冲突时，容器退出。用 <code>docker logs rsserpent</code> 查看失败的依赖或模块。</p>
 <p>缓存缺少对应包时，下载需要联网。重建容器时也可能重新下载。空配置启动纯核心，跳过插件安装。</p>
 <p>修改 TOML 后，用 <code>docker rm -f rsserpent</code> 移除旧容器，再运行启动命令。用 Compose 部署时，运行 <code>docker compose up -d --force-recreate</code>。</p>

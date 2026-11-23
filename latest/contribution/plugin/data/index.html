@@ -29,7 +29,7 @@
     
     
       
-        <title>Retrieve Data - RSSerpent Docs</title>
+        <title>Retrieve data - RSSerpent Docs</title>
       
     
     
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Retrieve Data
+              Retrieve data
             
           </span>
         </div>
@@ -985,7 +985,7 @@
   <span class="md-ellipsis">
     
   
-    Retrieve Data
+    Retrieve data
   
 
     
@@ -1003,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Retrieve Data
+    Retrieve data
   
 
     
@@ -1029,10 +1029,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#http" class="md-nav__link">
+  <a href="#json-and-html" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP
+        JSON and HTML
       
     </span>
   </a>
@@ -1040,10 +1040,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#html" class="md-nav__link">
+  <a href="#rss-and-atom" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTML
+        RSS and Atom
       
     </span>
   </a>
@@ -1051,10 +1051,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#browser-emulation" class="md-nav__link">
+  <a href="#browser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Browser Emulation
+        Browser
       
     </span>
   </a>
@@ -1199,10 +1199,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#http" class="md-nav__link">
+  <a href="#json-and-html" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP
+        JSON and HTML
       
     </span>
   </a>
@@ -1210,10 +1210,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#html" class="md-nav__link">
+  <a href="#rss-and-atom" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTML
+        RSS and Atom
       
     </span>
   </a>
@@ -1221,10 +1221,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#browser-emulation" class="md-nav__link">
+  <a href="#browser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Browser Emulation
+        Browser
       
     </span>
   </a>
@@ -1251,53 +1251,48 @@
   
 
 
-<h1 id="retrieve-data">Retrieve Data<a class="headerlink" href="#retrieve-data" title="Permanent link">&para;</a></h1>
-<p>When you are writing a data provider function, you need to retrieve data from a source website. RSSerpent ships with convenient utility functions for you to retrieve data in various scenarios.</p>
-<h2 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">&para;</a></h2>
-<p>The most basic, bare-bone way to retrieve data from the Internet is by using the HTTP protocol. <a href="https://github.com/encode/httpx/">HTTPX</a>, a powerful HTTP library for Python with asynchronous API, is bundled with the RSSerpent core.</p>
-<p>Sometimes the source website has a directly accessible JSON API, so you can simply:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span>
+<h1 id="retrieve-data">Retrieve data<a class="headerlink" href="#retrieve-data" title="Permanent link">&para;</a></h1>
+<h2 id="json-and-html">JSON and HTML<a class="headerlink" href="#json-and-html" title="Permanent link">&para;</a></h2>
+<p><code>HTTPClient</code> is an asynchronous HTTPX client with default <code>Host</code> and <code>Referer</code> headers. Use <code>get_json()</code> for JSON and <code>get_html()</code> for CSS queries with PyQuery. Both methods use the client's default request settings. Pass HTTPX options to override them for one request.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span>
 
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">HTTPClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://httpbin.org/json"</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span>
+        <span class="s2">"https://example.org/api/posts"</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"page"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">},</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_html</span><span class="p">(</span><span class="s2">"https://example.org/news"</span><span class="p">,</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="n">heading</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">heading</span> <span class="ow">in</span> <span class="n">page</span><span class="p">(</span><span class="s2">"article h2"</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 </code></pre></div>
-<p>Here, <code>rsserpent.utils.HTTPClient</code> is a subclass of <code>httpx.AsyncClient</code>, despite that <code>HTTPClient</code> will automatically set <code>Host</code>, <code>Referer</code>, and <code>User-Agent</code> headers for you.</p>
-<h2 id="html">HTML<a class="headerlink" href="#html" title="Permanent link">&para;</a></h2>
-<p>The source website is sometimes not kind enough to offer you convenient JSON API, so you have to parse the HTML in order to retrieve data. <a href="https://pythonhosted.org/pyquery/">PyQuery</a> is here to help -- it lets you retrieve data from HTML documents by using a jQuery-like API, and it is also bundled with RSSerpent!</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pyquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyQuery</span>
+<p>The helpers check the HTTP status before parsing. A timeout returns HTTP 504 from the feed route. A bad upstream status or a decoding error returns HTTP 502. Catch <code>UpstreamDecodeError</code> in the provider to handle a decoding error yourself. HTML links keep the values from the page.</p>
+<p>Set <code>http_client=True</code> on <code>Plugin</code> and use <code>get_plugin_context().http</code> to reuse a connection pool. You can provide a client factory with your own headers, authentication or HTTPX transport. Use <code>get()</code>, <code>request()</code> or <code>stream()</code> when you need the response itself, such as handling HTTP 304, reading headers, controlling encoding or limiting the response size. You can also use your own downloader and manage it in the plugin's <code>lifespan</code>. See <a href="../">Create an independent plugin</a>.</p>
+<h2 id="rss-and-atom">RSS and Atom<a class="headerlink" href="#rss-and-atom" title="Permanent link">&para;</a></h2>
+<p>Pass downloaded bytes and the final URL to <code>parse_feed()</code>. The parser uses the URL to resolve relative links and as a fallback channel link. It reads only the given bytes. You can return the resulting <code>FeedGenerator</code> directly from a provider.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span><span class="p">,</span> <span class="n">parse_feed</span>
 
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">HTTPClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://httpbin.org/json"</span><span class="p">)</span>
-
-<span class="n">dom</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-<span class="n">description</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"div &gt; p"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://example.org/feed.xml"</span><span class="p">))</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<span class="n">feed</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">parse_feed</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
 </code></pre></div>
-<h2 id="browser-emulation">Browser Emulation<a class="headerlink" href="#browser-emulation" title="Permanent link">&para;</a></h2>
-<p>In worse situations, HTTP is simply not enough. Many modern websites are loaded with JavaScript, and the true content of the website won't be rendered unless you are running in a genuine browser environment with a JavaScript engine. In this case, you need a browser emulator.</p>
-<p><a href="https://github.com/microsoft/playwright-python">Playwright</a> is a powerful browser automation library and it's bundled with RSSerpent. RSSerpent also provides a convenient wrapper on top of playwright:</p>
+<p>The parser keeps source IDs, author information and publication dates when provided. It uses the primary link, first inline content and first enclosure when it must choose one. An undated entry keeps its publication date empty. Atom requires an update date, so the parser uses the entry date, the feed date or the time of parsing, in that order. Date filters still use the publication date. A feed with a title and zero entries is valid. Catch <code>FeedParseError</code> if you want to handle invalid input yourself.</p>
+<h2 id="browser">Browser<a class="headerlink" href="#browser" title="Permanent link">&para;</a></h2>
+<p>Use <code>Browser</code> when the site needs JavaScript to render the content. Deploy the plugin with the <a href="../../../deployment/plugin/">Chromium image</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pyquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyQuery</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Browser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Browser</span>
 
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">Browser</span><span class="p">()</span> <span class="k">as</span> <span class="n">browser</span><span class="p">:</span>
-    <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s2">"https://httpbin.org/html"</span><span class="p">)</span>
-    <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
-
-<span class="n">dom</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-<span class="n">description</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"div &gt; p"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s2">"https://example.org/news"</span><span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">content</span><span class="p">())</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
 </code></pre></div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Browser emulation's power comes with a cost, as it strains CPU &amp; memory resources. Be cautious! Use browser emulation only when necessary.</p>
-</div>
 
 
 

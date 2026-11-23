@@ -1029,10 +1029,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#http" class="md-nav__link">
+  <a href="#json-和-html" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP
+        JSON 和 HTML
       
     </span>
   </a>
@@ -1040,10 +1040,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#html" class="md-nav__link">
+  <a href="#rss-和-atom" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTML
+        RSS 和 Atom
       
     </span>
   </a>
@@ -1051,10 +1051,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#模拟浏览器" class="md-nav__link">
+  <a href="#浏览器" class="md-nav__link">
     <span class="md-ellipsis">
       
-        模拟浏览器
+        浏览器
       
     </span>
   </a>
@@ -1199,10 +1199,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#http" class="md-nav__link">
+  <a href="#json-和-html" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP
+        JSON 和 HTML
       
     </span>
   </a>
@@ -1210,10 +1210,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#html" class="md-nav__link">
+  <a href="#rss-和-atom" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTML
+        RSS 和 Atom
       
     </span>
   </a>
@@ -1221,10 +1221,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#模拟浏览器" class="md-nav__link">
+  <a href="#浏览器" class="md-nav__link">
     <span class="md-ellipsis">
       
-        模拟浏览器
+        浏览器
       
     </span>
   </a>
@@ -1252,52 +1252,47 @@
 
 
 <h1 id="获取数据">获取数据<a class="headerlink" href="#获取数据" title="Permanent link">&para;</a></h1>
-<p>当你在为你的插件编写数据提供函数时，你需要从某个源网站去获取数据。RSSerpent 提供了一些简单易用的辅助函数，来帮助你在各种场景下获取数据。</p>
-<h2 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">&para;</a></h2>
-<p>从互联网上获取信息的最基本的方式就是使用 HTTP 协议。<a href="https://github.com/encode/httpx/">HTTPX</a> 是一个强大的异步 Python HTTP 库，且默认被置入 RSSerpent 以便你能直接使用。</p>
-<p>有些时候，源网站直接提供了可访问的 JSON API。所以问题就会比较简单：</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span>
+<h2 id="json-和-html">JSON 和 HTML<a class="headerlink" href="#json-和-html" title="Permanent link">&para;</a></h2>
+<p><code>HTTPClient</code> 是带默认 <code>Host</code> 和 <code>Referer</code> 请求头的异步 HTTPX 客户端。用 <code>get_json()</code> 读取 JSON，用 <code>get_html()</code> 返回可做 CSS 查询的 PyQuery 对象。这两个方法沿用客户端的请求设置。你可以传入 HTTPX 选项覆盖某次请求。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span>
 
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">HTTPClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://httpbin.org/json"</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span>
+        <span class="s2">"https://example.org/api/posts"</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"page"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">},</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_html</span><span class="p">(</span><span class="s2">"https://example.org/news"</span><span class="p">,</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="n">heading</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">heading</span> <span class="ow">in</span> <span class="n">page</span><span class="p">(</span><span class="s2">"article h2"</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 </code></pre></div>
-<p>注意此处 <code>rsserpent.utils.HTTPClient</code> 是 <code>httpx.AsyncClient</code> 的子类。RSSerpent 扩展出了这个子类，来帮助你在发起 HTTP 请求时自动设置 <code>Host</code>、<code>Referer</code>、<code>User-Agent</code> 等头部信息。</p>
-<h2 id="html">HTML<a class="headerlink" href="#html" title="Permanent link">&para;</a></h2>
-<p>还有些时候，源网站不会好心地直接提供 JSON API，所以你需要解析网页的 HTML 源代码来获取数据。<a href="https://pythonhosted.org/pyquery/">PyQuery</a> 是一个类似 jQuery 的库，它能帮助你从结构化的 HTML 文档中提取数据。PyQuery 也默认被置入 RSSerpent 以便你能直接使用。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pyquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyQuery</span>
+<p>便捷方法先检查 HTTP 状态，再解析响应。上游超时使订阅路由返回 HTTP 504。上游状态异常或解码失败返回 HTTP 502。需要在 provider 里处理解码失败时，可以捕获 <code>UpstreamDecodeError</code>。HTML 中的链接保留网页给出的原值。</p>
+<p>在 <code>Plugin</code> 中设 <code>http_client=True</code>，用 <code>get_plugin_context().http</code> 复用连接池。你可以提供自己的客户端工厂来设置请求头、认证或 HTTPX 传输层。需要处理 HTTP 304、读取响应头、指定编码或限制响应体积时，可直接用 <code>get()</code>、<code>request()</code> 或 <code>stream()</code>。也可以在插件的 <code>lifespan</code> 中管理自选的下载器。见<a href="../">开发独立插件</a>。</p>
+<h2 id="rss-和-atom">RSS 和 Atom<a class="headerlink" href="#rss-和-atom" title="Permanent link">&para;</a></h2>
+<p>把下载后的字节和最终 URL 传给 <code>parse_feed()</code>。解析器只读取这些字节，使用 URL 解析相对链接，也把它用作缺少频道链接时的默认值。provider 可直接返回得到的 <code>FeedGenerator</code>。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPClient</span><span class="p">,</span> <span class="n">parse_feed</span>
 
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">HTTPClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://httpbin.org/json"</span><span class="p">)</span>
-
-<span class="n">dom</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-<span class="n">description</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"div &gt; p"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://example.org/feed.xml"</span><span class="p">))</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<span class="n">feed</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">parse_feed</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
 </code></pre></div>
-<h2 id="模拟浏览器">模拟浏览器<a class="headerlink" href="#模拟浏览器" title="Permanent link">&para;</a></h2>
-<p>在更糟糕的情况下，你需要比 HTTP 协议更强大的武器。许多现代化的网站都大量的使用 JavaScript，因此只有当你在一个真正的、带有 JavaScript 引擎的浏览器环境中打开网页，你才能看到网站的内容被渲染出来。对付这种源网站，你需要使用浏览器模拟。</p>
-<p><a href="https://github.com/microsoft/playwright-python">Playwright</a> 是一个强大的浏览器自动化框架，且也默认被置入 RSSerpent。RSSerpent 对 playwright 做了一个简单的包装以方便你使用：</p>
+<p>解析器保留来源提供的 ID、作者和发布时间。需要选取单个字段时，使用主链接、第一段内嵌内容和第一个附件。来源缺少条目发布时间时，输出也省略发布时间。Atom 必需的更新时间依次取条目日期、订阅源日期和解析时间，日期过滤仍按条目发布时间执行。有标题的空订阅可正常返回。需要自定义解析失败的处理时，可以捕获 <code>FeedParseError</code>。</p>
+<h2 id="浏览器">浏览器<a class="headerlink" href="#浏览器" title="Permanent link">&para;</a></h2>
+<p>网页需要执行 JavaScript 时，使用 <code>Browser</code>，部署时选用<a href="../../../deployment/plugin/">带 Chromium 的镜像</a>。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pyquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyQuery</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Browser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsserpent_rev.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Browser</span>
 
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">Browser</span><span class="p">()</span> <span class="k">as</span> <span class="n">browser</span><span class="p">:</span>
-    <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s2">"https://httpbin.org/html"</span><span class="p">)</span>
-    <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
-
-<span class="n">dom</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-<span class="n">description</span> <span class="o">=</span> <span class="n">dom</span><span class="p">(</span><span class="s2">"div &gt; p"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s2">"https://example.org/news"</span><span class="p">)</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">content</span><span class="p">())</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">page</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
 </code></pre></div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>浏览器模拟很强大，但也会大量消耗 CPU 和内存资源。所以请仅在必要时小心谨慎地使用浏览器模拟！</p>
-</div>
 
 
 
