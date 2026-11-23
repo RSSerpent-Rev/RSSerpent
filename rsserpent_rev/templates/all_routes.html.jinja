@@ -80,6 +80,7 @@
                         {% for parameter in parameters %}
                         <dt><code>{{ parameter.name }}</code> &middot; {{ 'required' if parameter.required else 'optional' }}{% if parameter.type_label %} &middot; {{ parameter.type_label }}{% endif %}</dt>
                         {% if parameter.description %}<dd>{{ parameter.description }}</dd>{% endif %}
+                        {% if parameter.default is not none %}<dd>Default <code>{{ parameter.default }}</code></dd>{% endif %}
                         {% endfor %}
                     </dl>
                     {% endif %}

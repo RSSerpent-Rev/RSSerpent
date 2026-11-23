@@ -18,11 +18,12 @@ from starlette.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse as TemplateResponse
 
 from .log import logger
-from .models import Plugin, ProviderFn, QueryString, RSSFeed
+from .models import FeedRoute, Plugin, ProviderFn, QueryString, RSSFeed
 from .plugins.config import PluginLoadError
 from .plugins.documentation import FeedRouteGroup, document_feed
 from .utils import fetch_data, filter_fg, gen_ids_for
 from .utils.feed import FeedFilterError, FeedParseError, compile_filters
+from .utils.parameters import RouteParameters
 from .utils.provider import ProviderInputError, provider_resource
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
@@ -64,7 +65,12 @@ async def index(request: Request) -> TemplateResponse:
 
 
 def feed_endpoint(
-    plugin: Plugin, provider: ProviderFn, *, atom: bool = False, path_format: bool = False
+    plugin: Plugin,
+    provider: ProviderFn,
+    *,
+    parameters: RouteParameters | None = None,
+    atom: bool = False,
+    path_format: bool = False,
 ) -> Callable[[Request], Awaitable[Response]]:
     async def endpoint(request: Request) -> Response:
         """Return an RSS feed of XML format."""
@@ -82,7 +88,10 @@ def feed_endpoint(
         resources = getattr(request.state, "plugin_resources", {})
         try:
             with provider_resource.set(resources.get(plugin.name)):
-                data = await fetch_data(provider, request.path_params, query_params)
+                if parameters is None:
+                    data = await fetch_data(provider, request.path_params, query_params)
+                else:
+                    data = await provider(**parameters.bind(request.path_params, query_params))
         except ProviderInputError as exception:
             raise HTTPException(400, str(exception)) from exception
         if isinstance(data, dict):
@@ -151,19 +160,34 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
     routes = [Route("/", endpoint=index), Route("/all_routes", endpoint=all_routes)]
     route_sources = {route.path_regex.pattern: (route.path, "RSSerpent core") for route in routes}
     feed_routes_by_plugin: dict[str, list[FeedRouteGroup]] = {}
+    diagnostics: list[str] = []
     for plugin in active_plugins:
         source = active_sources[plugin.name]
         groups: list[FeedRouteGroup] = []
         for path in plugin.route_docs.keys() - plugin.routers.keys():
-            logger.warning("Ignoring route documentation for unknown path %s in %s", path, plugin.name)
-        for path, provider in plugin.routers.items():
+            diagnostics.append(f"{source}: Route documentation for unknown path {path!r}.")
+        for path, declaration in plugin.routers.items():
             uses_format_query = ":path}" in path
-            if uses_format_query:
-                feed_routes = [Route(path, endpoint=feed_endpoint(plugin, provider, path_format=True))]
+            parameters = None
+            if isinstance(declaration, FeedRoute):
+                provider = declaration.provider
+                try:
+                    parameters = RouteParameters(
+                        declaration, Route(path, provider), uses_format_query=uses_format_query
+                    )
+                except (TypeError, ValueError) as exception:
+                    message = f"Invalid provider parameters for {path!r} in {source}: {exception}"
+                    raise PluginLoadError(message) from exception
             else:
-                rss_endpoint = feed_endpoint(plugin, provider)
+                provider = declaration
+            if uses_format_query:
                 feed_routes = [
-                    Route(path + ".atom", endpoint=feed_endpoint(plugin, provider, atom=True)),
+                    Route(path, endpoint=feed_endpoint(plugin, provider, parameters=parameters, path_format=True))
+                ]
+            else:
+                rss_endpoint = feed_endpoint(plugin, provider, parameters=parameters)
+                feed_routes = [
+                    Route(path + ".atom", endpoint=feed_endpoint(plugin, provider, parameters=parameters, atom=True)),
                     Route(path + ".rss", endpoint=rss_endpoint),
                     Route(path, endpoint=rss_endpoint),
                 ]
@@ -178,7 +202,9 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
                     raise PluginLoadError(message)
                 route_sources[shape] = (route.path, source)
                 routes.append(route)
-            groups.append(document_feed(feed_routes, provider, plugin.route_docs.get(path), uses_format_query))
+            group = document_feed(feed_routes, provider, plugin.route_docs.get(path), uses_format_query, parameters)
+            groups.append(group)
+            diagnostics.extend(f"{source} {path}: {message}" for message in group.diagnostics)
         feed_routes_by_plugin[plugin.name] = groups
         logger.info("Loaded plugin %s from %s", plugin.name, source)
 
@@ -192,6 +218,9 @@ def create_app(plugins: Sequence[Plugin] = (), *, sources: Sequence[str] | None 
         lifespan=lifespan,
         routes=routes,
     )
+    for diagnostic in diagnostics:
+        logger.warning("%s", diagnostic)
+    application.state.diagnostics = diagnostics
     application.state.plugins = active_plugins
     application.state.feed_routes = feed_routes_by_plugin
     return application

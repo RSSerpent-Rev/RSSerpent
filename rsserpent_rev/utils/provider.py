@@ -1,7 +1,10 @@
 import inspect
 from annotationlib import Format
+from collections.abc import Callable
 from contextvars import ContextVar
-from inspect import Parameter
+from functools import partial
+from inspect import Parameter, Signature, getattr_static, signature, unwrap
+from types import FunctionType, MethodType
 from typing import Any
 
 from ..models import Feed, ProviderFn
@@ -91,3 +94,46 @@ def look_up_parameter_value(parameter: Parameter, path_params: dict[str, Any], q
     elif parameter.name in query_params:
         value = convert(query_params[parameter.name], parameter.annotation)
     return value
+
+
+_NO_SIGNATURE = object()
+
+
+def _without_annotations(provider: Callable[..., object]) -> Callable[..., object]:
+    target = unwrap(
+        provider,
+        stop=lambda value: (
+            isinstance(value, MethodType) or getattr_static(value, "__signature__", _NO_SIGNATURE) is not _NO_SIGNATURE
+        ),
+    )
+    if isinstance(target, MethodType):
+        return MethodType(_without_annotations(target.__func__), target.__self__)
+
+    declared = getattr_static(target, "__signature__", _NO_SIGNATURE)
+    if isinstance(declared, Signature):
+
+        def placeholder() -> None:
+            pass
+
+        placeholder.__dict__["__signature__"] = declared.replace(
+            parameters=[parameter.replace(annotation=Parameter.empty) for parameter in declared.parameters.values()],
+            return_annotation=Signature.empty,
+        )
+        return placeholder
+    if declared is not _NO_SIGNATURE and declared is not None:
+        message = "Provider has no static signature."
+        raise TypeError(message)
+    if isinstance(target, partial):
+        return partial(_without_annotations(target.func), *target.args, **target.keywords)
+    if not isinstance(target, FunctionType):
+        message = "Provider has no Python function signature."
+        raise TypeError(message)
+
+    # Even inspect.signature's string format can execute a delayed annotation.
+    function = FunctionType(target.__code__, target.__globals__, None, target.__defaults__, target.__closure__)
+    function.__kwdefaults__ = target.__kwdefaults__
+    return function
+
+
+def provider_signature(provider: Callable[..., object]) -> Signature:
+    return signature(_without_annotations(provider))

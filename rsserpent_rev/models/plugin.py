@@ -1,6 +1,7 @@
 import inspect
 from collections.abc import Awaitable, Callable
 from contextlib import AbstractAsyncContextManager
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -19,6 +20,14 @@ from .rss import RSSFeed
 Feed = dict[str, Any] | FeedGenerator | RSSFeed
 
 ProviderFn = Callable[..., Awaitable[Feed]]  # type: ignore[valid-type]
+
+
+@dataclass(frozen=True, slots=True)
+class FeedRoute:
+    """Declare a provider and a model for its URL parameters."""
+
+    provider: ProviderFn
+    parameters: type[BaseModel]
 
 
 class PluginModelError(ValueError):
@@ -46,7 +55,7 @@ class Plugin(BaseModel):
     author: Persona
     repository: HttpUrl
     prefix: str
-    routers: dict[str, ProviderFn]
+    routers: dict[str, ProviderFn | FeedRoute]
     route_docs: dict[str, object] = Field(default_factory=dict)
     enabled: Callable[[], bool] | None = None
     lifespan: Callable[[], AbstractAsyncContextManager[object]] | None = None
@@ -62,7 +71,7 @@ class Plugin(BaseModel):
     ) -> dict[str, Any]:
         """Ensure all paths in `routers` starts with `prefix`."""
         prefix: str | None = values.get("prefix")
-        routers: dict[str, ProviderFn] | None = values.get("routers")
+        routers: dict[str, ProviderFn | FeedRoute] | None = values.get("routers")
         assert prefix is not None and routers is not None
         for path in routers:
             if not path.startswith(prefix):
@@ -81,12 +90,13 @@ class Plugin(BaseModel):
     @field_validator("routers")
     def validate_routers(
         cls,  # noqa: N805
-        routers: dict[str, ProviderFn],  # noqa: N805
-    ) -> dict[str, ProviderFn]:
+        routers: dict[str, ProviderFn | FeedRoute],  # noqa: N805
+    ) -> dict[str, ProviderFn | FeedRoute]:
         """Ensure `routers` is not empty & all provider functions are async."""
         if len(routers) < 1:
             raise PluginModelError(PluginModelError.empty_router)
-        for provider in routers.values():
+        for route in routers.values():
+            provider = route.provider if isinstance(route, FeedRoute) else route
             if not inspect.iscoroutinefunction(provider):
                 raise PluginModelError(PluginModelError.provider_not_async)
         return routers
